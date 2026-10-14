@@ -7,7 +7,6 @@
 <link rel="icon" type="image/png" href="logo.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-
 <style>
   :root{--cafe-oscuro:#3b2416;--cafe:#5c3a21;--cafe-medio:#7a4f2e;--cafe-claro:#a67c52;--mostaza:#c9a05a;--mostaza-claro:#e3c28a;--crema:#f5ecd7;--crema-oscuro:#e8dcc4;--blanco:#fff;--gris:#6b6b6b;--gris-claro:#f5f5f5;--gris-borde:#e0e0e0;--rojo:#c0392b;--verde:#27ae60;--azul:#2c5f8a}
   *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',-apple-system,sans-serif}
@@ -97,12 +96,12 @@
   .sync-status.online{background:var(--verde);color:#fff;display:block}
   .sync-status.offline{background:var(--rojo);color:#fff;display:block}
   .sync-status.syncing{background:var(--mostaza);color:var(--cafe-oscuro);display:block}
-  .demolicion-box{background:linear-gradient(135deg, #fef9e7, #fdebd0);border:2px solid var(--mostaza);border-radius:8px;padding:18px;margin:15px 0}
-  .demolicion-box h4{color:var(--cafe-oscuro);font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-  .demolicion-box .demo-row{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
-  .demolicion-box .demo-row input{width:120px;padding:10px;border:2px solid var(--cafe);border-radius:4px;font-size:15px;font-weight:600;text-align:center}
-  .demolicion-box .demo-row input:focus{outline:none;border-color:var(--mostaza);box-shadow:0 0 0 3px rgba(201,160,90,.3)}
-  .demolicion-box .demo-total{font-size:16px;font-weight:700;color:var(--cafe-oscuro);margin-left:auto}
+  .demolicion-box{background:linear-gradient(135deg,#fef9e7,#fdebd0);border:2px solid var(--mostaza);border-radius:8px;padding:18px;margin-bottom:15px}
+  .demolicion-box h4{color:var(--cafe-oscuro);font-size:14px;margin-bottom:10px}
+  .demo-row{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+  .demo-row input[type=number]{width:120px;padding:10px;border:2px solid var(--cafe);border-radius:4px;font-size:15px;font-weight:600;text-align:center}
+  .demo-row input[type=number]:focus{outline:none;border-color:var(--mostaza);box-shadow:0 0 0 3px rgba(201,160,90,.3)}
+  .demo-total{font-size:16px;font-weight:700;color:var(--cafe-oscuro);margin-left:auto}
   @media(max-width:1100px){.layout-2col{grid-template-columns:1fr}.summary-card{position:static}}
   @media(max-width:768px){
     .sidebar{width:100%;position:relative;height:auto}
@@ -192,7 +191,6 @@
             <div class="card"><div class="card-header">Trabajos Extras</div><div class="card-body">
               <div class="alert alert-warning">Selecciona los trabajos extras que se sumaran al total. Solo los marcados apareceran en el PDF.</div>
               
-              <!-- NUEVA SECCIÓN DEMOLICIÓN -->
               <div class="demolicion-box">
                 <h4>🔨 Demolición de pavimento existente</h4>
                 <div class="demo-row">
@@ -203,7 +201,7 @@
                   <div style="font-size:14px;color:var(--cafe);font-weight:600">× $4.000/m²</div>
                   <div class="demo-total" id="demoTotal">$0</div>
                 </div>
-                <div class="hint" style="margin-top:8px;color:var(--gris);font-size:11px">Se sumará automáticamente al total de la cotización</div>
+                <div style="margin-top:8px;color:var(--gris);font-size:11px">Se sumará automáticamente al total de la cotización</div>
               </div>
 
               <div style="margin-bottom:12px"><button class="btn btn-primary btn-sm" onclick="addExtra()">+ Agregar Trabajo Extra</button></div>
@@ -271,7 +269,7 @@
       <div class="page" id="page-tarifas">
         <div class="page-header"><h1>Gestion de Tarifas</h1></div>
         <div class="card">
-          <div class="alert alert-info">Modifica las tarifas por metro cuadrado. Los cambios se sincronizan con todos los vendedores.</div>
+          <div class="alert alert-info">Modifica las tarifas por metro cuadrado.</div>
           <table><thead><tr><th>Rango (m2)</th><th>Precio por m2</th></tr></thead><tbody id="tbodyTarifas"></tbody></table>
           <div style="margin-top:15px"><button class="btn btn-success" onclick="guardarTarifas()">Guardar Tarifas</button></div>
         </div>
@@ -294,18 +292,14 @@
 
 <script>
 // ============================================================
-// LOGIN SIMPLE
+// LOGIN SIMPLE - Funciona siempre, sin depender de Firebase
 // ============================================================
-const USUARIO_VALIDO = 'admin';
-const PASS_VALIDO = 'admin123';
-
 function doLogin() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
-  const btn = document.getElementById('loginBtn');
   const err = document.getElementById('loginError');
 
-  if (u === USUARIO_VALIDO && p === PASS_VALIDO) {
+  if (u === 'admin' && p === 'admin123') {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
     err.textContent = '';
@@ -554,7 +548,7 @@ function calcular() {
 
   const subtotal = Math.round(m2 * tarifa);
   
-  // ✅ CÁLCULO DE DEMOLICIÓN
+  // Demolición
   const demoM2 = parseFloat(document.getElementById('cDemoM2').value) || 0;
   APP.demoM2 = demoM2;
   const costoDemo = Math.round(demoM2 * PRECIO_DEMOLICION);
@@ -566,7 +560,7 @@ function calcular() {
   // Subtotal incluye: hormigón + demolición + extras
   const subExt = subtotal + costoDemo + extras;
 
-  // ✅ IVA CORREGIDO: solo se aplica cuando la casilla está MARCADA
+  // ✅ IVA: solo se aplica cuando la casilla está MARCADA
   const aplicaIva = document.getElementById('cIncluyeIva').checked;
   const iva = aplicaIva ? Math.round(subExt * 0.19) : 0;
   const total = aplicaIva ? Math.round(subExt + iva) : Math.round(subExt);
@@ -863,7 +857,6 @@ function generarPDF() {
   const tarifa = getTarifa(m2);
   const subtotal = Math.round(m2 * tarifa);
   
-  // Demolición
   const demoM2 = APP.demoM2 || 0;
   const costoDemo = Math.round(demoM2 * PRECIO_DEMOLICION);
   
@@ -880,7 +873,6 @@ function generarPDF() {
   const mostaza = [201, 160, 90];
   const crema = [245, 236, 215];
 
-  // HEADER
   doc.setFillColor(...cafeClaro);
   doc.rect(0, 0, W, 35, 'F');
 
@@ -905,7 +897,6 @@ function generarPDF() {
   doc.setFont(undefined, 'bold');
   doc.text('COTIZACION N° ' + numCot, W / 2, 41.5, {align: 'center'});
 
-  // COTIZADO PARA
   let y = 49;
   const boxH = 32;
   doc.setFillColor(...crema);
@@ -963,7 +954,6 @@ function generarPDF() {
 
   y += boxH + 4;
 
-  // CONDICIONES
   doc.autoTable({
     startY: y,
     head: [['CONDICIONES DE PAGO']],
@@ -976,11 +966,9 @@ function generarPDF() {
   });
   y = doc.lastAutoTable.finalY + 3;
 
-  // TABLA - Incluye demolición si aplica
   const bodyItems = [];
   bodyItems.push(['Hormigon Estampado', m2 + ' m2', '$' + tarifa.toLocaleString('es-CL') + '/m2', '$' + subtotal.toLocaleString('es-CL')]);
   
-  // Agregar demolición si hay m²
   if (demoM2 > 0) {
     bodyItems.push(['Demolicion de pavimento existente', demoM2 + ' m2', '$' + PRECIO_DEMOLICION.toLocaleString('es-CL') + '/m2', '$' + costoDemo.toLocaleString('es-CL')]);
   }
@@ -1001,7 +989,6 @@ function generarPDF() {
   });
   y = doc.lastAutoTable.finalY + 2;
 
-  // TOTALES
   const totalesBody = [['Subtotal', '', '', '$' + subExt.toLocaleString('es-CL')]];
   if (aplicaIva) {
     totalesBody.push(['IVA (19%)', '', '', '$' + ivaCalc.toLocaleString('es-CL')]);
@@ -1019,7 +1006,6 @@ function generarPDF() {
   });
   y = doc.lastAutoTable.finalY + 3;
 
-  // ITEMS
   const itemsH = 32;
   doc.setFillColor(...crema);
   doc.rect(10, y, W - 20, itemsH, 'F');
@@ -1043,7 +1029,6 @@ function generarPDF() {
   }
   y += itemsH + 3;
 
-  // ALCANCE
   const alcanceH = 22;
   doc.setFillColor(...crema);
   doc.rect(10, y, W - 20, alcanceH, 'F');
@@ -1068,7 +1053,6 @@ function generarPDF() {
   alcance.forEach((a, i) => { doc.text('- ' + a, 14, y + 8 + i * aStep); });
   y += alcanceH + 3;
 
-  // GARANTIA
   const garantiaH = 18;
   doc.setFillColor(...crema);
   doc.rect(10, y, W - 20, garantiaH, 'F');
