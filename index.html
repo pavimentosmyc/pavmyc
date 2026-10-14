@@ -274,6 +274,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
+  // ===== FIREBASE CONFIG =====
   const firebaseConfig = {
     apiKey: "AIzaSyClIrBZohr8ESgbX6irbYT9b3gDheglKcck",
     authDomain: "pavmyc.firebaseapp.com",
@@ -284,17 +285,24 @@
     measurementId: "G-HP777TPS26"
   };
 
-  let db;
+  let db = null;
+  let firebaseReady = false;
+
   try {
     const app = initializeApp(firebaseConfig);
     db = getFirestore(app);
+    firebaseReady = true;
+    console.log('✅ Firebase inicializado correctamente');
   } catch (e) {
-    console.error('Error inicializando Firebase:', e);
+    console.error('❌ Error inicializando Firebase:', e);
+    firebaseReady = false;
   }
 
+  // ===== CREDENCIALES LOGIN =====
   const USUARIO_VALIDO = 'admin';
   const PASS_VALIDO = 'admin123';
 
+  // ===== ESTADO GLOBAL =====
   window.state = {
     proyectos: [],
     papelera: [],
@@ -305,7 +313,17 @@
       {min:121,max:400,precio:28000},
       {min:401,max:800,precio:27000}
     ],
-    inventario: [],
+    inventario: [
+      {item:"Encarpe de terreno",cant:1,unidad:"gl",precio:0},
+      {item:"Base estabilizado",cant:1,unidad:"m3",precio:0},
+      {item:"Malla acma c92",cant:1,unidad:"m2",precio:0},
+      {item:"Hormigon HB25",cant:1,unidad:"m3",precio:0},
+      {item:"Cuarzo endurecedor",cant:3,unidad:"kg/m2",precio:0},
+      {item:"Talco desmoldante",cant:1,unidad:"gl",precio:0},
+      {item:"Sellador acrilico incoloro",cant:1,unidad:"gl",precio:0},
+      {item:"Focos led",cant:4,unidad:"un",precio:35000},
+      {item:"Tapas de camaras",cant:1,unidad:"un",precio:60000}
+    ],
     extras: [],
     itemsSel: [],
     editId: null,
@@ -336,18 +354,7 @@
     {id:'tapas',desc:"Tapas de camaras",cant:1,precio:60000,selected:false}
   ];
 
-  const INVENTARIO_DEFAULT = [
-    {item:"Encarpe de terreno",cant:1,unidad:"gl",precio:0},
-    {item:"Base estabilizado",cant:1,unidad:"m3",precio:0},
-    {item:"Malla acma c92",cant:1,unidad:"m2",precio:0},
-    {item:"Hormigon HB25",cant:1,unidad:"m3",precio:0},
-    {item:"Cuarzo endurecedor",cant:3,unidad:"kg/m2",precio:0},
-    {item:"Talco desmoldante",cant:1,unidad:"gl",precio:0},
-    {item:"Sellador acrilico incoloro",cant:1,unidad:"gl",precio:0},
-    {item:"Focos led",cant:4,unidad:"un",precio:35000},
-    {item:"Tapas de camaras",cant:1,unidad:"un",precio:60000}
-  ];
-
+  // ===== LOGIN =====
   window.doLogin = function() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value;
@@ -361,7 +368,9 @@
       btn.disabled = false;
       btn.textContent = 'Ingresar';
       err.textContent = '';
-      init();
+      console.log('✅ Login exitoso, iniciando sistema...');
+      // Usamos setTimeout para asegurar que el DOM esté listo
+      setTimeout(() => init(), 100);
     } else {
       err.textContent = 'Usuario o contraseña incorrectos';
       btn.disabled = false;
@@ -376,81 +385,149 @@
     document.getElementById('loginPass').value = '';
   };
 
+  // ===== CARGAR LOGO =====
   function cargarLogo(){
-    const img=new Image();
-    img.crossOrigin='anonymous';
-    img.onload=function(){
-      const canvas=document.createElement('canvas');
-      canvas.width=img.width;
-      canvas.height=img.height;
-      const ctx=canvas.getContext('2d');
-      ctx.drawImage(img,0,0);
-      window.state.logoBase64=canvas.toDataURL('image/png');
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function(){
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        window.state.logoBase64 = canvas.toDataURL('image/png');
+        console.log('✅ Logo cargado correctamente');
+      } catch(e) {
+        console.log('⚠️ No se pudo convertir logo a base64:', e);
+      }
     };
-    img.onerror=function(){
-      console.log('No se pudo cargar el logo');
+    img.onerror = function(){
+      console.log('⚠️ No se pudo cargar logo.png');
     };
-    img.src='logo.png';
+    img.src = 'logo.png';
   }
 
+  // ===== CARGAR DATOS (Firebase con fallback a localStorage) =====
   async function cargarDatos(){
     showSync('syncing', 'Sincronizando...');
+    
+    // Primero intentar cargar desde Firebase
+    if (firebaseReady && db) {
+      try {
+        console.log('🔄 Cargando datos desde Firebase...');
+        
+        // Cargar tarifas
+        const tarifSnap = await getDocs(collection(db, 'config', 'tarifas', 'items'));
+        if (!tarifSnap.empty) {
+          window.state.tarifas = tarifSnap.docs.map(d => ({id: d.id, ...d.data()}));
+          console.log('✅ Tarifas cargadas desde Firebase:', window.state.tarifas.length);
+        }
+
+        // Cargar inventario
+        const invSnap = await getDocs(collection(db, 'config', 'inventario', 'items'));
+        if (!invSnap.empty) {
+          window.state.inventario = invSnap.docs.map(d => ({id: d.id, ...d.data()}));
+          console.log('✅ Inventario cargado desde Firebase:', window.state.inventario.length);
+        }
+
+        // Cargar proyectos
+        const projSnap = await getDocs(collection(db, 'proyectos'));
+        window.state.proyectos = projSnap.docs.map(d => ({id: d.id, ...d.data()}));
+        console.log('✅ Proyectos cargados desde Firebase:', window.state.proyectos.length);
+
+        // Cargar papelera
+        const papSnap = await getDocs(collection(db, 'papelera'));
+        window.state.papelera = papSnap.docs.map(d => ({id: d.id, ...d.data()}));
+        console.log('✅ Papelera cargada desde Firebase:', window.state.papelera.length);
+
+        // Guardar backup en localStorage
+        guardarBackupLocal();
+
+        showSync('online', 'Conectado a la nube');
+        setTimeout(() => showSync('', ''), 3000);
+        return;
+      } catch (e) {
+        console.error('❌ Error cargando desde Firebase:', e);
+        console.log('🔄 Usando datos locales como respaldo...');
+      }
+    }
+
+    // Fallback: cargar desde localStorage
+    cargarDesdeLocal();
+    showSync('offline', 'Modo local');
+    setTimeout(() => showSync('', ''), 3000);
+  }
+
+  function guardarBackupLocal() {
     try {
-      if (!db) throw new Error('Firebase no disponible');
+      localStorage.setItem('pmc_proyectos', JSON.stringify(window.state.proyectos));
+      localStorage.setItem('pmc_papelera', JSON.stringify(window.state.papelera));
+      localStorage.setItem('pmc_tarifas', JSON.stringify(window.state.tarifas));
+      localStorage.setItem('pmc_inventario', JSON.stringify(window.state.inventario));
+    } catch(e) {
+      console.error('Error guardando backup local:', e);
+    }
+  }
 
-      const tarifSnap = await getDocs(collection(db, 'config', 'tarifas', 'items'));
-      if (!tarifSnap.empty) {
-        window.state.tarifas = tarifSnap.docs.map(d => ({id: d.id, ...d.data()}));
-      } else {
-        for (const t of window.state.tarifas) {
-          await addDoc(collection(db, 'config', 'tarifas', 'items'), t);
-        }
-      }
+  function cargarDesdeLocal() {
+    try {
+      const proyectos = localStorage.getItem('pmc_proyectos');
+      const papelera = localStorage.getItem('pmc_papelera');
+      const tarifas = localStorage.getItem('pmc_tarifas');
+      const inventario = localStorage.getItem('pmc_inventario');
 
-      const invSnap = await getDocs(collection(db, 'config', 'inventario', 'items'));
-      if (!invSnap.empty) {
-        window.state.inventario = invSnap.docs.map(d => ({id: d.id, ...d.data()}));
-      } else {
-        for (const it of INVENTARIO_DEFAULT) {
-          await addDoc(collection(db, 'config', 'inventario', 'items'), it);
-        }
-        window.state.inventario = INVENTARIO_DEFAULT.map((it, i) => ({id: 'default_'+i, ...it}));
-      }
-
-      const projSnap = await getDocs(collection(db, 'proyectos'));
-      window.state.proyectos = projSnap.docs.map(d => ({id: d.id, ...d.data()}));
-
-      const papSnap = await getDocs(collection(db, 'papelera'));
-      window.state.papelera = papSnap.docs.map(d => ({id: d.id, ...d.data()}));
-
-      showSync('online', 'Conectado');
-      setTimeout(() => showSync('', ''), 2000);
-    } catch (e) {
-      console.error('Error cargando datos:', e);
-      showSync('offline', 'Modo local');
+      if (proyectos) window.state.proyectos = JSON.parse(proyectos);
+      if (papelera) window.state.papelera = JSON.parse(papelera);
+      if (tarifas) window.state.tarifas = JSON.parse(tarifas);
+      if (inventario) window.state.inventario = JSON.parse(inventario);
+      
+      console.log('✅ Datos cargados desde localStorage');
+    } catch(e) {
+      console.error('Error cargando desde localStorage:', e);
     }
   }
 
   function showSync(status, msg) {
     const el = document.getElementById('syncStatus');
-    el.className = 'sync-status ' + status;
-    el.textContent = msg;
+    if (el) {
+      el.className = 'sync-status ' + status;
+      el.textContent = msg;
+    }
   }
 
+  // ===== INIT =====
   async function init() {
-    cargarLogo();
-    await cargarDatos();
-    document.getElementById('cFecha').valueAsDate = new Date();
-    window.state.itemsSel = [...ITEMS_INCLUIDOS_DEFAULT];
-    renderItemsList();
-    renderTarifas();
-    renderInventario();
-    window.state.extras = EXTRAS_DEFAULT.map(e => ({...e}));
-    renderExtrasGrid();
-    renderExtrasTable();
-    calcular();
+    console.log('🚀 Iniciando sistema...');
+    try {
+      cargarLogo();
+      
+      // Cargar datos (Firebase o local)
+      await cargarDatos();
+      
+      // Inicializar UI
+      const fechaInput = document.getElementById('cFecha');
+      if (fechaInput) fechaInput.valueAsDate = new Date();
+      
+      window.state.itemsSel = [...ITEMS_INCLUIDOS_DEFAULT];
+      
+      renderItemsList();
+      renderTarifas();
+      renderInventario();
+      window.state.extras = EXTRAS_DEFAULT.map(e => ({...e}));
+      renderExtrasGrid();
+      renderExtrasTable();
+      calcular();
+      
+      console.log('✅ Sistema iniciado correctamente');
+    } catch (e) {
+      console.error(' Error en init():', e);
+      // Aún así mostrar el panel
+      alert('Hubo un error al iniciar: ' + e.message + '\n\nEl sistema funcionará en modo local.');
+    }
   }
 
+  // ===== NAVEGACIÓN =====
   window.showPage = function(p, el) {
     document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
     document.querySelectorAll('.sidebar nav a').forEach(x => x.classList.remove('active'));
@@ -462,8 +539,10 @@
     if (p === 'inventario') renderInventario();
   };
 
+  // ===== ITEMS LIST =====
   function renderItemsList() {
     const c = document.getElementById('itemsList');
+    if (!c) return;
     c.innerHTML = '';
     ITEMS_INCLUIDOS_DEFAULT.forEach((it, i) => {
       const div = document.createElement('div');
@@ -487,8 +566,10 @@
     calcular();
   };
 
+  // ===== EXTRAS =====
   function renderExtrasGrid() {
     const c = document.getElementById('extrasGrid');
+    if (!c) return;
     c.innerHTML = '';
     if (window.state.extras.length === 0) {
       c.innerHTML = '<div style="color:#999;font-size:13px;padding:10px">No hay trabajos extras.</div>';
@@ -511,6 +592,7 @@
 
   function renderExtrasTable() {
     const tb = document.getElementById('tbodyExtras');
+    if (!tb) return;
     tb.innerHTML = '';
     window.state.extras.forEach((e, i) => {
       const tr = document.createElement('tr');
@@ -537,6 +619,7 @@
     calcular();
   };
 
+  // ===== TARIFAS =====
   function getTarifa(m2) {
     for (const t of window.state.tarifas) { if (m2 >= t.min && m2 <= t.max) return t.precio; }
     return 0;
@@ -547,6 +630,7 @@
     return '-';
   }
 
+  // ===== CALCULAR =====
   window.calcular = function() {
     const m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
     const tarifa = getTarifa(m2);
@@ -584,6 +668,7 @@
     document.getElementById('rVendedor').textContent = this.value || '-';
   });
 
+  // ===== GUARDAR PROYECTO =====
   window.guardarProyecto = async function() {
     const nombre = document.getElementById('cNombre').value.trim();
     const tel = document.getElementById('cTelefono').value.trim();
@@ -613,7 +698,7 @@
     };
 
     try {
-      if (db) {
+      if (firebaseReady && db) {
         if (window.state.editId) {
           await updateDoc(doc(db, 'proyectos', window.state.editId), proj);
           const idx = window.state.proyectos.findIndex(p => p.id === window.state.editId);
@@ -624,6 +709,7 @@
           window.state.proyectos.push(proj);
         }
       } else {
+        // Modo local
         proj.id = window.state.editId || Date.now();
         if (window.state.editId) {
           const idx = window.state.proyectos.findIndex(p => p.id === window.state.editId);
@@ -631,13 +717,15 @@
         } else {
           window.state.proyectos.push(proj);
         }
+        guardarBackupLocal();
       }
-      alert('Proyecto guardado correctamente');
+      alert('✅ Proyecto guardado correctamente');
       window.state.editId = null;
       document.getElementById('editInfo').textContent = '';
       document.getElementById('btnCancel').style.display = 'none';
       limpiarForm();
     } catch (e) {
+      console.error('Error guardando:', e);
       alert('Error al guardar: ' + e.message);
     } finally {
       btn.disabled = false;
@@ -646,9 +734,14 @@
   };
 
   function limpiarForm() {
-    ['cNombre', 'cTelefono', 'cEmail', 'cDireccion', 'cVendedor', 'cSuperficie'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('cFecha').valueAsDate = new Date();
-    document.getElementById('cIncluyeIva').checked = false;
+    ['cNombre', 'cTelefono', 'cEmail', 'cDireccion', 'cVendedor', 'cSuperficie'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    const fechaInput = document.getElementById('cFecha');
+    if (fechaInput) fechaInput.valueAsDate = new Date();
+    const ivaCheck = document.getElementById('cIncluyeIva');
+    if (ivaCheck) ivaCheck.checked = false;
     window.state.extras = EXTRAS_DEFAULT.map(e => ({...e}));
     window.state.itemsSel = [...ITEMS_INCLUIDOS_DEFAULT];
     renderExtrasGrid();
@@ -687,8 +780,10 @@
     showPage('nueva', document.querySelectorAll('.sidebar nav a')[0]);
   };
 
+  // ===== PROYECTOS =====
   function renderProyectos() {
     const tb = document.getElementById('tbodyProyectos');
+    if (!tb) return;
     tb.innerHTML = '';
     if (window.state.proyectos.length === 0) {
       tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">No hay proyectos guardados</td></tr>';
@@ -717,12 +812,13 @@
     if (idx >= 0) {
       const proj = window.state.proyectos[idx];
       try {
-        if (db) {
+        if (firebaseReady && db) {
           await addDoc(collection(db, 'papelera'), proj);
           await deleteDoc(doc(db, 'proyectos', id));
         }
         window.state.papelera.push(proj);
         window.state.proyectos.splice(idx, 1);
+        guardarBackupLocal();
         renderProyectos();
       } catch (e) { alert('Error: ' + e.message); }
     }
@@ -730,8 +826,10 @@
 
   window.cargarYpdf = function(id) { editarProyecto(id); setTimeout(generarPDF, 300); };
 
+  // ===== PAPELERA =====
   function renderPapelera() {
     const tb = document.getElementById('tbodyPapelera');
+    if (!tb) return;
     tb.innerHTML = '';
     if (window.state.papelera.length === 0) {
       tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">Papelera vacia</td></tr>';
@@ -760,12 +858,13 @@
     const idx = window.state.papelera.findIndex(p => p.id === id);
     if (idx >= 0) {
       try {
-        if (db) {
+        if (firebaseReady && db) {
           await addDoc(collection(db, 'proyectos'), window.state.papelera[idx]);
           await deleteDoc(doc(db, 'papelera', id));
         }
         window.state.proyectos.push(window.state.papelera[idx]);
         window.state.papelera.splice(idx, 1);
+        guardarBackupLocal();
         renderPapelera();
       } catch (e) { alert('Error: ' + e.message); }
     }
@@ -776,8 +875,9 @@
   window.elimDef = async function(id) {
     if (!confirm('Eliminar definitivamente?')) return;
     try {
-      if (db) await deleteDoc(doc(db, 'papelera', id));
+      if (firebaseReady && db) await deleteDoc(doc(db, 'papelera', id));
       window.state.papelera = window.state.papelera.filter(p => p.id !== id);
+      guardarBackupLocal();
       renderPapelera();
     } catch (e) { alert('Error: ' + e.message); }
   };
@@ -787,14 +887,17 @@
     if (sel.length === 0) { alert('Selecciona al menos uno'); return; }
     if (!confirm('Eliminar definitivamente los seleccionados?')) return;
     for (const id of sel) {
-      if (db) await deleteDoc(doc(db, 'papelera', id));
+      if (firebaseReady && db) await deleteDoc(doc(db, 'papelera', id));
     }
     window.state.papelera = window.state.papelera.filter(p => !sel.includes(p.id));
+    guardarBackupLocal();
     renderPapelera();
   };
 
+  // ===== TARIFAS =====
   function renderTarifas() {
     const tb = document.getElementById('tbodyTarifas');
+    if (!tb) return;
     tb.innerHTML = '';
     window.state.tarifas.forEach((t, i) => {
       const tr = document.createElement('tr');
@@ -808,7 +911,7 @@
   window.guardarTarifas = async function() {
     showSync('syncing', 'Guardando tarifas...');
     try {
-      if (db) {
+      if (firebaseReady && db) {
         const snap = await getDocs(collection(db, 'config', 'tarifas', 'items'));
         for (const d of snap.docs) {
           await deleteDoc(d.ref);
@@ -817,15 +920,18 @@
           await addDoc(collection(db, 'config', 'tarifas', 'items'), {min: t.min, max: t.max, precio: t.precio});
         }
       }
-      alert('Tarifas guardadas y sincronizadas');
+      guardarBackupLocal();
+      alert('✅ Tarifas guardadas correctamente');
       showSync('online', 'Tarifas actualizadas');
       setTimeout(() => showSync('', ''), 2000);
       calcular();
     } catch (e) { alert('Error: ' + e.message); }
   };
 
+  // ===== INVENTARIO =====
   function renderInventario() {
     const tb = document.getElementById('tbodyInventario');
+    if (!tb) return;
     tb.innerHTML = '';
     window.state.inventario.forEach((it, i) => {
       const total = it.cant * it.precio;
@@ -844,6 +950,7 @@
   window.addItemInv = function() { window.state.inventario.push({item: "", cant: 1, unidad: "un", precio: 0}); renderInventario(); };
   window.delItemInv = function(i) { window.state.inventario.splice(i, 1); renderInventario(); };
 
+  // ===== PDF =====
   window.generarPDF = function() {
     const {jsPDF} = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'letter');
