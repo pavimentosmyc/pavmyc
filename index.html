@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pavimentos M&C - Sistema de Cotizaciones</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 320'%3E%3Cpolygon points='200,30 40,150 70,150 70,260 100,260 100,150 300,150 300,260 330,260 330,150 360,150' fill='%233b2416'/%3E%3Crect x='185' y='80' width='30' height='30' fill='%233b2416'/%3E%3Cline x1='200' y1='80' x2='200' y2='110' stroke='white' stroke-width='3'/%3E%3Cline x1='185' y1='95' x2='215' y2='95' stroke='white' stroke-width='3'/%3E%3Cpolygon points='100,260 300,260 360,300 40,300' fill='%235c3a21'/%3E%3Cpolygon points='100,260 160,260 180,300 120,300' fill='%237a4f2e'/%3E%3Cpolygon points='160,260 220,260 240,300 180,300' fill='%23c9a05a'/%3E%3Cpolygon points='220,260 280,260 300,300 240,300' fill='%233b2416'/%3E%3Cpolygon points='280,260 300,260 360,300 320,300' fill='%23e3c28a'/%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+  :root{
+    --cafe-oscuro:#3b2416;
+    --cafe:#5c3a21;
+    --cafe-medio:#7a4f2e;
+    --mostaza:#c9a05a;
+    --mostaza-claro:#e3c28a;
+    --crema:#f5ecd7;
+    --crema-oscuro:#e8dcc4;
+    --blanco:#ffffff;
+    --gris:#6b6b6b;
+    --gris-claro:#f5f5f5;
+    --gris-borde:#e0e0e0;
+    --rojo:#c0392b;
+    --verde:#27ae60;
+    --azul:#2c5f8a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif}
+  body{background:#f0ebe0;color:#2b2b2b;min-height:100vh}
+
+  #loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--cafe-oscuro) 0%,var(--cafe) 50%,var(--cafe-medio) 100%);display:flex;align-items:center;justify-content:center;z-index:9999}
+  .login-box{background:var(--blanco);padding:45px 40px;border-radius:8px;box-shadow:0 25px 80px rgba(0,0,0,.5);width:380px;text-align:center}
+  .login-box .logo-login{width:160px;height:auto;margin-bottom:15px}
+  .login-box h2{color:var(--cafe-oscuro);margin-bottom:5px;font-size:22px;letter-spacing:.5px}
+  .login-box p{color:var(--gris);margin-bottom:30px;font-size:13px}
+  .login-box input{width:100%;padding:12px 14px;margin-bottom:12px;border:1px solid var(--gris-borde);border-radius:4px;font-size:14px;transition:.2s}
+  .login-box input:focus{outline:none;border-color:var(--mostaza);box-shadow:0 0 0 3px rgba(201,160,90,.15)}
+  .login-box button{width:100%;padding:13px;background:var(--cafe);color:#fff;border:none;border-radius:4px;font-size:15px;cursor:pointer;font-weight:600;letter-spacing:.5px;transition:.2s}
+  .login-box button:hover{background:var(--cafe-oscuro)}
+  .login-error{color:var(--rojo);font-size:13px;margin-top:12px;min-height:18px}
+
+  #app{display:none}
+  .app-container{display:flex;min-height:100vh}
+
+  .sidebar{width:260px;background:var(--cafe-oscuro);color:#fff;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;display:flex;flex-direction:column;z-index:100}
+  .sidebar-header{padding:25px 20px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)}
+  .sidebar-header .logo-wrap{width:100px;height:100px;margin:0 auto 12px;background:#fff;border-radius:50%;padding:8px;display:flex;align-items:center;justify-content:center}
+  .sidebar-header .logo-wrap img,.sidebar-header .logo-wrap svg{width:100%;height:100%;object-fit:contain}
+  .sidebar-header h1{font-size:15px;color:var(--mostaza);letter-spacing:1px;font-weight:700}
+  .sidebar-header h2{font-size:11px;color:rgba(255,255,255,.6);font-weight:400;margin-top:4px;letter-spacing:.5px}
+
+  .sidebar nav{flex:1;padding:15px 0}
+  .sidebar nav a{display:flex;align-items:center;gap:12px;padding:13px 22px;color:rgba(255,255,255,.75);text-decoration:none;font-size:14px;border-left:3px solid transparent;cursor:pointer;transition:.2s}
+  .sidebar nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+  .sidebar nav a.active{background:rgba(201,160,90,.15);border-left-color:var(--mostaza);color:#fff;font-weight:600}
+  .sidebar nav a.logout{color:#ff9999;margin-top:10px}
+  .sidebar nav a.logout:hover{background:rgba(255,153,153,.1)}
+
+  .sidebar-footer{padding:18px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:12px}
+  .sidebar-footer a{color:var(--mostaza-claro);text-decoration:none;display:flex;align-items:center;gap:8px;margin:6px 0;transition:.2s}
+  .sidebar-footer a:hover{color:#fff}
+  .sidebar-footer .dev-link{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.5)}
+  .sidebar-footer .dev-link a{color:var(--mostaza);font-size:11px}
+
+  .main{margin-left:260px;flex:1;padding:30px 35px;min-height:100vh}
+
+  .page{display:none}
+  .page.active{display:block}
+  .page-header{margin-bottom:25px}
+  .page-header h1{color:var(--cafe-oscuro);font-size:28px;font-weight:700}
+  .page-header .subtitle{color:var(--gris);font-size:14px;margin-top:4px}
+
+  .layout-2col{display:grid;grid-template-columns:1fr 340px;gap:25px;align-items:start}
+
+  .card{background:var(--blanco);border-radius:8px;box-shadow:0 2px 8px rgba(59,36,22,.06);overflow:hidden;margin-bottom:20px}
+  .card-header{background:var(--cafe);color:#fff;padding:14px 20px;font-size:15px;font-weight:600;letter-spacing:.3px}
+  .card-body{padding:22px}
+
+  .summary-card{position:sticky;top:20px}
+  .summary-card .card-header{background:var(--cafe-oscuro)}
+  .summary-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--gris-borde);font-size:14px}
+  .summary-row:last-child{border-bottom:none}
+  .summary-row .label{color:var(--gris);font-size:13px}
+  .summary-row .value{font-weight:600;color:var(--cafe-oscuro);text-align:right}
+  .summary-row.total{background:var(--crema);margin:10px -22px -22px;padding:15px 22px;border-top:2px solid var(--mostaza)}
+  .summary-row.total .label{font-weight:700;color:var(--cafe-oscuro);font-size:15px}
+  .summary-row.total .value{font-size:20px;color:var(--cafe-oscuro)}
+  .summary-items{max-height:180px;overflow-y:auto;margin:8px 0}
+  .summary-item{font-size:12px;color:var(--gris);padding:3px 0;display:flex;align-items:flex-start;gap:6px}
+  .summary-item::before{content:"";width:5px;height:5px;background:var(--mostaza);border-radius:50%;margin-top:5px;flex-shrink:0}
+  .summary-extras{color:var(--mostaza);font-weight:700;font-size:16px}
+  .summary-iva{color:var(--verde);font-weight:600}
+
+  .form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:15px}
+  .form-group{display:flex;flex-direction:column}
+  .form-group label{font-size:13px;color:var(--cafe);font-weight:600;margin-bottom:6px}
+  .form-group input,.form-group select,.form-group textarea{padding:10px 12px;border:1px solid var(--gris-borde);border-radius:4px;font-size:14px;background:#fff;transition:.2s}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--mostaza);box-shadow:0 0 0 3px rgba(201,160,90,.15)}
+  .form-group .hint{font-size:11px;color:var(--gris);margin-top:4px}
+  .form-group input[readonly]{background:var(--gris-claro);color:var(--gris)}
+
+  .checkbox-row{display:flex;align-items:center;gap:10px;margin:12px 0}
+  .checkbox-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--cafe);cursor:pointer}
+  .checkbox-row label{cursor:pointer;font-size:14px;color:var(--cafe)}
+
+  .btn{padding:10px 18px;border:none;border-radius:4px;cursor:pointer;font-size:14px;font-weight:600;transition:.2s;display:inline-flex;align-items:center;gap:6px;letter-spacing:.3px}
+  .btn-primary{background:var(--cafe);color:#fff}
+  .btn-primary:hover{background:var(--cafe-oscuro)}
+  .btn-success{background:var(--verde);color:#fff}
+  .btn-success:hover{background:#1e8449}
+  .btn-warning{background:var(--mostaza);color:var(--cafe-oscuro)}
+  .btn-warning:hover{background:var(--mostaza-claro)}
+  .btn-danger{background:var(--rojo);color:#fff}
+  .btn-danger:hover{background:#922b21}
+  .btn-secondary{background:#95a5a6;color:#fff}
+  .btn-secondary:hover{background:#7f8c8d}
+  .btn-sm{padding:6px 10px;font-size:12px}
+
+  .actions-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  table th{background:var(--cafe);color:#fff;padding:10px 12px;text-align:left;font-size:13px;font-weight:600}
+  table td{padding:10px 12px;border-bottom:1px solid var(--gris-borde);font-size:14px}
+  table tr:hover td{background:var(--crema-oscuro)}
+  table input,table select{width:100%;padding:7px 8px;border:1px solid var(--gris-borde);border-radius:3px;font-size:13px}
+  table input:focus,table select:focus{outline:none;border-color:var(--mostaza)}
+
+  .alert{padding:12px 15px;border-radius:4px;margin-bottom:15px;font-size:13px;border-left:4px solid}
+  .alert-info{background:#e8f4f8;color:#1a5276;border-color:var(--azul)}
+  .alert-warning{background:#fef9e7;color:#7d6608;border-color:var(--mostaza)}
+
+  .items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-top:12px}
+  .item-check{background:var(--gris-claro);padding:10px 12px;border-radius:4px;display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;border:1px solid var(--gris-borde);transition:.2s}
+  .item-check:hover{background:var(--crema);border-color:var(--mostaza)}
+  .item-check input{cursor:pointer;width:16px;height:16px;accent-color:var(--cafe)}
+  .item-check label{cursor:pointer;flex:1;color:var(--cafe-oscuro)}
+
+  .footer{margin-top:40px;padding:20px;text-align:center;font-size:12px;color:var(--gris);border-top:1px solid var(--gris-borde)}
+  .footer a{color:var(--cafe);text-decoration:none;font-weight:600}
+  .footer a:hover{color:var(--mostaza)}
+
+  @media(max-width:1100px){
+    .layout-2col{grid-template-columns:1fr}
+    .summary-card{position:static}
+  }
+  @media(max-width:768px){
+    .sidebar{width:100%;position:relative;height:auto}
+    .main{margin-left:0;padding:20px}
+    .app-container{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-box">
+    <svg class="logo-login" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="200,30 40,150 70,150 70,260 100,260 100,150 300,150 300,260 330,260 330,150 360,150" fill="#3b2416"/>
+      <rect x="185" y="80" width="30" height="30" fill="#3b2416"/>
+      <line x1="200" y1="80" x2="200" y2="110" stroke="#fff" stroke-width="2"/>
+      <line x1="185" y1="95" x2="215" y2="95" stroke="#fff" stroke-width="2"/>
+      <polygon points="100,260 300,260 360,300 40,300" fill="#5c3a21"/>
+      <polygon points="100,260 160,260 180,300 120,300" fill="#7a4f2e"/>
+      <polygon points="160,260 220,260 240,300 180,300" fill="#c9a05a"/>
+      <polygon points="220,260 280,260 300,300 240,300" fill="#3b2416"/>
+      <polygon points="280,260 300,260 360,300 320,300" fill="#e3c28a"/>
+    </svg>
+    <h2>PAVIMENTOS M&C</h2>
+    <p>Sistema de Cotizaciones</p>
+    <input type="text" id="loginUser" placeholder="Usuario" value="admin">
+    <input type="password" id="loginPass" placeholder="Contraseña" value="admin">
+    <button onclick="doLogin()">Ingresar</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-wrap">
+          <svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="200,30 40,150 70,150 70,260 100,260 100,150 300,150 300,260 330,260 330,150 360,150" fill="#3b2416"/>
+            <rect x="185" y="80" width="30" height="30" fill="#3b2416"/>
+            <line x1="200" y1="80" x2="200" y2="110" stroke="#fff" stroke-width="2"/>
+            <line x1="185" y1="95" x2="215" y2="95" stroke="#fff" stroke-width="2"/>
+            <polygon points="100,260 300,260 360,300 40,300" fill="#5c3a21"/>
+            <polygon points="100,260 160,260 180,300 120,300" fill="#7a4f2e"/>
+            <polygon points="160,260 220,260 240,300 180,300" fill="#c9a05a"/>
+            <polygon points="220,260 280,260 300,300 240,300" fill="#3b2416"/>
+            <polygon points="280,260 300,260 360,300 320,300" fill="#e3c28a"/>
+          </svg>
+        </div>
+        <h1>PAVIMENTOS M&C</h1>
+        <h2>HORMIGON ESTAMPADO</h2>
+      </div>
+      <nav>
+        <a class="active" onclick="showPage('nueva',this)">Nueva Cotizacion</a>
+        <a onclick="showPage('proyectos',this)">Proyectos</a>
+        <a onclick="showPage('papelera',this)">Papelera</a>
+        <a onclick="showPage('tarifas',this)">Tarifas</a>
+        <a onclick="showPage('inventario',this)">Inventario</a>
+        <a class="logout" onclick="doLogout()">Salir</a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="https://wa.me/56930665920" target="_blank">+56 9 3066 5920</a>
+        <a href="mailto:ventas@pavimentosmyc.cl">ventas@pavimentosmyc.cl</a>
+        <a>Lampa, Chile</a>
+        <div class="dev-link">
+          Desarrollado por<br>
+          <a href="https://instagram.com/digitalmarketing.cl" target="_blank">@digitalmarketing.cl</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <div class="page active" id="page-nueva">
+        <div class="page-header">
+          <h1>Nueva Cotizacion</h1>
+          <div class="subtitle" id="editInfo"></div>
+        </div>
+
+        <div class="layout-2col">
+          <div class="col-form">
+
+            <div class="card">
+              <div class="card-header">Datos del Cliente</div>
+              <div class="card-body">
+                <div class="form-row">
+                  <div class="form-group"><label>Nombre Cliente *</label><input id="cNombre"></div>
+                  <div class="form-group"><label>Telefono *</label><input id="cTelefono"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Email</label><input id="cEmail" type="email"></div>
+                  <div class="form-group"><label>Direccion</label><input id="cDireccion"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Fecha</label><input id="cFecha" type="date"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">Calculo por Metro Cuadrado</div>
+              <div class="card-body">
+                <div class="alert alert-info">
+                  <strong>Tarifas:</strong> 40-50 m2: $34.000/m2 | 60-80 m2: $30.000/m2 | 80-120 m2: $28.500/m2 | 120-400 m2: $28.000/m2 | 400-800 m2: $27.000/m2
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Superficie (m2) *</label>
+                    <input id="cSuperficie" type="number" min="0" step="0.1" oninput="calcular()">
+                    <div class="hint">Minimo 40 m2</div>
+                  </div>
+                  <div class="form-group">
+                    <label>Tarifa aplicada</label>
+                    <input id="cTarifa" readonly>
+                  </div>
+                  <div class="form-group">
+                    <label>Precio m2</label>
+                    <input id="cPrecioM2" readonly>
+                  </div>
+                </div>
+                <div class="checkbox-row">
+                  <input type="checkbox" id="cIncluyeIva" onchange="calcular()">
+                  <label for="cIncluyeIva">Incluir IVA 19% en el precio</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">Trabajos Extras</div>
+              <div class="card-body">
+                <div class="alert alert-warning">Selecciona los trabajos extras que se sumaran al total. Solo los marcados apareceran en el PDF.</div>
+                <div style="margin-bottom:12px">
+                  <button class="btn btn-primary btn-sm" onclick="addExtra()">+ Agregar Trabajo Extra</button>
+                </div>
+                <div class="items-grid" id="extrasGrid"></div>
+                <div style="margin-top:15px;border-top:1px solid var(--gris-borde);padding-top:12px">
+                  <table id="tablaExtrasEdit">
+                    <thead><tr><th>Descripcion</th><th style="width:80px">Cant.</th><th style="width:110px">Precio Unit.</th><th style="width:50px"></th></tr></thead>
+                    <tbody id="tbodyExtras"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">Items Incluidos en el Precio</div>
+              <div class="card-body">
+                <div class="checkbox-row">
+                  <input type="checkbox" id="selTodos" onchange="toggleTodosItems()">
+                  <label for="selTodos"><strong>Seleccionar / Deseleccionar Todo</strong></label>
+                </div>
+                <div class="hint" style="margin-bottom:10px;color:var(--gris);font-size:13px">Estos items ya estan contemplados en el valor por m2.</div>
+                <div class="items-grid" id="itemsList"></div>
+              </div>
+            </div>
+
+            <div class="actions-bar">
+              <button class="btn btn-success" onclick="guardarProyecto()">Guardar Proyecto</button>
+              <button class="btn btn-primary" onclick="generarPDF()">Generar PDF</button>
+              <button class="btn btn-warning" onclick="enviarWhatsApp()">WhatsApp</button>
+              <button class="btn btn-secondary" onclick="enviarCorreo()">Enviar Correo</button>
+              <button class="btn btn-secondary" onclick="cancelarEdicion()" id="btnCancel" style="display:none">Cancelar edicion</button>
+            </div>
+
+            <div class="footer">
+              Desarrollado por <a href="https://instagram.com/digitalmarketing.cl" target="_blank">@digitalmarketing.cl</a>
+            </div>
+
+          </div>
+
+          <div class="col-summary">
+            <div class="card summary-card">
+              <div class="card-header">RESUMEN</div>
+              <div class="card-body">
+                <div class="summary-row"><span class="label">Cliente</span><span class="value" id="rCliente">-</span></div>
+                <div class="summary-row"><span class="label">Superficie</span><span class="value" id="rSuperficie">0 m2</span></div>
+                <div class="summary-row"><span class="label">Precio m2</span><span class="value" id="rPrecioM2">$0</span></div>
+                <div class="summary-row"><span class="label">Subtotal</span><span class="value" id="rSubtotal">$0</span></div>
+                <div class="summary-row" style="flex-direction:column;align-items:flex-start">
+                  <span class="label">Items Incluidos</span>
+                  <div class="summary-items" id="rItems">Ninguno</div>
+                </div>
+                <div class="summary-row" style="flex-direction:column;align-items:flex-start">
+                  <span class="label">Trabajos Extras (seleccionados)</span>
+                  <div class="summary-items" id="rExtrasList">Ninguno</div>
+                </div>
+                <div class="summary-row"><span class="label">Total Extras</span><span class="value summary-extras" id="rExtras">$0</span></div>
+                <div class="summary-row"><span class="label">IVA</span><span class="value summary-iva" id="rIva">No incluido</span></div>
+                <div class="summary-row total"><span class="label">TOTAL A COBRAR</span><span class="value" id="rTotal">$0</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-proyectos">
+        <div class="page-header"><h1>Proyectos Guardados</h1></div>
+        <div class="card">
+          <table>
+            <thead><tr><th>#</th><th>Cliente</th><th>Superficie</th><th>Total</th><th>Fecha</th><th>Acciones</th></tr></thead>
+            <tbody id="tbodyProyectos"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-papelera">
+        <div class="page-header"><h1>Papelera de Reciclaje</h1></div>
+        <div class="card">
+          <div style="margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-secondary btn-sm" onclick="selTodosPapelera(true)">Seleccionar Todo</button>
+            <button class="btn btn-success btn-sm" onclick="restaurarSel()">Restaurar Seleccionados</button>
+            <button class="btn btn-danger btn-sm" onclick="eliminarDef()">Eliminar Definitivamente</button>
+          </div>
+          <table>
+            <thead><tr><th><input type="checkbox" id="chkAllPap" onchange="selTodosPapelera(this.checked)"></th><th>#</th><th>Cliente</th><th>Superficie</th><th>Total</th><th>Fecha</th><th>Acciones</th></tr></thead>
+            <tbody id="tbodyPapelera"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="page" id="page-tarifas">
+        <div class="page-header"><h1>Gestion de Tarifas</h1></div>
+        <div class="card">
+          <div class="alert alert-info">Modifica las tarifas por metro cuadrado. Los cambios afectan las nuevas cotizaciones.</div>
+          <table>
+            <thead><tr><th>Rango (m2)</th><th>Precio por m2</th></tr></thead>
+            <tbody id="tbodyTarifas"></tbody>
+          </table>
+          <div style="margin-top:15px">
+            <button class="btn btn-success" onclick="guardarTarifas()">Guardar Tarifas</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-inventario">
+        <div class="page-header"><h1>Gestion de Inventario</h1></div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Item</th><th style="width:90px">Cantidad</th><th style="width:90px">Unidad</th><th style="width:120px">Precio Unit.</th><th style="width:120px">Total</th><th style="width:70px">Acciones</th></tr></thead>
+            <tbody id="tbodyInventario"></tbody>
+          </table>
+          <div style="margin-top:15px">
+            <button class="btn btn-primary btn-sm" onclick="addItemInv()">+ Agregar Item</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+const ITEMS_INCLUIDOS_DEFAULT = [
+  "Encarpe de terreno",
+  "Nivelacion y compactacion de terreno con base estabilizado",
+  "Instalacion de moldajes",
+  "Suministro de malla acma c92 para la resistencia",
+  "Suministro de vaciado y estampado del hormigon HB25, 10 cm de espesor",
+  "Suministro de cuarzo endurecedor 3kg por m2",
+  "Suministro de talco desmoldante",
+  "Diseno y color a gusto del cliente",
+  "Cortes de dilatacion",
+  "Limpieza y lavado del pavimento",
+  "Aplicacion de sellador acrilico incoloro (abrillantador)",
+  "Retiro de escombros (solo superficie trabajada)",
+  "Mano de obra",
+  "Desgaste de maquinaria",
+  "Transporte"
+];
+
+const EXTRAS_DEFAULT = [
+  {id:'focos',desc:"Focos led mas instalacion (minimo 4 focos)",cant:4,precio:35000,selected:false},
+  {id:'tapas',desc:"Tapas de camaras",cant:1,precio:60000,selected:false}
+];
+
+const INVENTARIO_DEFAULT = [
+  {item:"Encarpe de terreno",cant:1,unidad:"gl",precio:0},
+  {item:"Base estabilizado",cant:1,unidad:"m3",precio:0},
+  {item:"Malla acma c92",cant:1,unidad:"m2",precio:0},
+  {item:"Hormigon HB25",cant:1,unidad:"m3",precio:0},
+  {item:"Cuarzo endurecedor",cant:3,unidad:"kg/m2",precio:0},
+  {item:"Talco desmoldante",cant:1,unidad:"gl",precio:0},
+  {item:"Sellador acrilico incoloro",cant:1,unidad:"gl",precio:0},
+  {item:"Focos led",cant:4,unidad:"un",precio:35000},
+  {item:"Tapas de camaras",cant:1,unidad:"un",precio:60000}
+];
+
+const TARIFAS_DEFAULT = [
+  {min:40,max:50,precio:34000},
+  {min:60,max:80,precio:30000},
+  {min:80,max:120,precio:28500},
+  {min:120,max:400,precio:28000},
+  {min:400,max:800,precio:27000}
+];
+
+let state = {
+  proyectos: JSON.parse(localStorage.getItem('pmc_proyectos')||'[]'),
+  papelera: JSON.parse(localStorage.getItem('pmc_papelera')||'[]'),
+  tarifas: JSON.parse(localStorage.getItem('pmc_tarifas')||JSON.stringify(TARIFAS_DEFAULT)),
+  inventario: JSON.parse(localStorage.getItem('pmc_inventario')||JSON.stringify(INVENTARIO_DEFAULT)),
+  extras: [],
+  itemsSel: [],
+  editId: null
+};
+
+function save(){
+  localStorage.setItem('pmc_proyectos',JSON.stringify(state.proyectos));
+  localStorage.setItem('pmc_papelera',JSON.stringify(state.papelera));
+  localStorage.setItem('pmc_tarifas',JSON.stringify(state.tarifas));
+  localStorage.setItem('pmc_inventario',JSON.stringify(state.inventario));
+}
+
+function doLogin(){
+  const u=document.getElementById('loginUser').value;
+  const p=document.getElementById('loginPass').value;
+  if(u==='admin'&&p==='admin'){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='block';
+    init();
+  } else {
+    document.getElementById('loginError').textContent='Credenciales incorrectas';
+  }
+}
+function doLogout(){location.reload()}
+
+function showPage(p,el){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.sidebar nav a').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(el)el.classList.add('active');
+  if(p==='proyectos')renderProyectos();
+  if(p==='papelera')renderPapelera();
+  if(p==='tarifas')renderTarifas();
+  if(p==='inventario')renderInventario();
+}
+
+function init(){
+  document.getElementById('cFecha').valueAsDate=new Date();
+  state.itemsSel=[...ITEMS_INCLUIDOS_DEFAULT];
+  renderItemsList();
+  renderTarifas();
+  renderInventario();
+  EXTRAS_DEFAULT.forEach(e=>state.extras.push({...e}));
+  renderExtrasGrid();
+  renderExtrasTable();
+  calcular();
+}
+
+function renderItemsList(){
+  const c=document.getElementById('itemsList');
+  c.innerHTML='';
+  ITEMS_INCLUIDOS_DEFAULT.forEach((it,i)=>{
+    const div=document.createElement('div');
+    div.className='item-check';
+    const checked=state.itemsSel.includes(it)?'checked':'';
+    div.innerHTML=`<input type="checkbox" id="it${i}" ${checked} onchange="toggleItem('${it.replace(/'/g,"\\'")}')"><label for="it${i}">${it}</label>`;
+    c.appendChild(div);
+  });
+}
+function toggleItem(it){
+  if(state.itemsSel.includes(it))state.itemsSel=state.itemsSel.filter(x=>x!==it);
+  else state.itemsSel.push(it);
+  calcular();
+}
+function toggleTodosItems(){
+  const chk=document.getElementById('selTodos').checked;
+  if(chk)state.itemsSel=[...ITEMS_INCLUIDOS_DEFAULT];
+  else state.itemsSel=[];
+  renderItemsList();
+  calcular();
+}
+
+function renderExtrasGrid(){
+  const c=document.getElementById('extrasGrid');
+  c.innerHTML='';
+  if(state.extras.length===0){
+    c.innerHTML='<div style="color:#999;font-size:13px;padding:10px">No hay trabajos extras. Agrega uno con el boton de arriba.</div>';
+    return;
+  }
+  state.extras.forEach((e,i)=>{
+    const div=document.createElement('div');
+    div.className='item-check';
+    const checked=e.selected?'checked':'';
+    div.innerHTML=`<input type="checkbox" id="ex${i}" ${checked} onchange="toggleExtra(${i})"><label for="ex${i}"><strong>${e.desc||'Sin descripcion'}</strong><br><small style="color:#999">$${e.precio.toLocaleString('es-CL')} c/u</small></label>`;
+    c.appendChild(div);
+  });
+}
+function toggleExtra(i){
+  state.extras[i].selected=!state.extras[i].selected;
+  renderExtrasGrid();
+  calcular();
+}
+function renderExtrasTable(){
+  const tb=document.getElementById('tbodyExtras');
+  tb.innerHTML='';
+  state.extras.forEach((e,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><input value="${e.desc}" oninput="state.extras[${i}].desc=this.value;renderExtrasGrid();calcular()"></td>
+      <td><input type="number" value="${e.cant}" min="0" oninput="state.extras[${i}].cant=parseFloat(this.value)||0;calcular()"></td>
+      <td><input type="number" value="${e.precio}" min="0" oninput="state.extras[${i}].precio=parseFloat(this.value)||0;renderExtrasGrid();calcular()"></td>
+      <td><button class="btn btn-danger btn-sm" onclick="delExtra(${i})">X</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+function addExtra(){
+  state.extras.push({id:'extra'+Date.now(),desc:"",cant:1,precio:0,selected:true});
+  renderExtrasGrid();
+  renderExtrasTable();
+  calcular();
+}
+function delExtra(i){
+  state.extras.splice(i,1);
+  renderExtrasGrid();
+  renderExtrasTable();
+  calcular();
+}
+
+function getTarifa(m2){
+  for(const t of state.tarifas){if(m2>=t.min&&m2<=t.max)return t.precio}
+  return 0;
+}
+function getRangoTexto(m2){
+  for(const t of state.tarifas){if(m2>=t.min&&m2<=t.max)return t.min+'-'+t.max+' m2'}
+  return '-';
+}
+
+function calcular(){
+  const m2=parseFloat(document.getElementById('cSuperficie').value)||0;
+  const tarifa=getTarifa(m2);
+  document.getElementById('cTarifa').value=m2>0?getRangoTexto(m2):'';
+  document.getElementById('cPrecioM2').value=tarifa>0?'$'+tarifa.toLocaleString('es-CL'):'';
+
+  const subtotal=Math.round(m2*tarifa);
+  const extrasSel=state.extras.filter(e=>e.selected);
+  const extras=extrasSel.reduce((s,e)=>s+e.cant*e.precio,0);
+  const subExt=subtotal+extras;
+  const incluyeIva=document.getElementById('cIncluyeIva').checked;
+  const iva=incluyeIva?0:Math.round(subExt*0.19);
+  const total=incluyeIva?Math.round(subExt):Math.round(subExt+iva);
+
+  document.getElementById('rCliente').textContent=document.getElementById('cNombre').value||'-';
+  document.getElementById('rSuperficie').textContent=m2+' m2';
+  document.getElementById('rPrecioM2').textContent=tarifa>0?'$'+tarifa.toLocaleString('es-CL'):'$0';
+  document.getElementById('rSubtotal').textContent='$'+subtotal.toLocaleString('es-CL');
+
+  const itemsDiv=document.getElementById('rItems');
+  if(state.itemsSel.length===0)itemsDiv.innerHTML='<span style="color:#999">Ninguno</span>';
+  else itemsDiv.innerHTML=state.itemsSel.map(it=>`<div class="summary-item">${it}</div>`).join('');
+
+  const extrasDiv=document.getElementById('rExtrasList');
+  if(extrasSel.length===0)extrasDiv.innerHTML='<span style="color:#999">Ninguno seleccionado</span>';
+  else extrasDiv.innerHTML=extrasSel.map(e=>`<div class="summary-item">${e.desc} x${e.cant} = $${(e.cant*e.precio).toLocaleString('es-CL')}</div>`).join('');
+
+  document.getElementById('rExtras').textContent='$'+extras.toLocaleString('es-CL');
+  document.getElementById('rIva').textContent=incluyeIva?'Si incluido (19%)':'No incluido (19%)';
+  document.getElementById('rIva').style.color=incluyeIva?'var(--verde)':'var(--gris)';
+  document.getElementById('rTotal').textContent='$'+total.toLocaleString('es-CL');
+}
+
+function guardarProyecto(){
+  const nombre=document.getElementById('cNombre').value.trim();
+  const tel=document.getElementById('cTelefono').value.trim();
+  if(!nombre||!tel){alert('Nombre y Telefono son obligatorios');return}
+  const m2=parseFloat(document.getElementById('cSuperficie').value)||0;
+  if(m2<40){alert('La superficie minima es 40 m2');return}
+
+  const total=parseFloat(document.getElementById('rTotal').textContent.replace(/\$|\./g,''))||0;
+
+  const proj={
+    id:state.editId||Date.now(),
+    nombre,tel,
+    email:document.getElementById('cEmail').value,
+    direccion:document.getElementById('cDireccion').value,
+    fecha:document.getElementById('cFecha').value,
+    m2,
+    tarifa:getTarifa(m2),
+    incluyeIva:document.getElementById('cIncluyeIva').checked,
+    extras:JSON.parse(JSON.stringify(state.extras)),
+    items:JSON.parse(JSON.stringify(state.itemsSel)),
+    total
+  };
+
+  if(state.editId){
+    const idx=state.proyectos.findIndex(p=>p.id===state.editId);
+    if(idx>=0)state.proyectos[idx]=proj;
+    state.editId=null;
+    document.getElementById('editInfo').textContent='';
+    document.getElementById('btnCancel').style.display='none';
+  } else {
+    state.proyectos.push(proj);
+  }
+  save();
+  alert('Proyecto guardado correctamente');
+  limpiarForm();
+}
+
+function limpiarForm(){
+  ['cNombre','cTelefono','cEmail','cDireccion','cSuperficie'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cFecha').valueAsDate=new Date();
+  document.getElementById('cIncluyeIva').checked=false;
+  state.extras=[];
+  EXTRAS_DEFAULT.forEach(e=>state.extras.push({...e}));
+  state.itemsSel=[...ITEMS_INCLUIDOS_DEFAULT];
+  renderExtrasGrid();renderExtrasTable();renderItemsList();calcular();
+}
+
+function cancelarEdicion(){
+  state.editId=null;
+  document.getElementById('editInfo').textContent='';
+  document.getElementById('btnCancel').style.display='none';
+  limpiarForm();
+}
+
+function editarProyecto(id){
+  const p=state.proyectos.find(x=>x.id===id);
+  if(!p)return;
+  state.editId=id;
+  document.getElementById('cNombre').value=p.nombre;
+  document.getElementById('cTelefono').value=p.tel;
+  document.getElementById('cEmail').value=p.email||'';
+  document.getElementById('cDireccion').value=p.direccion||'';
+  document.getElementById('cFecha').value=p.fecha;
+  document.getElementById('cSuperficie').value=p.m2;
+  document.getElementById('cIncluyeIva').checked=p.incluyeIva||false;
+  state.extras=JSON.parse(JSON.stringify(p.extras||[]));
+  state.itemsSel=JSON.parse(JSON.stringify(p.items||ITEMS_INCLUIDOS_DEFAULT));
+  renderExtrasGrid();renderExtrasTable();renderItemsList();calcular();
+  document.getElementById('editInfo').textContent='Editando proyecto: '+p.nombre;
+  document.getElementById('btnCancel').style.display='inline-flex';
+  showPage('nueva',document.querySelectorAll('.sidebar nav a')[0]);
+}
+
+function renderProyectos(){
+  const tb=document.getElementById('tbodyProyectos');
+  tb.innerHTML='';
+  if(state.proyectos.length===0){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#999;padding:20px">No hay proyectos guardados</td></tr>';return}
+  state.proyectos.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${i+1}</td>
+      <td><strong>${p.nombre}</strong><br><small style="color:#999">${p.tel}</small></td>
+      <td>${p.m2} m2</td>
+      <td><strong>$${(p.total||0).toLocaleString('es-CL')}</strong></td>
+      <td>${p.fecha||'-'}</td>
+      <td>
+        <button class="btn btn-warning btn-sm" onclick="editarProyecto(${p.id})">Editar</button>
+        <button class="btn btn-primary btn-sm" onclick="cargarYpdf(${p.id})">PDF</button>
+        <button class="btn btn-danger btn-sm" onclick="moverPapelera(${p.id})">Eliminar</button>
+      </td>`;
+    tb.appendChild(tr);
+  });
+}
+function moverPapelera(id){
+  const idx=state.proyectos.findIndex(p=>p.id===id);
+  if(idx>=0){state.papelera.push(state.proyectos[idx]);state.proyectos.splice(idx,1);save();renderProyectos()}
+}
+function cargarYpdf(id){editarProyecto(id);setTimeout(generarPDF,300)}
+
+function renderPapelera(){
+  const tb=document.getElementById('tbodyPapelera');
+  tb.innerHTML='';
+  if(state.papelera.length===0){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">Papelera vacia</td></tr>';return}
+  state.papelera.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><input type="checkbox" class="chkPap" data-id="${p.id}"></td>
+      <td>${i+1}</td>
+      <td>${p.nombre}</td>
+      <td>${p.m2} m2</td>
+      <td>$${(p.total||0).toLocaleString('es-CL')}</td>
+      <td>${p.fecha||'-'}</td>
+      <td>
+        <button class="btn btn-success btn-sm" onclick="restaurar(${p.id})">Restaurar</button>
+        <button class="btn btn-danger btn-sm" onclick="elimDef(${p.id})">Eliminar</button>
+      </td>`;
+    tb.appendChild(tr);
+  });
+}
+function selTodosPapelera(v){document.querySelectorAll('.chkPap').forEach(c=>c.checked=v)}
+function restaurar(id){
+  const idx=state.papelera.findIndex(p=>p.id===id);
+  if(idx>=0){state.proyectos.push(state.papelera[idx]);state.papelera.splice(idx,1);save();renderPapelera()}
+}
+function restaurarSel(){document.querySelectorAll('.chkPap:checked').forEach(c=>restaurar(parseInt(c.dataset.id)))}
+function elimDef(id){
+  if(!confirm('Eliminar definitivamente?'))return;
+  state.papelera=state.papelera.filter(p=>p.id!==id);save();renderPapelera();
+}
+function eliminarDef(){
+  const sel=[...document.querySelectorAll('.chkPap:checked')].map(c=>parseInt(c.dataset.id));
+  if(sel.length===0){alert('Selecciona al menos uno');return}
+  if(!confirm('Eliminar definitivamente los seleccionados?'))return;
+  state.papelera=state.papelera.filter(p=>!sel.includes(p.id));save();renderPapelera();
+}
+
+function renderTarifas(){
+  const tb=document.getElementById('tbodyTarifas');
+  tb.innerHTML='';
+  state.tarifas.forEach((t,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><input type="number" value="${t.min}" oninput="state.tarifas[${i}].min=parseFloat(this.value)" style="width:80px"> - <input type="number" value="${t.max}" oninput="state.tarifas[${i}].max=parseFloat(this.value)" style="width:80px"> m2</td>
+      <td><input type="number" value="${t.precio}" oninput="state.tarifas[${i}].precio=parseFloat(this.value)"></td>`;
+    tb.appendChild(tr);
+  });
+}
+function guardarTarifas(){save();alert('Tarifas guardadas');calcular()}
+
+function renderInventario(){
+  const tb=document.getElementById('tbodyInventario');
+  tb.innerHTML='';
+  state.inventario.forEach((it,i)=>{
+    const total=it.cant*it.precio;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><input value="${it.item}" oninput="state.inventario[${i}].item=this.value"></td>
+      <td><input type="number" value="${it.cant}" oninput="state.inventario[${i}].cant=parseFloat(this.value)||0;renderInventario()"></td>
+      <td><input value="${it.unidad}" oninput="state.inventario[${i}].unidad=this.value"></td>
+      <td><input type="number" value="${it.precio}" oninput="state.inventario[${i}].precio=parseFloat(this.value)||0;renderInventario()"></td>
+      <td style="font-weight:600">$${total.toLocaleString('es-CL')}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="delItemInv(${i})">X</button></td>`;
+    tb.appendChild(tr);
+  });
+  save();
+}
+function addItemInv(){state.inventario.push({item:"",cant:1,unidad:"un",precio:0});renderInventario()}
+function delItemInv(i){state.inventario.splice(i,1);renderInventario()}
+
+// ============ PDF ============
+function generarPDF(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF('p','mm','letter');
+  const W=doc.internal.pageSize.getWidth();
+  const H=doc.internal.pageSize.getHeight();
+
+  const nombre=document.getElementById('cNombre').value||'Cliente';
+  const tel=document.getElementById('cTelefono').value||'';
+  const email=document.getElementById('cEmail').value||'';
+  const direccion=document.getElementById('cDireccion').value||'';
+  const fecha=document.getElementById('cFecha').value||new Date().toISOString().slice(0,10);
+  const m2=parseFloat(document.getElementById('cSuperficie').value)||0;
+  const tarifa=getTarifa(m2);
+  const subtotal=Math.round(m2*tarifa);
+  const extrasSel=state.extras.filter(e=>e.selected);
+  const extras=extrasSel.reduce((s,e)=>s+e.cant*e.precio,0);
+  const subExt=subtotal+extras;
+  const incluyeIva=document.getElementById('cIncluyeIva').checked;
+  const ivaCalc=incluyeIva?Math.round(subExt-subExt/1.19):Math.round(subExt*0.19);
+  const netoCalc=incluyeIva?Math.round(subExt/1.19):Math.round(subExt);
+  const total=incluyeIva?Math.round(subExt):Math.round(subExt+ivaCalc);
+  const numCot='COT-'+String(Date.now()).slice(-6);
+
+  const cafe=[59,36,22];
+  const mostaza=[201,160,90];
+  const crema=[245,236,215];
+
+  doc.setFillColor(...cafe);
+  doc.rect(0,0,W,30,'F');
+
+  doc.setFillColor(255,255,255);
+  doc.circle(18,15,10,'F');
+  doc.setDrawColor(...cafe);
+  doc.setLineWidth(0.5);
+  doc.line(11,16,18,9);doc.line(18,9,25,16);
+  doc.line(13,16,13,21);doc.line(23,16,23,21);
+  doc.setFillColor(122,79,46);
+  doc.triangle(13,21,23,21,25,24);
+  doc.setFillColor(201,160,90);
+  doc.triangle(16,21,20,21,21,24);
+
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(15);
+  doc.setFont(undefined,'bold');
+  doc.text('PAVIMENTOS M&C',33,13);
+  doc.setFontSize(8);
+  doc.setFont(undefined,'normal');
+  doc.text('HORMIGON ESTAMPADO',33,19);
+  doc.setFontSize(6.5);
+  doc.text('ventas@pavimentosmyc.cl  |  +56 9 3066 5920  |  Lampa, Chile',33,25);
+
+  doc.setFillColor(...mostaza);
+  doc.rect(0,30,W,8,'F');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(11);
+  doc.setFont(undefined,'bold');
+  doc.text('COTIZACION N° '+numCot,W/2,35.5,{align:'center'});
+
+  let y=42;
+  doc.setFillColor(...crema);
+  doc.rect(10,y,W-20,18,'F');
+  doc.setDrawColor(...mostaza);
+  doc.setLineWidth(0.4);
+  doc.rect(10,y,W-20,18,'S');
+
+  doc.setFont(undefined,'bold');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(8);
+  doc.text('COTIZADO PARA',14,y+4);
+  doc.setFont(undefined,'normal');
+  doc.setTextColor(60,60,60);
+  doc.setFontSize(9);
+  doc.text(nombre,14,y+8);
+  doc.setFontSize(7);
+  doc.text('Tel: '+tel,14,y+12);
+  if(email)doc.text('Email: '+email,14,y+15.5);
+  if(direccion)doc.text('Direccion: '+direccion,100,y+12);
+  doc.setFont(undefined,'bold');
+  doc.setTextColor(...cafe);
+  doc.text('Fecha: '+fecha,W-70,y+8);
+  doc.text('Vigencia: 10 dias',W-70,y+12);
+
+  y+=21;
+
+  doc.autoTable({
+    startY:y,
+    head:[['CONDICIONES DE PAGO']],
+    body:[['Anticipo: 50% para iniciar obras | Saldo: 30% hormigonado + 20% contra entrega\nForma de pago: Transferencia, Efectivo, Tarjeta de credito (aplica 19% adicional)']],
+    theme:'grid',
+    headStyles:{fillColor:cafe,textColor:[255,255,255],fontSize:8,fontStyle:'bold',halign:'center'},
+    styles:{fontSize:7,cellPadding:2},
+    columnStyles:{0:{cellWidth:W-20}},
+    margin:{left:10,right:10}
+  });
+  y=doc.lastAutoTable.finalY+3;
+
+  const bodyItems=[];
+  bodyItems.push(['Hormigon Estampado - '+getRangoTexto(m2),m2+' m2','$'+tarifa.toLocaleString('es-CL')+'/m2','$'+subtotal.toLocaleString('es-CL')]);
+
+  extrasSel.forEach(e=>{
+    bodyItems.push([e.desc,e.cant,'$'+e.precio.toLocaleString('es-CL'),'$'+(e.cant*e.precio).toLocaleString('es-CL')]);
+  });
+
+  doc.autoTable({
+    startY:y,
+    head:[['DESCRIPCION','CANT.','PRECIO UNIT.','IMPORTE']],
+    body:bodyItems,
+    theme:'grid',
+    headStyles:{fillColor:cafe,textColor:[255,255,255],fontSize:8,fontStyle:'bold',halign:'center'},
+    styles:{fontSize:8,cellPadding:2.5},
+    columnStyles:{
+      0:{cellWidth:85},
+      1:{cellWidth:25,halign:'center'},
+      2:{cellWidth:35,halign:'right'},
+      3:{cellWidth:35,halign:'right',fontStyle:'bold'}
+    },
+    margin:{left:10,right:10}
+  });
+  y=doc.lastAutoTable.finalY+2;
+
+  doc.autoTable({
+    startY:y,
+    body:[
+      ['Subtotal','','','$'+subExt.toLocaleString('es-CL')],
+      ['IVA (19%)','','','$'+ivaCalc.toLocaleString('es-CL')],
+      ['TOTAL','','','$'+total.toLocaleString('es-CL')]
+    ],
+    theme:'grid',
+    styles:{fontSize:9,cellPadding:2.5},
+    columnStyles:{
+      0:{cellWidth:85,fontStyle:'bold'},
+      1:{cellWidth:25},
+      2:{cellWidth:35},
+      3:{cellWidth:35,halign:'right',fontStyle:'bold'}
+    },
+    rowStyles:{
+      2:{fillColor:mostaza,textColor:cafe,fontSize:11}
+    },
+    margin:{left:10,right:10}
+  });
+  y=doc.lastAutoTable.finalY+3;
+
+  const itemsH=32;
+  doc.setFillColor(...crema);
+  doc.rect(10,y,W-20,itemsH,'F');
+  doc.setDrawColor(...mostaza);
+  doc.setLineWidth(0.4);
+  doc.rect(10,y,W-20,itemsH,'S');
+
+  doc.setFont(undefined,'bold');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(9);
+  doc.text('ITEMS INCLUIDOS EN EL PRECIO',14,y+5);
+
+  doc.setFont(undefined,'normal');
+  doc.setTextColor(60,60,60);
+  doc.setFontSize(7.5);
+
+  const itemsCol1=state.itemsSel.slice(0,Math.ceil(state.itemsSel.length/2));
+  const itemsCol2=state.itemsSel.slice(Math.ceil(state.itemsSel.length/2));
+  const maxItems=Math.max(itemsCol1.length,itemsCol2.length);
+  const step=(itemsH-7)/maxItems;
+  for(let i=0;i<maxItems;i++){
+    if(itemsCol1[i])doc.text('- '+itemsCol1[i],14,y+8+i*step);
+    if(itemsCol2[i])doc.text('- '+itemsCol2[i],W/2+5,y+8+i*step);
+  }
+
+  y+=itemsH+3;
+
+  const alcanceH=22;
+  doc.setFillColor(...crema);
+  doc.rect(10,y,W-20,alcanceH,'F');
+  doc.setDrawColor(...mostaza);
+  doc.setLineWidth(0.4);
+  doc.rect(10,y,W-20,alcanceH,'S');
+
+  doc.setFont(undefined,'bold');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(9);
+  doc.text('ALCANCE DEL PROYECTO',14,y+5);
+
+  doc.setFont(undefined,'normal');
+  doc.setTextColor(60,60,60);
+  doc.setFontSize(7.5);
+  const alcance=[
+    'Preparacion, nivelacion y compactacion del terreno con base estabilizado',
+    'Estampado con moldes profesionales - Hormigon HB25, 10 cm de espesor',
+    'Instalacion de malla ACMA C92 - Cuarzo endurecedor 3kg/m2',
+    'Diseno y color a eleccion del cliente - Juntas y cortes de dilatacion',
+    'Sello acrilico protector incoloro - Limpieza y entrega final'
+  ];
+  const aStep=(alcanceH-6)/alcance.length;
+  alcance.forEach((a,i)=>{doc.text('- '+a,14,y+8+i*aStep)});
+
+  y+=alcanceH+3;
+
+  const garantiaH=18;
+  doc.setFillColor(...crema);
+  doc.rect(10,y,W-20,garantiaH,'F');
+  doc.setDrawColor(...mostaza);
+  doc.setLineWidth(0.4);
+  doc.rect(10,y,W-20,garantiaH,'S');
+
+  doc.setFont(undefined,'bold');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(9);
+  doc.text('GARANTIA',14,y+5);
+
+  doc.setFont(undefined,'normal');
+  doc.setTextColor(60,60,60);
+  doc.setFontSize(7.5);
+  doc.text('12 meses desde el dia del hormigon por concepto de fisuras y fracturas.',14,y+9);
+  doc.text('Mantencion anual recomendada: paño con cera acrilica incolora liquida.',14,y+13);
+  doc.text('Focos LED: garantia de 4 meses. Post-venta: plazo de 90 dias para ejecucion.',14,y+16);
+
+  doc.setFontSize(7);
+  doc.setTextColor(130,130,130);
+  doc.text('Pavimentos M&C SPA - Hormigon Estampado - Lampa, Chile',W/2,H-6,{align:'center'});
+
+  doc.save('Cotizacion_'+numCot+'_'+nombre.replace(/\s+/g,'_')+'.pdf');
+}
+
+function enviarWhatsApp(){
+  const nombre=document.getElementById('cNombre').value||'Cliente';
+  const total=document.getElementById('rTotal').textContent;
+  const m2=document.getElementById('cSuperficie').value||0;
+  const msg=`Hola ${nombre}, te enviamos la cotizacion de Pavimentos M&C:\n\nSuperficie: ${m2} m2\nTotal: ${total}\n\nFormas de pago: 50% inicio, 30% hormigonado, 20% entrega.\n\nQuedamos atentos.`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+function enviarCorreo(){
+  const email=document.getElementById('cEmail').value;
+  if(!email){alert('Ingresa un email');return}
+  const nombre=document.getElementById('cNombre').value||'Cliente';
+  const total=document.getElementById('rTotal').textContent;
+  const subject='Cotizacion Pavimentos M&C - '+nombre;
+  const body=`Estimado/a ${nombre},\n\nAdjuntamos cotizacion por ${total}.\n\nSaludos,\nPavimentos M&C`;
+  window.location.href=`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+document.getElementById('loginPass').addEventListener('keypress',e=>{if(e.key==='Enter')doLogin()});
+</script>
+</body>
+</html>
