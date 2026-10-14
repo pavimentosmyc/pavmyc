@@ -9,9 +9,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
 <style>
-  :root{--cafe-oscuro:#3b2416;--cafe:#5c3a21;--cafe-medio:#7a4f2e;--mostaza:#c9a05a;--mostaza-claro:#e3c28a;--crema:#f5ecd7;--crema-oscuro:#e8dcc4;--blanco:#fff;--gris:#6b6b6b;--gris-claro:#f5f5f5;--gris-borde:#e0e0e0;--rojo:#c0392b;--verde:#27ae60;--azul:#2c5f8a}
+  :root{--cafe-oscuro:#3b2416;--cafe:#5c3a21;--cafe-medio:#7a4f2e;--cafe-claro:#a67c52;--mostaza:#c9a05a;--mostaza-claro:#e3c28a;--crema:#f5ecd7;--crema-oscuro:#e8dcc4;--blanco:#fff;--gris:#6b6b6b;--gris-claro:#f5f5f5;--gris-borde:#e0e0e0;--rojo:#c0392b;--verde:#27ae60;--azul:#2c5f8a}
   *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',-apple-system,sans-serif}
-  body{background:#f0ebe0;color:#2b2b2b;min-height:100vh}
+  body{background:#f0ebe0;color:#2b2b2b;min-height:100vh;display:flex;flex-direction:column}
   #loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--cafe-oscuro),var(--cafe) 50%,var(--cafe-medio));display:flex;align-items:center;justify-content:center;z-index:9999}
   .login-box{background:#fff;padding:45px 40px;border-radius:8px;box-shadow:0 25px 80px rgba(0,0,0,.5);width:380px;text-align:center}
   .login-box .logo-login{width:180px;margin-bottom:15px}
@@ -23,8 +23,8 @@
   .login-box button:hover{background:var(--cafe-oscuro)}
   .login-box button:disabled{background:#999;cursor:not-allowed}
   .login-error{color:var(--rojo);font-size:13px;margin-top:12px;min-height:18px}
-  #app{display:none}
-  .app-container{display:flex;min-height:100vh}
+  #app{display:none;flex:1}
+  .app-container{display:flex;min-height:100vh;flex:1}
   .sidebar{width:260px;background:var(--cafe-oscuro);color:#fff;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;display:flex;flex-direction:column;z-index:100}
   .sidebar-header{padding:25px 20px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)}
   .sidebar-header .logo-wrap{width:120px;height:120px;margin:0 auto 12px;background:#fff;border-radius:50%;padding:10px;display:flex;align-items:center;justify-content:center}
@@ -38,11 +38,8 @@
   .sidebar nav a.logout{color:#ff9999;margin-top:10px}
   .sidebar-footer{padding:18px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:12px}
   .sidebar-footer a{color:var(--mostaza-claro);text-decoration:none;display:block;margin:6px 0}
-  .sidebar-footer .dev-link{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.5)}
-  .sidebar-footer .dev-link a{color:var(--mostaza)}
-  .sidebar-footer .user-info{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.6)}
-  .main{margin-left:260px;flex:1;padding:30px 35px;min-height:100vh}
-  .page{display:none}.page.active{display:block}
+  .main{margin-left:260px;flex:1;padding:30px 35px;min-height:100vh;display:flex;flex-direction:column}
+  .page{display:none;flex:1}.page.active{display:flex;flex-direction:column}
   .page-header{margin-bottom:25px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}.page-header h1{color:var(--cafe-oscuro);font-size:28px;font-weight:700}
   .page-header .subtitle{color:var(--gris);font-size:14px;margin-top:4px}
   .layout-2col{display:grid;grid-template-columns:1fr 340px;gap:25px;align-items:start}
@@ -94,14 +91,30 @@
   .item-check:hover{background:var(--crema);border-color:var(--mostaza)}
   .item-check input{cursor:pointer;width:16px;height:16px;accent-color:var(--cafe)}
   .item-check label{cursor:pointer;flex:1;color:var(--cafe-oscuro)}
-  .footer{margin-top:40px;padding:20px;text-align:center;font-size:12px;color:var(--gris);border-top:1px solid var(--gris-borde)}
-  .footer a{color:var(--cafe);text-decoration:none;font-weight:600}
+  .app-footer{margin-top:auto;padding:20px;text-align:center;font-size:12px;color:var(--gris);border-top:1px solid var(--gris-borde);background:#fff}
+  .app-footer a{color:var(--cafe);text-decoration:none;font-weight:600}
   .sync-status{position:fixed;top:10px;right:10px;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;z-index:1000;display:none}
   .sync-status.online{background:var(--verde);color:#fff;display:block}
   .sync-status.offline{background:var(--rojo);color:#fff;display:block}
   .sync-status.syncing{background:var(--mostaza);color:var(--cafe-oscuro);display:block}
+  
+  /* Responsive móvil */
   @media(max-width:1100px){.layout-2col{grid-template-columns:1fr}.summary-card{position:static}}
-  @media(max-width:768px){.sidebar{width:100%;position:relative;height:auto}.main{margin-left:0;padding:20px}.app-container{flex-direction:column}}
+  @media(max-width:768px){
+    .sidebar{width:100%;position:relative;height:auto}
+    .main{margin-left:0;padding:15px}
+    .app-container{flex-direction:column}
+    .page-header h1{font-size:22px}
+    /* Tabla proyectos responsive */
+    .table-responsive{overflow-x:auto}
+    .proj-actions{display:flex;flex-wrap:wrap;gap:4px}
+    .proj-actions .btn{padding:5px 8px;font-size:11px;white-space:nowrap}
+    table td,table th{padding:8px 6px;font-size:12px}
+  }
+  @media(max-width:480px){
+    .proj-actions{flex-direction:column}
+    .proj-actions .btn{width:100%;justify-content:center}
+  }
 </style>
 </head>
 <body>
@@ -140,8 +153,6 @@
         <a href="https://wa.me/56930665920" target="_blank">+56 9 3066 5920</a>
         <a href="mailto:ventas@pavimentosmyc.cl">ventas@pavimentosmyc.cl</a>
         <a>Lampa, Chile</a>
-        <div class="user-info" id="userInfo">Usuario: admin</div>
-        <div class="dev-link">Desarrollado por<br><a href="https://instagram.com/digitalmarketing.cl" target="_blank">@digitalmarketing.cl</a></div>
       </div>
     </aside>
 
@@ -151,13 +162,22 @@
         <div class="layout-2col">
           <div class="col-form">
             <div class="card"><div class="card-header">Datos del Cliente</div><div class="card-body">
-              <div class="form-row"><div class="form-group"><label>Nombre Cliente *</label><input id="cNombre"></div><div class="form-group"><label>Telefono *</label><input id="cTelefono"></div></div>
-              <div class="form-row"><div class="form-group"><label>Email</label><input id="cEmail" type="email"></div><div class="form-group"><label>Direccion</label><input id="cDireccion"></div></div>
-              <div class="form-row"><div class="form-group"><label>Fecha</label><input id="cFecha" type="date"></div></div>
+              <div class="form-row">
+                <div class="form-group"><label>Nombre Cliente *</label><input id="cNombre"></div>
+                <div class="form-group"><label>Telefono *</label><input id="cTelefono"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Email</label><input id="cEmail" type="email"></div>
+                <div class="form-group"><label>Direccion</label><input id="cDireccion"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Vendedor</label><input id="cVendedor" placeholder="Nombre del vendedor"></div>
+                <div class="form-group"><label>Fecha</label><input id="cFecha" type="date"></div>
+              </div>
             </div></div>
 
             <div class="card"><div class="card-header">Calculo por Metro Cuadrado</div><div class="card-body">
-              <div class="alert alert-info"><strong>Tarifas:</strong> 40-50 m2: $34.000 | 60-80 m2: $30.000 | 80-120 m2: $28.500 | 120-400 m2: $28.000 | 400-800 m2: $27.000</div>
+              <div class="alert alert-info"><strong>Tarifas:</strong> 40-50 m2: $34.000 | 50-80 m2: $30.000 | 80-120 m2: $28.500 | 120-400 m2: $28.000 | 400-800 m2: $27.000</div>
               <div class="form-row">
                 <div class="form-group"><label>Superficie (m2) *</label><input id="cSuperficie" type="number" min="0" step="0.1" oninput="calcular()"><div class="hint">Minimo 40 m2</div></div>
                 <div class="form-group"><label>Tarifa aplicada</label><input id="cTarifa" readonly></div>
@@ -187,12 +207,12 @@
               <button class="btn btn-secondary" onclick="enviarCorreo()">Enviar Correo</button>
               <button class="btn btn-secondary" onclick="cancelarEdicion()" id="btnCancel" style="display:none">Cancelar edicion</button>
             </div>
-            <div class="footer">Desarrollado por <a href="https://instagram.com/digitalmarketing.cl" target="_blank">@digitalmarketing.cl</a></div>
           </div>
 
           <div class="col-summary">
             <div class="card summary-card"><div class="card-header">RESUMEN</div><div class="card-body">
               <div class="summary-row"><span class="label">Cliente</span><span class="value" id="rCliente">-</span></div>
+              <div class="summary-row"><span class="label">Vendedor</span><span class="value" id="rVendedor">-</span></div>
               <div class="summary-row"><span class="label">Superficie</span><span class="value" id="rSuperficie">0 m2</span></div>
               <div class="summary-row"><span class="label">Precio m2</span><span class="value" id="rPrecioM2">$0</span></div>
               <div class="summary-row"><span class="label">Subtotal</span><span class="value" id="rSubtotal">$0</span></div>
@@ -206,10 +226,49 @@
         </div>
       </div>
 
-      <div class="page" id="page-proyectos"><div class="page-header"><h1>Proyectos Guardados</h1><button class="btn btn-primary btn-sm" onclick="cargarProyectos()">🔄 Actualizar</button></div><div class="card"><table><thead><tr><th>#</th><th>Cliente</th><th>Superficie</th><th>Total</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="tbodyProyectos"></tbody></table></div></div>
-      <div class="page" id="page-papelera"><div class="page-header"><h1>Papelera de Reciclaje</h1></div><div class="card"><div style="margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-secondary btn-sm" onclick="selTodosPapelera(true)">Seleccionar Todo</button><button class="btn btn-success btn-sm" onclick="restaurarSel()">Restaurar</button><button class="btn btn-danger btn-sm" onclick="eliminarDef()">Eliminar Definitivamente</button></div><table><thead><tr><th><input type="checkbox" id="chkAllPap" onchange="selTodosPapelera(this.checked)"></th><th>#</th><th>Cliente</th><th>Superficie</th><th>Total</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="tbodyPapelera"></tbody></table></div></div>
-      <div class="page" id="page-tarifas"><div class="page-header"><h1>Gestion de Tarifas</h1></div><div class="card"><div class="alert alert-info">Modifica las tarifas por metro cuadrado. Los cambios se sincronizan con todos los vendedores.</div><table><thead><tr><th>Rango (m2)</th><th>Precio por m2</th></tr></thead><tbody id="tbodyTarifas"></tbody></table><div style="margin-top:15px"><button class="btn btn-success" onclick="guardarTarifas()">Guardar Tarifas</button></div></div></div>
-      <div class="page" id="page-inventario"><div class="page-header"><h1>Gestion de Inventario</h1></div><div class="card"><table><thead><tr><th>Item</th><th style="width:90px">Cantidad</th><th style="width:90px">Unidad</th><th style="width:120px">Precio Unit.</th><th style="width:120px">Total</th><th style="width:70px">Acciones</th></tr></thead><tbody id="tbodyInventario"></tbody></table><div style="margin-top:15px"><button class="btn btn-primary btn-sm" onclick="addItemInv()">+ Agregar Item</button></div></div></div>
+      <div class="page" id="page-proyectos">
+        <div class="page-header"><h1>Proyectos Guardados</h1><button class="btn btn-primary btn-sm" onclick="cargarProyectos()">🔄 Actualizar</button></div>
+        <div class="card">
+          <div class="table-responsive">
+            <table><thead><tr><th>#</th><th>Cliente</th><th>Vendedor</th><th>Superficie</th><th>Total</th><th>Fecha</th><th class="proj-actions">Acciones</th></tr></thead><tbody id="tbodyProyectos"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-papelera">
+        <div class="page-header"><h1>Papelera de Reciclaje</h1></div>
+        <div class="card">
+          <div style="margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-secondary btn-sm" onclick="selTodosPapelera(true)">Seleccionar Todo</button>
+            <button class="btn btn-success btn-sm" onclick="restaurarSel()">Restaurar</button>
+            <button class="btn btn-danger btn-sm" onclick="eliminarDef()">Eliminar Definitivamente</button>
+          </div>
+          <div class="table-responsive">
+            <table><thead><tr><th><input type="checkbox" id="chkAllPap" onchange="selTodosPapelera(this.checked)"></th><th>#</th><th>Cliente</th><th>Superficie</th><th>Total</th><th>Fecha</th><th class="proj-actions">Acciones</th></tr></thead><tbody id="tbodyPapelera"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-tarifas">
+        <div class="page-header"><h1>Gestion de Tarifas</h1></div>
+        <div class="card">
+          <div class="alert alert-info">Modifica las tarifas por metro cuadrado. Los cambios se sincronizan con todos los vendedores.</div>
+          <table><thead><tr><th>Rango (m2)</th><th>Precio por m2</th></tr></thead><tbody id="tbodyTarifas"></tbody></table>
+          <div style="margin-top:15px"><button class="btn btn-success" onclick="guardarTarifas()">Guardar Tarifas</button></div>
+        </div>
+      </div>
+
+      <div class="page" id="page-inventario">
+        <div class="page-header"><h1>Gestion de Inventario</h1></div>
+        <div class="card">
+          <table><thead><tr><th>Item</th><th style="width:90px">Cantidad</th><th style="width:90px">Unidad</th><th style="width:120px">Precio Unit.</th><th style="width:120px">Total</th><th style="width:70px">Acciones</th></tr></thead><tbody id="tbodyInventario"></tbody></table>
+          <div style="margin-top:15px"><button class="btn btn-primary btn-sm" onclick="addItemInv()">+ Agregar Item</button></div>
+        </div>
+      </div>
+
+      <div class="app-footer">
+        Desarrollado por <a href="https://instagram.com/digitalmarketing.cl" target="_blank">@digitalmarketing.cl</a>
+      </div>
     </main>
   </div>
 </div>
@@ -218,7 +277,6 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-  // ===== CREDENCIALES FIREBASE =====
   const firebaseConfig = {
     apiKey: "AIzaSyClIrBZohr8ESgbX6irbYT9b3gDheglKcck",
     authDomain: "pavmyc.firebaseapp.com",
@@ -232,7 +290,6 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // ===== LOGIN SIMPLE =====
   const USUARIO_VALIDO = 'admin';
   const PASS_VALIDO = 'admin123';
 
@@ -285,7 +342,7 @@
 
   const TARIFAS_DEFAULT = [
     {min:40,max:50,precio:34000},
-    {min:60,max:80,precio:30000},
+    {min:50,max:80,precio:30000},
     {min:80,max:120,precio:28500},
     {min:120,max:400,precio:28000},
     {min:400,max:800,precio:27000}
@@ -300,8 +357,7 @@
     if (u === USUARIO_VALIDO && p === PASS_VALIDO) {
       window.state.currentUser = u;
       document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      document.getElementById('userInfo').textContent = 'Usuario: ' + u;
+      document.getElementById('app').style.display = 'flex';
       btn.disabled = false;
       btn.textContent = 'Ingresar';
       err.textContent = '';
@@ -495,6 +551,7 @@
     const total = incluyeIva ? Math.round(subExt) : Math.round(subExt + iva);
 
     document.getElementById('rCliente').textContent = document.getElementById('cNombre').value || '-';
+    document.getElementById('rVendedor').textContent = document.getElementById('cVendedor').value || '-';
     document.getElementById('rSuperficie').textContent = m2 + ' m2';
     document.getElementById('rPrecioM2').textContent = tarifa > 0 ? '$' + tarifa.toLocaleString('es-CL') : '$0';
     document.getElementById('rSubtotal').textContent = '$' + subtotal.toLocaleString('es-CL');
@@ -512,6 +569,11 @@
   }
   window.calcular = calcular;
 
+  // Escuchar cambios en el campo vendedor
+  document.getElementById('cVendedor').addEventListener('input', function() {
+    document.getElementById('rVendedor').textContent = this.value || '-';
+  });
+
   window.guardarProyecto = async function() {
     const nombre = document.getElementById('cNombre').value.trim();
     const tel = document.getElementById('cTelefono').value.trim();
@@ -528,6 +590,7 @@
       nombre, tel,
       email: document.getElementById('cEmail').value,
       direccion: document.getElementById('cDireccion').value,
+      vendedor: document.getElementById('cVendedor').value.trim(),
       fecha: document.getElementById('cFecha').value,
       m2,
       tarifa: getTarifa(m2),
@@ -563,7 +626,7 @@
   };
 
   function limpiarForm() {
-    ['cNombre', 'cTelefono', 'cEmail', 'cDireccion', 'cSuperficie'].forEach(id => document.getElementById(id).value = '');
+    ['cNombre', 'cTelefono', 'cEmail', 'cDireccion', 'cVendedor', 'cSuperficie'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('cFecha').valueAsDate = new Date();
     document.getElementById('cIncluyeIva').checked = false;
     window.state.extras = EXTRAS_DEFAULT.map(e => ({...e}));
@@ -589,6 +652,7 @@
     document.getElementById('cTelefono').value = p.tel;
     document.getElementById('cEmail').value = p.email || '';
     document.getElementById('cDireccion').value = p.direccion || '';
+    document.getElementById('cVendedor').value = p.vendedor || '';
     document.getElementById('cFecha').value = p.fecha;
     document.getElementById('cSuperficie').value = p.m2;
     document.getElementById('cIncluyeIva').checked = p.incluyeIva || false;
@@ -607,7 +671,7 @@
     const tb = document.getElementById('tbodyProyectos');
     tb.innerHTML = '';
     if (window.state.proyectos.length === 0) {
-      tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;padding:20px">No hay proyectos guardados</td></tr>';
+      tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">No hay proyectos guardados</td></tr>';
       return;
     }
     window.state.proyectos.forEach((p, i) => {
@@ -615,10 +679,11 @@
       tr.innerHTML = `
         <td>${i + 1}</td>
         <td><strong>${p.nombre}</strong><br><small style="color:#999">${p.tel}</small></td>
+        <td>${p.vendedor || '-'}</td>
         <td>${p.m2} m2</td>
         <td><strong>$${(p.total || 0).toLocaleString('es-CL')}</strong></td>
         <td>${p.fecha || '-'}</td>
-        <td>
+        <td class="proj-actions">
           <button class="btn btn-warning btn-sm" onclick="editarProyecto('${p.id}')">Editar</button>
           <button class="btn btn-primary btn-sm" onclick="cargarYpdf('${p.id}')">PDF</button>
           <button class="btn btn-danger btn-sm" onclick="moverPapelera('${p.id}')">Eliminar</button>
@@ -659,7 +724,7 @@
         <td>${p.m2} m2</td>
         <td>$${(p.total || 0).toLocaleString('es-CL')}</td>
         <td>${p.fecha || '-'}</td>
-        <td>
+        <td class="proj-actions">
           <button class="btn btn-success btn-sm" onclick="restaurar('${p.id}')">Restaurar</button>
           <button class="btn btn-danger btn-sm" onclick="elimDef('${p.id}')">Eliminar</button>
         </td>`;
@@ -763,6 +828,7 @@
     const tel = document.getElementById('cTelefono').value || '';
     const email = document.getElementById('cEmail').value || '';
     const direccion = document.getElementById('cDireccion').value || '';
+    const vendedor = document.getElementById('cVendedor').value.trim() || '';
     const fecha = document.getElementById('cFecha').value || new Date().toISOString().slice(0, 10);
     const m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
     const tarifa = getTarifa(m2);
@@ -776,10 +842,12 @@
     const numCot = 'COT-' + String(Date.now()).slice(-6);
 
     const cafe = [59, 36, 22];
+    const cafeClaro = [166, 124, 82];
     const mostaza = [201, 160, 90];
     const crema = [245, 236, 215];
 
-    doc.setFillColor(...cafe);
+    // HEADER - color café más claro para que el logo se vea
+    doc.setFillColor(...cafeClaro);
     doc.rect(0, 0, W, 35, 'F');
 
     if (window.state.logoBase64) {
@@ -803,6 +871,7 @@
     doc.setFont(undefined, 'bold');
     doc.text('COTIZACION N° ' + numCot, W / 2, 41.5, {align: 'center'});
 
+    // COTIZADO PARA
     let y = 49;
     const boxH = 28;
     doc.setFillColor(...crema);
@@ -835,19 +904,32 @@
       doc.text(dirLines, 110, y + 13);
     }
 
+    // Vendedor en el box
+    if (vendedor) {
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(...cafe);
+      doc.setFontSize(9);
+      doc.text('VENDEDOR', W - 75, y + 6);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(60, 60, 60);
+      doc.setFontSize(10);
+      doc.text(vendedor, W - 75, y + 13);
+    }
+
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...cafe);
     doc.setFontSize(9);
-    doc.text('FECHA', W - 75, y + 6);
+    doc.text('FECHA', W - 75, y + (vendedor ? 17 : 6));
     doc.setFont(undefined, 'normal');
     doc.setTextColor(60, 60, 60);
     doc.setFontSize(10);
-    doc.text(fecha, W - 75, y + 13);
+    doc.text(fecha, W - 75, y + (vendedor ? 23 : 13));
     doc.setFontSize(8);
-    doc.text('Vigencia: 10 dias', W - 75, y + 19);
+    doc.text('Vigencia: 10 dias', W - 75, y + (vendedor ? 26 : 19));
 
     y += boxH + 4;
 
+    // CONDICIONES
     doc.autoTable({
       startY: y,
       head: [['CONDICIONES DE PAGO']],
@@ -860,6 +942,7 @@
     });
     y = doc.lastAutoTable.finalY + 3;
 
+    // TABLA
     const bodyItems = [];
     bodyItems.push(['Hormigon Estampado', m2 + ' m2', '$' + tarifa.toLocaleString('es-CL') + '/m2', '$' + subtotal.toLocaleString('es-CL')]);
     extrasSel.forEach(e => {
@@ -878,6 +961,7 @@
     });
     y = doc.lastAutoTable.finalY + 2;
 
+    // TOTALES
     doc.autoTable({
       startY: y,
       body: [
@@ -893,6 +977,7 @@
     });
     y = doc.lastAutoTable.finalY + 3;
 
+    // ITEMS
     const itemsH = 32;
     doc.setFillColor(...crema);
     doc.rect(10, y, W - 20, itemsH, 'F');
@@ -916,6 +1001,7 @@
     }
     y += itemsH + 3;
 
+    // ALCANCE
     const alcanceH = 22;
     doc.setFillColor(...crema);
     doc.rect(10, y, W - 20, alcanceH, 'F');
@@ -940,6 +1026,7 @@
     alcance.forEach((a, i) => { doc.text('- ' + a, 14, y + 8 + i * aStep); });
     y += alcanceH + 3;
 
+    // GARANTIA
     const garantiaH = 18;
     doc.setFillColor(...crema);
     doc.rect(10, y, W - 20, garantiaH, 'F');
