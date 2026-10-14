@@ -284,8 +284,13 @@
     measurementId: "G-HP777TPS26"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  let db;
+  try {
+    const app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+  } catch (e) {
+    console.error('Error inicializando Firebase:', e);
+  }
 
   const USUARIO_VALIDO = 'admin';
   const PASS_VALIDO = 'admin123';
@@ -293,7 +298,13 @@
   window.state = {
     proyectos: [],
     papelera: [],
-    tarifas: [],
+    tarifas: [
+      {min:40,max:50,precio:34000},
+      {min:51,max:80,precio:30000},
+      {min:81,max:120,precio:28500},
+      {min:121,max:400,precio:28000},
+      {min:401,max:800,precio:27000}
+    ],
     inventario: [],
     extras: [],
     itemsSel: [],
@@ -337,15 +348,6 @@
     {item:"Tapas de camaras",cant:1,unidad:"un",precio:60000}
   ];
 
-  // TARIFAS SIN SOLAPAMIENTO: cada rango empieza donde termina el anterior + 1
-  const TARIFAS_DEFAULT = [
-    {min:40,max:50,precio:34000},
-    {min:51,max:80,precio:30000},
-    {min:81,max:120,precio:28500},
-    {min:121,max:400,precio:28000},
-    {min:401,max:800,precio:27000}
-  ];
-
   window.doLogin = function() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value;
@@ -385,20 +387,24 @@
       ctx.drawImage(img,0,0);
       window.state.logoBase64=canvas.toDataURL('image/png');
     };
+    img.onerror=function(){
+      console.log('No se pudo cargar el logo');
+    };
     img.src='logo.png';
   }
 
   async function cargarDatos(){
     showSync('syncing', 'Sincronizando...');
     try {
+      if (!db) throw new Error('Firebase no disponible');
+
       const tarifSnap = await getDocs(collection(db, 'config', 'tarifas', 'items'));
       if (!tarifSnap.empty) {
         window.state.tarifas = tarifSnap.docs.map(d => ({id: d.id, ...d.data()}));
       } else {
-        for (const t of TARIFAS_DEFAULT) {
+        for (const t of window.state.tarifas) {
           await addDoc(collection(db, 'config', 'tarifas', 'items'), t);
         }
-        window.state.tarifas = TARIFAS_DEFAULT.map((t, i) => ({id: 'default_'+i, ...t}));
       }
 
       const invSnap = await getDocs(collection(db, 'config', 'inventario', 'items'));
@@ -421,7 +427,7 @@
       setTimeout(() => showSync('', ''), 2000);
     } catch (e) {
       console.error('Error cargando datos:', e);
-      showSync('offline', 'Error de conexion');
+      showSync('offline', 'Modo local');
     }
   }
 
@@ -467,11 +473,13 @@
       c.appendChild(div);
     });
   }
+
   window.toggleItem = function(it) {
     if (window.state.itemsSel.includes(it)) window.state.itemsSel = window.state.itemsSel.filter(x => x !== it);
     else window.state.itemsSel.push(it);
     calcular();
   };
+
   window.toggleTodosItems = function() {
     const chk = document.getElementById('selTodos').checked;
     window.state.itemsSel = chk ? [...ITEMS_INCLUIDOS_DEFAULT] : [];
@@ -494,11 +502,13 @@
       c.appendChild(div);
     });
   }
+
   window.toggleExtra = function(i) {
     window.state.extras[i].selected = !window.state.extras[i].selected;
     renderExtrasGrid();
     calcular();
   };
+
   function renderExtrasTable() {
     const tb = document.getElementById('tbodyExtras');
     tb.innerHTML = '';
@@ -512,12 +522,14 @@
       tb.appendChild(tr);
     });
   }
+
   window.addExtra = function() {
     window.state.extras.push({id: 'extra' + Date.now(), desc: "", cant: 1, precio: 0, selected: true});
     renderExtrasGrid();
     renderExtrasTable();
     calcular();
   };
+
   window.delExtra = function(i) {
     window.state.extras.splice(i, 1);
     renderExtrasGrid();
@@ -529,12 +541,13 @@
     for (const t of window.state.tarifas) { if (m2 >= t.min && m2 <= t.max) return t.precio; }
     return 0;
   }
+
   function getRangoTexto(m2) {
     for (const t of window.state.tarifas) { if (m2 >= t.min && m2 <= t.max) return t.min + '-' + t.max + ' m2'; }
     return '-';
   }
 
-  function calcular() {
+  window.calcular = function() {
     const m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
     const tarifa = getTarifa(m2);
     document.getElementById('cTarifa').value = m2 > 0 ? getRangoTexto(m2) : '';
@@ -545,7 +558,6 @@
     const extras = extrasSel.reduce((s, e) => s + e.cant * e.precio, 0);
     const subExt = subtotal + extras;
 
-    // CORRECCION IVA: solo se aplica cuando la casilla está MARCADA
     const aplicaIva = document.getElementById('cIncluyeIva').checked;
     const iva = aplicaIva ? Math.round(subExt * 0.19) : 0;
     const total = aplicaIva ? Math.round(subExt + iva) : Math.round(subExt);
@@ -566,8 +578,7 @@
     document.getElementById('rIva').textContent = aplicaIva ? 'Sí aplicado (19%) = $' + iva.toLocaleString('es-CL') : 'No aplicado';
     document.getElementById('rIva').style.color = aplicaIva ? 'var(--verde)' : 'var(--gris)';
     document.getElementById('rTotal').textContent = '$' + total.toLocaleString('es-CL');
-  }
-  window.calcular = calcular;
+  };
 
   document.getElementById('cVendedor').addEventListener('input', function() {
     document.getElementById('rVendedor').textContent = this.value || '-';
@@ -602,16 +613,26 @@
     };
 
     try {
-      if (window.state.editId) {
-        await updateDoc(doc(db, 'proyectos', window.state.editId), proj);
-        const idx = window.state.proyectos.findIndex(p => p.id === window.state.editId);
-        if (idx >= 0) window.state.proyectos[idx] = {id: window.state.editId, ...proj};
+      if (db) {
+        if (window.state.editId) {
+          await updateDoc(doc(db, 'proyectos', window.state.editId), proj);
+          const idx = window.state.proyectos.findIndex(p => p.id === window.state.editId);
+          if (idx >= 0) window.state.proyectos[idx] = {id: window.state.editId, ...proj};
+        } else {
+          const ref = await addDoc(collection(db, 'proyectos'), proj);
+          proj.id = ref.id;
+          window.state.proyectos.push(proj);
+        }
       } else {
-        const ref = await addDoc(collection(db, 'proyectos'), proj);
-        proj.id = ref.id;
-        window.state.proyectos.push(proj);
+        proj.id = window.state.editId || Date.now();
+        if (window.state.editId) {
+          const idx = window.state.proyectos.findIndex(p => p.id === window.state.editId);
+          if (idx >= 0) window.state.proyectos[idx] = proj;
+        } else {
+          window.state.proyectos.push(proj);
+        }
       }
-      alert('Proyecto guardado en la nube');
+      alert('Proyecto guardado correctamente');
       window.state.editId = null;
       document.getElementById('editInfo').textContent = '';
       document.getElementById('btnCancel').style.display = 'none';
@@ -696,8 +717,10 @@
     if (idx >= 0) {
       const proj = window.state.proyectos[idx];
       try {
-        await addDoc(collection(db, 'papelera'), proj);
-        await deleteDoc(doc(db, 'proyectos', id));
+        if (db) {
+          await addDoc(collection(db, 'papelera'), proj);
+          await deleteDoc(doc(db, 'proyectos', id));
+        }
         window.state.papelera.push(proj);
         window.state.proyectos.splice(idx, 1);
         renderProyectos();
@@ -737,8 +760,10 @@
     const idx = window.state.papelera.findIndex(p => p.id === id);
     if (idx >= 0) {
       try {
-        await addDoc(collection(db, 'proyectos'), window.state.papelera[idx]);
-        await deleteDoc(doc(db, 'papelera', id));
+        if (db) {
+          await addDoc(collection(db, 'proyectos'), window.state.papelera[idx]);
+          await deleteDoc(doc(db, 'papelera', id));
+        }
         window.state.proyectos.push(window.state.papelera[idx]);
         window.state.papelera.splice(idx, 1);
         renderPapelera();
@@ -751,7 +776,7 @@
   window.elimDef = async function(id) {
     if (!confirm('Eliminar definitivamente?')) return;
     try {
-      await deleteDoc(doc(db, 'papelera', id));
+      if (db) await deleteDoc(doc(db, 'papelera', id));
       window.state.papelera = window.state.papelera.filter(p => p.id !== id);
       renderPapelera();
     } catch (e) { alert('Error: ' + e.message); }
@@ -762,7 +787,7 @@
     if (sel.length === 0) { alert('Selecciona al menos uno'); return; }
     if (!confirm('Eliminar definitivamente los seleccionados?')) return;
     for (const id of sel) {
-      await deleteDoc(doc(db, 'papelera', id));
+      if (db) await deleteDoc(doc(db, 'papelera', id));
     }
     window.state.papelera = window.state.papelera.filter(p => !sel.includes(p.id));
     renderPapelera();
@@ -783,12 +808,14 @@
   window.guardarTarifas = async function() {
     showSync('syncing', 'Guardando tarifas...');
     try {
-      const snap = await getDocs(collection(db, 'config', 'tarifas', 'items'));
-      for (const d of snap.docs) {
-        await deleteDoc(d.ref);
-      }
-      for (const t of window.state.tarifas) {
-        await addDoc(collection(db, 'config', 'tarifas', 'items'), {min: t.min, max: t.max, precio: t.precio});
+      if (db) {
+        const snap = await getDocs(collection(db, 'config', 'tarifas', 'items'));
+        for (const d of snap.docs) {
+          await deleteDoc(d.ref);
+        }
+        for (const t of window.state.tarifas) {
+          await addDoc(collection(db, 'config', 'tarifas', 'items'), {min: t.min, max: t.max, precio: t.precio});
+        }
       }
       alert('Tarifas guardadas y sincronizadas');
       showSync('online', 'Tarifas actualizadas');
@@ -817,7 +844,6 @@
   window.addItemInv = function() { window.state.inventario.push({item: "", cant: 1, unidad: "un", precio: 0}); renderInventario(); };
   window.delItemInv = function(i) { window.state.inventario.splice(i, 1); renderInventario(); };
 
-  // ============ PDF REESTRUCTURADO ============
   window.generarPDF = function() {
     const {jsPDF} = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'letter');
@@ -846,7 +872,6 @@
     const mostaza = [201, 160, 90];
     const crema = [245, 236, 215];
 
-    // HEADER - color café claro para que el logo se vea
     doc.setFillColor(...cafeClaro);
     doc.rect(0, 0, W, 35, 'F');
 
@@ -871,117 +896,63 @@
     doc.setFont(undefined, 'bold');
     doc.text('COTIZACION N° ' + numCot, W / 2, 41.5, {align: 'center'});
 
-    // ===== COTIZADO PARA - REESTRUCTURADO =====
     let y = 49;
-
-    // Calcular altura necesaria según contenido
-    const leftMargin = 14;
-    const rightMargin = W - 14;
-    const midX = W / 2;
-    const rightBlockX = W - 75;
-
-    // Datos del lado izquierdo
-    const nombreLineas = doc.splitTextToSize(nombre, midX - leftMargin - 2);
-    const telLine = 'Tel: ' + tel;
-    const emailLine = email ? 'Email: ' + email : '';
-    const dirLabel = 'Direccion: ';
-    const dirLineas = direccion ? doc.splitTextToSize(dirLabel + direccion, midX - leftMargin - 2) : [];
-
-    // Datos del lado derecho
-    const vendLabel = vendedor ? 'Vendedor: ' : '';
-    const vendLineas = vendedor ? doc.splitTextToSize(vendLabel + vendedor, rightMargin - rightBlockX - 2) : [];
-    const fechaLine = 'Fecha: ' + fecha;
-    const vigLine = 'Vigencia: 10 dias';
-
-    // Calcular altura máxima necesaria
-    const lineHeight = 4.5;
-    const leftHeight = (nombreLineas.length + (email ? 2 : 1) + dirLineas.length) * lineHeight + 8;
-    const rightHeight = (vendLineas.length + 2) * lineHeight + 8;
-    const boxH = Math.max(leftHeight, rightHeight, 32);
-
-    // Dibujar box
+    const boxH = 32;
     doc.setFillColor(...crema);
     doc.rect(10, y, W - 20, boxH, 'F');
     doc.setDrawColor(...mostaza);
     doc.setLineWidth(0.5);
     doc.rect(10, y, W - 20, boxH, 'S');
 
-    // Título
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...cafe);
     doc.setFontSize(10);
-    doc.text('COTIZADO PARA', leftMargin, y + 6);
+    doc.text('COTIZADO PARA', 14, y + 6);
 
-    // Nombre del cliente (negrita, grande)
     doc.setFont(undefined, 'bold');
     doc.setTextColor(40, 40, 40);
     doc.setFontSize(12);
-    let curY = y + 12;
-    nombreLineas.forEach(line => {
-      doc.text(line, leftMargin, curY);
-      curY += lineHeight;
-    });
+    doc.text(nombre, 14, y + 12);
 
-    // Teléfono
     doc.setFont(undefined, 'normal');
     doc.setTextColor(80, 80, 80);
     doc.setFontSize(9);
-    doc.text(telLine, leftMargin, curY);
-    curY += lineHeight;
+    doc.text('Tel: ' + tel, 14, y + 18);
+    if (email) doc.text('Email: ' + email, 14, y + 23);
 
-    // Email
-    if (email) {
-      doc.text(emailLine, leftMargin, curY);
-      curY += lineHeight;
-    }
-
-    // Dirección con label
     if (direccion) {
-      doc.text('Direccion:', leftMargin, curY);
-      curY += lineHeight;
-      // La dirección indentada
-      const dirContenido = doc.splitTextToSize(direccion, midX - leftMargin - 5);
-      doc.text(dirContenido, leftMargin + 3, curY);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(60, 60, 60);
+      doc.setFontSize(9);
+      doc.text('Direccion:', 14, y + 28);
+      const dirLines = doc.splitTextToSize(direccion, W/2 - 20);
+      doc.text(dirLines, 17, y + 32);
     }
 
-    // ===== LADO DERECHO =====
-    let curYR = y + 6;
-
-    // Vendedor
     if (vendedor) {
       doc.setFont(undefined, 'bold');
       doc.setTextColor(...cafe);
       doc.setFontSize(9);
-      doc.text('Vendedor:', rightBlockX, curYR);
-      curYR += lineHeight;
+      doc.text('Vendedor:', W - 75, y + 6);
       doc.setFont(undefined, 'normal');
       doc.setTextColor(60, 60, 60);
       doc.setFontSize(10);
-      vendLineas.forEach(line => {
-        doc.text(line, rightBlockX, curYR);
-        curYR += lineHeight;
-      });
+      doc.text(vendedor, W - 75, y + 12);
     }
 
-    // Fecha
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...cafe);
     doc.setFontSize(9);
-    doc.text('Fecha:', rightBlockX, curYR);
-    curYR += lineHeight;
+    doc.text('Fecha:', W - 75, y + (vendedor ? 17 : 6));
     doc.setFont(undefined, 'normal');
     doc.setTextColor(60, 60, 60);
     doc.setFontSize(10);
-    doc.text(fecha, rightBlockX, curYR);
-    curYR += lineHeight;
-
-    // Vigencia
+    doc.text(fecha, W - 75, y + (vendedor ? 23 : 12));
     doc.setFontSize(8);
-    doc.text('Vigencia: 10 dias', rightBlockX, curYR);
+    doc.text('Vigencia: 10 dias', W - 75, y + (vendedor ? 27 : 17));
 
     y += boxH + 4;
 
-    // CONDICIONES
     doc.autoTable({
       startY: y,
       head: [['CONDICIONES DE PAGO']],
@@ -994,7 +965,6 @@
     });
     y = doc.lastAutoTable.finalY + 3;
 
-    // TABLA
     const bodyItems = [];
     bodyItems.push(['Hormigon Estampado', m2 + ' m2', '$' + tarifa.toLocaleString('es-CL') + '/m2', '$' + subtotal.toLocaleString('es-CL')]);
     extrasSel.forEach(e => {
@@ -1013,7 +983,6 @@
     });
     y = doc.lastAutoTable.finalY + 2;
 
-    // TOTALES
     const totalesBody = [['Subtotal', '', '', '$' + subExt.toLocaleString('es-CL')]];
     if (aplicaIva) {
       totalesBody.push(['IVA (19%)', '', '', '$' + ivaCalc.toLocaleString('es-CL')]);
@@ -1031,7 +1000,6 @@
     });
     y = doc.lastAutoTable.finalY + 3;
 
-    // ITEMS
     const itemsH = 32;
     doc.setFillColor(...crema);
     doc.rect(10, y, W - 20, itemsH, 'F');
@@ -1055,7 +1023,6 @@
     }
     y += itemsH + 3;
 
-    // ALCANCE
     const alcanceH = 22;
     doc.setFillColor(...crema);
     doc.rect(10, y, W - 20, alcanceH, 'F');
@@ -1080,7 +1047,6 @@
     alcance.forEach((a, i) => { doc.text('- ' + a, 14, y + 8 + i * aStep); });
     y += alcanceH + 3;
 
-    // GARANTIA
     const garantiaH = 18;
     doc.setFillColor(...crema);
     doc.rect(10, y, W - 20, garantiaH, 'F');
