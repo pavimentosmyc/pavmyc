@@ -270,938 +270,959 @@
   </div>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+<script>
+// ============================================================
+// FIREBASE - Cargado dinámicamente para no bloquear el login
+// ============================================================
+let db = null;
+let firebaseReady = false;
 
-  // ===== FIREBASE CONFIG =====
-  const firebaseConfig = {
-    apiKey: "AIzaSyClIrBZohr8ESgbX6irbYT9b3gDheglKcck",
-    authDomain: "pavmyc.firebaseapp.com",
-    projectId: "pavmyc",
-    storageBucket: "pavmyc.firebasestorage.app",
-    messagingSenderId: "477346145755",
-    appId: "1:477346145755:web:c2a75dbe20e49d3a5133fe",
-    measurementId: "G-HP777TPS26"
-  };
-
-  let db = null;
-  let firebaseReady = false;
-
+async function cargarFirebase() {
   try {
-    const app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    firebaseReady = true;
-    console.log('✅ Firebase inicializado correctamente');
-  } catch (e) {
-    console.error('❌ Error inicializando Firebase:', e);
-    firebaseReady = false;
-  }
-
-  // ===== CREDENCIALES LOGIN =====
-  const USUARIO_VALIDO = 'admin';
-  const PASS_VALIDO = 'admin123';
-
-  // ===== ESTADO GLOBAL =====
-  window.state = {
-    proyectos: [],
-    papelera: [],
-    tarifas: [
-      {min:40,max:50,precio:34000},
-      {min:51,max:80,precio:30000},
-      {min:81,max:120,precio:28500},
-      {min:121,max:400,precio:28000},
-      {min:401,max:800,precio:27000}
-    ],
-    inventario: [
-      {item:"Encarpe de terreno",cant:1,unidad:"gl",precio:0},
-      {item:"Base estabilizado",cant:1,unidad:"m3",precio:0},
-      {item:"Malla acma c92",cant:1,unidad:"m2",precio:0},
-      {item:"Hormigon HB25",cant:1,unidad:"m3",precio:0},
-      {item:"Cuarzo endurecedor",cant:3,unidad:"kg/m2",precio:0},
-      {item:"Talco desmoldante",cant:1,unidad:"gl",precio:0},
-      {item:"Sellador acrilico incoloro",cant:1,unidad:"gl",precio:0},
-      {item:"Focos led",cant:4,unidad:"un",precio:35000},
-      {item:"Tapas de camaras",cant:1,unidad:"un",precio:60000}
-    ],
-    extras: [],
-    itemsSel: [],
-    editId: null,
-    logoBase64: null,
-    currentUser: null
-  };
-
-  const ITEMS_INCLUIDOS_DEFAULT = [
-    "Encarpe de terreno",
-    "Nivelacion y compactacion de terreno con base estabilizado",
-    "Instalacion de moldajes",
-    "Suministro de malla acma c92 para la resistencia",
-    "Suministro de vaciado y estampado del hormigon HB25, 10 cm de espesor",
-    "Suministro de cuarzo endurecedor 3kg por m2",
-    "Suministro de talco desmoldante",
-    "Diseno y color a gusto del cliente",
-    "Cortes de dilatacion",
-    "Limpieza y lavado del pavimento",
-    "Aplicacion de sellador acrilico incoloro (abrillantador)",
-    "Retiro de escombros (solo superficie trabajada)",
-    "Mano de obra",
-    "Desgaste de maquinaria",
-    "Transporte"
-  ];
-
-  const EXTRAS_DEFAULT = [
-    {id:'focos',desc:"Focos led mas instalacion (minimo 4 focos)",cant:4,precio:35000,selected:false},
-    {id:'tapas',desc:"Tapas de camaras",cant:1,precio:60000,selected:false}
-  ];
-
-  // ===== LOGIN =====
-  window.doLogin = function() {
-    const u = document.getElementById('loginUser').value.trim();
-    const p = document.getElementById('loginPass').value;
-    const btn = document.getElementById('loginBtn');
-    const err = document.getElementById('loginError');
-
-    if (u === USUARIO_VALIDO && p === PASS_VALIDO) {
-      window.state.currentUser = u;
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('app').style.display = 'flex';
-      btn.disabled = false;
-      btn.textContent = 'Ingresar';
-      err.textContent = '';
-      console.log('✅ Login exitoso, iniciando sistema...');
-      // Usamos setTimeout para asegurar que el DOM esté listo
-      setTimeout(() => init(), 100);
-    } else {
-      err.textContent = 'Usuario o contraseña incorrectos';
-      btn.disabled = false;
-      btn.textContent = 'Ingresar';
-    }
-  };
-
-  window.doLogout = function() {
-    window.state.currentUser = null;
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('loginPass').value = '';
-  };
-
-  // ===== CARGAR LOGO =====
-  function cargarLogo(){
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = function(){
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        window.state.logoBase64 = canvas.toDataURL('image/png');
-        console.log('✅ Logo cargado correctamente');
-      } catch(e) {
-        console.log('⚠️ No se pudo convertir logo a base64:', e);
-      }
-    };
-    img.onerror = function(){
-      console.log('⚠️ No se pudo cargar logo.png');
-    };
-    img.src = 'logo.png';
-  }
-
-  // ===== CARGAR DATOS (Firebase con fallback a localStorage) =====
-  async function cargarDatos(){
-    showSync('syncing', 'Sincronizando...');
+    const firebaseApp = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js");
+    const firestore = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js");
     
-    // Primero intentar cargar desde Firebase
-    if (firebaseReady && db) {
-      try {
-        console.log('🔄 Cargando datos desde Firebase...');
-        
-        // Cargar tarifas
-        const tarifSnap = await getDocs(collection(db, 'config', 'tarifas', 'items'));
-        if (!tarifSnap.empty) {
-          window.state.tarifas = tarifSnap.docs.map(d => ({id: d.id, ...d.data()}));
-          console.log('✅ Tarifas cargadas desde Firebase:', window.state.tarifas.length);
-        }
+    const firebaseConfig = {
+      apiKey: "AIzaSyClIrBZohr8ESgbX6irbYT9b3gDheglKcck",
+      authDomain: "pavmyc.firebaseapp.com",
+      projectId: "pavmyc",
+      storageBucket: "pavmyc.firebasestorage.app",
+      messagingSenderId: "477346145755",
+      appId: "1:477346145755:web:c2a75dbe20e49d3a5133fe",
+      measurementId: "G-HP777TPS26"
+    };
 
-        // Cargar inventario
-        const invSnap = await getDocs(collection(db, 'config', 'inventario', 'items'));
-        if (!invSnap.empty) {
-          window.state.inventario = invSnap.docs.map(d => ({id: d.id, ...d.data()}));
-          console.log('✅ Inventario cargado desde Firebase:', window.state.inventario.length);
-        }
-
-        // Cargar proyectos
-        const projSnap = await getDocs(collection(db, 'proyectos'));
-        window.state.proyectos = projSnap.docs.map(d => ({id: d.id, ...d.data()}));
-        console.log('✅ Proyectos cargados desde Firebase:', window.state.proyectos.length);
-
-        // Cargar papelera
-        const papSnap = await getDocs(collection(db, 'papelera'));
-        window.state.papelera = papSnap.docs.map(d => ({id: d.id, ...d.data()}));
-        console.log('✅ Papelera cargada desde Firebase:', window.state.papelera.length);
-
-        // Guardar backup en localStorage
-        guardarBackupLocal();
-
-        showSync('online', 'Conectado a la nube');
-        setTimeout(() => showSync('', ''), 3000);
-        return;
-      } catch (e) {
-        console.error('❌ Error cargando desde Firebase:', e);
-        console.log('🔄 Usando datos locales como respaldo...');
-      }
-    }
-
-    // Fallback: cargar desde localStorage
-    cargarDesdeLocal();
+    const app = firebaseApp.initializeApp(firebaseConfig);
+    db = firestore.getFirestore(app);
+    firebaseReady = true;
+    console.log('✅ Firebase conectado');
+    showSync('online', 'Conectado a la nube');
+    setTimeout(() => showSync('', ''), 3000);
+  } catch (e) {
+    console.error('️ Firebase no disponible, usando modo local:', e);
+    firebaseReady = false;
     showSync('offline', 'Modo local');
     setTimeout(() => showSync('', ''), 3000);
   }
+}
 
-  function guardarBackupLocal() {
-    try {
-      localStorage.setItem('pmc_proyectos', JSON.stringify(window.state.proyectos));
-      localStorage.setItem('pmc_papelera', JSON.stringify(window.state.papelera));
-      localStorage.setItem('pmc_tarifas', JSON.stringify(window.state.tarifas));
-      localStorage.setItem('pmc_inventario', JSON.stringify(window.state.inventario));
-    } catch(e) {
-      console.error('Error guardando backup local:', e);
-    }
+// ============================================================
+// LOGIN - Simple y robusto
+// ============================================================
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginError');
+
+  if (u === 'admin' && p === 'admin123') {
+    // Ocultar login y mostrar app INMEDIATAMENTE
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    err.textContent = '';
+    
+    // Cargar Firebase en segundo plano (no bloquea)
+    cargarFirebase();
+    
+    // Inicializar el sistema
+    setTimeout(() => initApp(), 200);
+  } else {
+    err.textContent = 'Usuario o contraseña incorrectos';
   }
+}
 
-  function cargarDesdeLocal() {
-    try {
-      const proyectos = localStorage.getItem('pmc_proyectos');
-      const papelera = localStorage.getItem('pmc_papelera');
-      const tarifas = localStorage.getItem('pmc_tarifas');
-      const inventario = localStorage.getItem('pmc_inventario');
+function doLogout() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginPass').value = '';
+}
 
-      if (proyectos) window.state.proyectos = JSON.parse(proyectos);
-      if (papelera) window.state.papelera = JSON.parse(papelera);
-      if (tarifas) window.state.tarifas = JSON.parse(tarifas);
-      if (inventario) window.state.inventario = JSON.parse(inventario);
-      
-      console.log('✅ Datos cargados desde localStorage');
-    } catch(e) {
-      console.error('Error cargando desde localStorage:', e);
-    }
-  }
+// ============================================================
+// ESTADO GLOBAL
+// ============================================================
+const APP = {
+  proyectos: [],
+  papelera: [],
+  tarifas: [
+    {min:40,max:50,precio:34000},
+    {min:51,max:80,precio:30000},
+    {min:81,max:120,precio:28500},
+    {min:121,max:400,precio:28000},
+    {min:401,max:800,precio:27000}
+  ],
+  inventario: [
+    {item:"Encarpe de terreno",cant:1,unidad:"gl",precio:0},
+    {item:"Base estabilizado",cant:1,unidad:"m3",precio:0},
+    {item:"Malla acma c92",cant:1,unidad:"m2",precio:0},
+    {item:"Hormigon HB25",cant:1,unidad:"m3",precio:0},
+    {item:"Cuarzo endurecedor",cant:3,unidad:"kg/m2",precio:0},
+    {item:"Talco desmoldante",cant:1,unidad:"gl",precio:0},
+    {item:"Sellador acrilico incoloro",cant:1,unidad:"gl",precio:0},
+    {item:"Focos led",cant:4,unidad:"un",precio:35000},
+    {item:"Tapas de camaras",cant:1,unidad:"un",precio:60000}
+  ],
+  extras: [],
+  itemsSel: [],
+  editId: null,
+  logoBase64: null,
+  currentUser: null
+};
 
-  function showSync(status, msg) {
-    const el = document.getElementById('syncStatus');
-    if (el) {
-      el.className = 'sync-status ' + status;
-      el.textContent = msg;
-    }
-  }
+const ITEMS_DEFAULT = [
+  "Encarpe de terreno","Nivelacion y compactacion de terreno con base estabilizado",
+  "Instalacion de moldajes","Suministro de malla acma c92 para la resistencia",
+  "Suministro de vaciado y estampado del hormigon HB25, 10 cm de espesor",
+  "Suministro de cuarzo endurecedor 3kg por m2","Suministro de talco desmoldante",
+  "Diseno y color a gusto del cliente","Cortes de dilatacion",
+  "Limpieza y lavado del pavimento","Aplicacion de sellador acrilico incoloro (abrillantador)",
+  "Retiro de escombros (solo superficie trabajada)","Mano de obra",
+  "Desgaste de maquinaria","Transporte"
+];
 
-  // ===== INIT =====
-  async function init() {
-    console.log('🚀 Iniciando sistema...');
-    try {
-      cargarLogo();
-      
-      // Cargar datos (Firebase o local)
-      await cargarDatos();
-      
-      // Inicializar UI
-      const fechaInput = document.getElementById('cFecha');
-      if (fechaInput) fechaInput.valueAsDate = new Date();
-      
-      window.state.itemsSel = [...ITEMS_INCLUIDOS_DEFAULT];
-      
-      renderItemsList();
-      renderTarifas();
-      renderInventario();
-      window.state.extras = EXTRAS_DEFAULT.map(e => ({...e}));
-      renderExtrasGrid();
-      renderExtrasTable();
-      calcular();
-      
-      console.log('✅ Sistema iniciado correctamente');
-    } catch (e) {
-      console.error(' Error en init():', e);
-      // Aún así mostrar el panel
-      alert('Hubo un error al iniciar: ' + e.message + '\n\nEl sistema funcionará en modo local.');
-    }
-  }
+const EXTRAS_DEFAULT = [
+  {id:'focos',desc:"Focos led mas instalacion (minimo 4 focos)",cant:4,precio:35000,selected:false},
+  {id:'tapas',desc:"Tapas de camaras",cant:1,precio:60000,selected:false}
+];
 
-  // ===== NAVEGACIÓN =====
-  window.showPage = function(p, el) {
-    document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
-    document.querySelectorAll('.sidebar nav a').forEach(x => x.classList.remove('active'));
-    document.getElementById('page-' + p).classList.add('active');
-    if (el) el.classList.add('active');
-    if (p === 'proyectos') renderProyectos();
-    if (p === 'papelera') renderPapelera();
-    if (p === 'tarifas') renderTarifas();
-    if (p === 'inventario') renderInventario();
-  };
-
-  // ===== ITEMS LIST =====
-  function renderItemsList() {
-    const c = document.getElementById('itemsList');
-    if (!c) return;
-    c.innerHTML = '';
-    ITEMS_INCLUIDOS_DEFAULT.forEach((it, i) => {
-      const div = document.createElement('div');
-      div.className = 'item-check';
-      const checked = window.state.itemsSel.includes(it) ? 'checked' : '';
-      div.innerHTML = `<input type="checkbox" id="it${i}" ${checked} onchange="toggleItem('${it.replace(/'/g, "\\'")}')"><label for="it${i}">${it}</label>`;
-      c.appendChild(div);
-    });
-  }
-
-  window.toggleItem = function(it) {
-    if (window.state.itemsSel.includes(it)) window.state.itemsSel = window.state.itemsSel.filter(x => x !== it);
-    else window.state.itemsSel.push(it);
-    calcular();
-  };
-
-  window.toggleTodosItems = function() {
-    const chk = document.getElementById('selTodos').checked;
-    window.state.itemsSel = chk ? [...ITEMS_INCLUIDOS_DEFAULT] : [];
-    renderItemsList();
-    calcular();
-  };
-
-  // ===== EXTRAS =====
-  function renderExtrasGrid() {
-    const c = document.getElementById('extrasGrid');
-    if (!c) return;
-    c.innerHTML = '';
-    if (window.state.extras.length === 0) {
-      c.innerHTML = '<div style="color:#999;font-size:13px;padding:10px">No hay trabajos extras.</div>';
-      return;
-    }
-    window.state.extras.forEach((e, i) => {
-      const div = document.createElement('div');
-      div.className = 'item-check';
-      const checked = e.selected ? 'checked' : '';
-      div.innerHTML = `<input type="checkbox" id="ex${i}" ${checked} onchange="toggleExtra(${i})"><label for="ex${i}"><strong>${e.desc || 'Sin descripcion'}</strong><br><small style="color:#999">$${e.precio.toLocaleString('es-CL')} c/u</small></label>`;
-      c.appendChild(div);
-    });
-  }
-
-  window.toggleExtra = function(i) {
-    window.state.extras[i].selected = !window.state.extras[i].selected;
-    renderExtrasGrid();
-    calcular();
-  };
-
-  function renderExtrasTable() {
-    const tb = document.getElementById('tbodyExtras');
-    if (!tb) return;
-    tb.innerHTML = '';
-    window.state.extras.forEach((e, i) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><input value="${e.desc}" oninput="window.state.extras[${i}].desc=this.value;renderExtrasGrid();calcular()"></td>
-        <td><input type="number" value="${e.cant}" min="0" oninput="window.state.extras[${i}].cant=parseFloat(this.value)||0;calcular()"></td>
-        <td><input type="number" value="${e.precio}" min="0" oninput="window.state.extras[${i}].precio=parseFloat(this.value)||0;renderExtrasGrid();calcular()"></td>
-        <td><button class="btn btn-danger btn-sm" onclick="delExtra(${i})">X</button></td>`;
-      tb.appendChild(tr);
-    });
-  }
-
-  window.addExtra = function() {
-    window.state.extras.push({id: 'extra' + Date.now(), desc: "", cant: 1, precio: 0, selected: true});
-    renderExtrasGrid();
-    renderExtrasTable();
-    calcular();
-  };
-
-  window.delExtra = function(i) {
-    window.state.extras.splice(i, 1);
-    renderExtrasGrid();
-    renderExtrasTable();
-    calcular();
-  };
-
-  // ===== TARIFAS =====
-  function getTarifa(m2) {
-    for (const t of window.state.tarifas) { if (m2 >= t.min && m2 <= t.max) return t.precio; }
-    return 0;
-  }
-
-  function getRangoTexto(m2) {
-    for (const t of window.state.tarifas) { if (m2 >= t.min && m2 <= t.max) return t.min + '-' + t.max + ' m2'; }
-    return '-';
-  }
-
-  // ===== CALCULAR =====
-  window.calcular = function() {
-    const m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
-    const tarifa = getTarifa(m2);
-    document.getElementById('cTarifa').value = m2 > 0 ? getRangoTexto(m2) : '';
-    document.getElementById('cPrecioM2').value = tarifa > 0 ? '$' + tarifa.toLocaleString('es-CL') : '';
-
-    const subtotal = Math.round(m2 * tarifa);
-    const extrasSel = window.state.extras.filter(e => e.selected);
-    const extras = extrasSel.reduce((s, e) => s + e.cant * e.precio, 0);
-    const subExt = subtotal + extras;
-
-    const aplicaIva = document.getElementById('cIncluyeIva').checked;
-    const iva = aplicaIva ? Math.round(subExt * 0.19) : 0;
-    const total = aplicaIva ? Math.round(subExt + iva) : Math.round(subExt);
-
-    document.getElementById('rCliente').textContent = document.getElementById('cNombre').value || '-';
-    document.getElementById('rVendedor').textContent = document.getElementById('cVendedor').value || '-';
-    document.getElementById('rSuperficie').textContent = m2 + ' m2';
-    document.getElementById('rPrecioM2').textContent = tarifa > 0 ? '$' + tarifa.toLocaleString('es-CL') : '$0';
-    document.getElementById('rSubtotal').textContent = '$' + subtotal.toLocaleString('es-CL');
-
-    const itemsDiv = document.getElementById('rItems');
-    itemsDiv.innerHTML = window.state.itemsSel.length === 0 ? '<span style="color:#999">Ninguno</span>' : window.state.itemsSel.map(it => `<div class="summary-item">${it}</div>`).join('');
-
-    const extrasDiv = document.getElementById('rExtrasList');
-    extrasDiv.innerHTML = extrasSel.length === 0 ? '<span style="color:#999">Ninguno seleccionado</span>' : extrasSel.map(e => `<div class="summary-item">${e.desc} x${e.cant} = $${(e.cant * e.precio).toLocaleString('es-CL')}</div>`).join('');
-
-    document.getElementById('rExtras').textContent = '$' + extras.toLocaleString('es-CL');
-    document.getElementById('rIva').textContent = aplicaIva ? 'Sí aplicado (19%) = $' + iva.toLocaleString('es-CL') : 'No aplicado';
-    document.getElementById('rIva').style.color = aplicaIva ? 'var(--verde)' : 'var(--gris)';
-    document.getElementById('rTotal').textContent = '$' + total.toLocaleString('es-CL');
-  };
-
-  document.getElementById('cVendedor').addEventListener('input', function() {
-    document.getElementById('rVendedor').textContent = this.value || '-';
-  });
-
-  // ===== GUARDAR PROYECTO =====
-  window.guardarProyecto = async function() {
-    const nombre = document.getElementById('cNombre').value.trim();
-    const tel = document.getElementById('cTelefono').value.trim();
-    if (!nombre || !tel) { alert('Nombre y Telefono son obligatorios'); return; }
-    const m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
-    if (m2 < 40) { alert('La superficie minima es 40 m2'); return; }
-
-    const total = parseFloat(document.getElementById('rTotal').textContent.replace(/\$|\./g, '')) || 0;
-    const btn = document.getElementById('btnGuardar');
-    btn.disabled = true;
-    btn.textContent = 'Guardando...';
-
-    const proj = {
-      nombre, tel,
-      email: document.getElementById('cEmail').value,
-      direccion: document.getElementById('cDireccion').value,
-      vendedor: document.getElementById('cVendedor').value.trim(),
-      fecha: document.getElementById('cFecha').value,
-      m2,
-      tarifa: getTarifa(m2),
-      aplicaIva: document.getElementById('cIncluyeIva').checked,
-      extras: JSON.parse(JSON.stringify(window.state.extras)),
-      items: JSON.parse(JSON.stringify(window.state.itemsSel)),
-      total,
-      createdBy: window.state.currentUser || 'admin',
-      updatedAt: new Date().toISOString()
-    };
-
-    try {
-      if (firebaseReady && db) {
-        if (window.state.editId) {
-          await updateDoc(doc(db, 'proyectos', window.state.editId), proj);
-          const idx = window.state.proyectos.findIndex(p => p.id === window.state.editId);
-          if (idx >= 0) window.state.proyectos[idx] = {id: window.state.editId, ...proj};
-        } else {
-          const ref = await addDoc(collection(db, 'proyectos'), proj);
-          proj.id = ref.id;
-          window.state.proyectos.push(proj);
-        }
-      } else {
-        // Modo local
-        proj.id = window.state.editId || Date.now();
-        if (window.state.editId) {
-          const idx = window.state.proyectos.findIndex(p => p.id === window.state.editId);
-          if (idx >= 0) window.state.proyectos[idx] = proj;
-        } else {
-          window.state.proyectos.push(proj);
-        }
-        guardarBackupLocal();
-      }
-      alert('✅ Proyecto guardado correctamente');
-      window.state.editId = null;
-      document.getElementById('editInfo').textContent = '';
-      document.getElementById('btnCancel').style.display = 'none';
-      limpiarForm();
-    } catch (e) {
-      console.error('Error guardando:', e);
-      alert('Error al guardar: ' + e.message);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Guardar Proyecto';
-    }
-  };
-
-  function limpiarForm() {
-    ['cNombre', 'cTelefono', 'cEmail', 'cDireccion', 'cVendedor', 'cSuperficie'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
+// ============================================================
+// INICIALIZACIÓN - Siempre funciona
+// ============================================================
+function initApp() {
+  try {
+    cargarLogo();
+    cargarDatosLocales();
+    
     const fechaInput = document.getElementById('cFecha');
     if (fechaInput) fechaInput.valueAsDate = new Date();
-    const ivaCheck = document.getElementById('cIncluyeIva');
-    if (ivaCheck) ivaCheck.checked = false;
-    window.state.extras = EXTRAS_DEFAULT.map(e => ({...e}));
-    window.state.itemsSel = [...ITEMS_INCLUIDOS_DEFAULT];
+    
+    APP.itemsSel = [...ITEMS_DEFAULT];
+    APP.extras = EXTRAS_DEFAULT.map(e => ({...e}));
+    
+    renderItemsList();
+    renderTarifas();
+    renderInventario();
     renderExtrasGrid();
     renderExtrasTable();
-    renderItemsList();
     calcular();
+    
+    // Cargar proyectos desde Firebase si está disponible
+    if (firebaseReady) {
+      sincronizarDesdeFirebase();
+    }
+    
+    console.log('✅ Sistema iniciado');
+  } catch (e) {
+    console.error('Error en init:', e);
   }
+}
 
-  window.cancelarEdicion = function() {
-    window.state.editId = null;
+function cargarLogo() {
+  const img = new Image();
+  img.onload = function() {
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      APP.logoBase64 = canvas.toDataURL('image/png');
+    } catch(e) {}
+  };
+  img.src = 'logo.png';
+}
+
+// ============================================================
+// DATOS LOCALES (localStorage como respaldo)
+// ============================================================
+function cargarDatosLocales() {
+  try {
+    const p = localStorage.getItem('pmc_proyectos');
+    const pap = localStorage.getItem('pmc_papelera');
+    const t = localStorage.getItem('pmc_tarifas');
+    const inv = localStorage.getItem('pmc_inventario');
+    if (p) APP.proyectos = JSON.parse(p);
+    if (pap) APP.papelera = JSON.parse(pap);
+    if (t) APP.tarifas = JSON.parse(t);
+    if (inv) APP.inventario = JSON.parse(inv);
+  } catch(e) {}
+}
+
+function guardarLocal() {
+  try {
+    localStorage.setItem('pmc_proyectos', JSON.stringify(APP.proyectos));
+    localStorage.setItem('pmc_papelera', JSON.stringify(APP.papelera));
+    localStorage.setItem('pmc_tarifas', JSON.stringify(APP.tarifas));
+    localStorage.setItem('pmc_inventario', JSON.stringify(APP.inventario));
+  } catch(e) {}
+}
+
+// ============================================================
+// SINCRONIZACIÓN FIREBASE
+// ============================================================
+async function sincronizarDesdeFirebase() {
+  if (!firebaseReady || !db) return;
+  
+  showSync('syncing', 'Sincronizando...');
+  try {
+    const { collection, getDocs, addDoc } = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js");
+    
+    // Cargar proyectos
+    const projSnap = await getDocs(collection(db, 'proyectos'));
+    if (!projSnap.empty) {
+      APP.proyectos = projSnap.docs.map(d => ({id: d.id, ...d.data()}));
+      guardarLocal();
+    }
+    
+    // Cargar papelera
+    const papSnap = await getDocs(collection(db, 'papelera'));
+    if (!papSnap.empty) {
+      APP.papelera = papSnap.docs.map(d => ({id: d.id, ...d.data()}));
+      guardarLocal();
+    }
+    
+    // Cargar tarifas
+    const tarifSnap = await getDocs(collection(db, 'config', 'tarifas', 'items'));
+    if (!tarifSnap.empty) {
+      APP.tarifas = tarifSnap.docs.map(d => d.data());
+      guardarLocal();
+      renderTarifas();
+      calcular();
+    }
+    
+    showSync('online', 'Conectado');
+    setTimeout(() => showSync('', ''), 3000);
+  } catch (e) {
+    console.error('Error sincronizando:', e);
+    showSync('offline', 'Modo local');
+    setTimeout(() => showSync('', ''), 3000);
+  }
+}
+
+async function guardarEnFirebase(coleccion, datos) {
+  if (!firebaseReady || !db) return;
+  try {
+    const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js");
+    await addDoc(collection(db, coleccion), datos);
+  } catch (e) {
+    console.error('Error guardando en Firebase:', e);
+  }
+}
+
+async function actualizarEnFirebase(coleccion, id, datos) {
+  if (!firebaseReady || !db) return;
+  try {
+    const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js");
+    await updateDoc(doc(db, coleccion, id), datos);
+  } catch (e) {
+    console.error('Error actualizando en Firebase:', e);
+  }
+}
+
+async function eliminarDeFirebase(coleccion, id) {
+  if (!firebaseReady || !db) return;
+  try {
+    const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js");
+    await deleteDoc(doc(db, coleccion, id));
+  } catch (e) {
+    console.error('Error eliminando de Firebase:', e);
+  }
+}
+
+function showSync(status, msg) {
+  const el = document.getElementById('syncStatus');
+  if (el) {
+    el.className = 'sync-status ' + status;
+    el.textContent = msg;
+  }
+}
+
+// ============================================================
+// NAVEGACIÓN
+// ============================================================
+function showPage(p, el) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.sidebar nav a').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  if (el) el.classList.add('active');
+  if (p === 'proyectos') renderProyectos();
+  if (p === 'papelera') renderPapelera();
+  if (p === 'tarifas') renderTarifas();
+  if (p === 'inventario') renderInventario();
+}
+
+// ============================================================
+// ITEMS
+// ============================================================
+function renderItemsList() {
+  const c = document.getElementById('itemsList');
+  if (!c) return;
+  c.innerHTML = '';
+  ITEMS_DEFAULT.forEach((it, i) => {
+    const div = document.createElement('div');
+    div.className = 'item-check';
+    const checked = APP.itemsSel.includes(it) ? 'checked' : '';
+    div.innerHTML = `<input type="checkbox" id="it${i}" ${checked} onchange="toggleItem('${it.replace(/'/g, "\\'")}')"><label for="it${i}">${it}</label>`;
+    c.appendChild(div);
+  });
+}
+
+function toggleItem(it) {
+  if (APP.itemsSel.includes(it)) APP.itemsSel = APP.itemsSel.filter(x => x !== it);
+  else APP.itemsSel.push(it);
+  calcular();
+}
+
+function toggleTodosItems() {
+  const chk = document.getElementById('selTodos').checked;
+  APP.itemsSel = chk ? [...ITEMS_DEFAULT] : [];
+  renderItemsList();
+  calcular();
+}
+
+// ============================================================
+// EXTRAS
+// ============================================================
+function renderExtrasGrid() {
+  const c = document.getElementById('extrasGrid');
+  if (!c) return;
+  c.innerHTML = '';
+  if (APP.extras.length === 0) {
+    c.innerHTML = '<div style="color:#999;font-size:13px;padding:10px">No hay trabajos extras.</div>';
+    return;
+  }
+  APP.extras.forEach((e, i) => {
+    const div = document.createElement('div');
+    div.className = 'item-check';
+    const checked = e.selected ? 'checked' : '';
+    div.innerHTML = `<input type="checkbox" id="ex${i}" ${checked} onchange="toggleExtra(${i})"><label for="ex${i}"><strong>${e.desc || 'Sin descripcion'}</strong><br><small style="color:#999">$${e.precio.toLocaleString('es-CL')} c/u</small></label>`;
+    c.appendChild(div);
+  });
+}
+
+function toggleExtra(i) {
+  APP.extras[i].selected = !APP.extras[i].selected;
+  renderExtrasGrid();
+  calcular();
+}
+
+function renderExtrasTable() {
+  const tb = document.getElementById('tbodyExtras');
+  if (!tb) return;
+  tb.innerHTML = '';
+  APP.extras.forEach((e, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input value="${e.desc}" oninput="APP.extras[${i}].desc=this.value;renderExtrasGrid();calcular()"></td>
+      <td><input type="number" value="${e.cant}" min="0" oninput="APP.extras[${i}].cant=parseFloat(this.value)||0;calcular()"></td>
+      <td><input type="number" value="${e.precio}" min="0" oninput="APP.extras[${i}].precio=parseFloat(this.value)||0;renderExtrasGrid();calcular()"></td>
+      <td><button class="btn btn-danger btn-sm" onclick="delExtra(${i})">X</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function addExtra() {
+  APP.extras.push({id: 'extra' + Date.now(), desc: "", cant: 1, precio: 0, selected: true});
+  renderExtrasGrid();
+  renderExtrasTable();
+  calcular();
+}
+
+function delExtra(i) {
+  APP.extras.splice(i, 1);
+  renderExtrasGrid();
+  renderExtrasTable();
+  calcular();
+}
+
+// ============================================================
+// TARIFAS Y CÁLCULO
+// ============================================================
+function getTarifa(m2) {
+  for (const t of APP.tarifas) { if (m2 >= t.min && m2 <= t.max) return t.precio; }
+  return 0;
+}
+
+function getRangoTexto(m2) {
+  for (const t of APP.tarifas) { if (m2 >= t.min && m2 <= t.max) return t.min + '-' + t.max + ' m2'; }
+  return '-';
+}
+
+function calcular() {
+  const m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
+  const tarifa = getTarifa(m2);
+  document.getElementById('cTarifa').value = m2 > 0 ? getRangoTexto(m2) : '';
+  document.getElementById('cPrecioM2').value = tarifa > 0 ? '$' + tarifa.toLocaleString('es-CL') : '';
+
+  const subtotal = Math.round(m2 * tarifa);
+  const extrasSel = APP.extras.filter(e => e.selected);
+  const extras = extrasSel.reduce((s, e) => s + e.cant * e.precio, 0);
+  const subExt = subtotal + extras;
+
+  const aplicaIva = document.getElementById('cIncluyeIva').checked;
+  const iva = aplicaIva ? Math.round(subExt * 0.19) : 0;
+  const total = aplicaIva ? Math.round(subExt + iva) : Math.round(subExt);
+
+  document.getElementById('rCliente').textContent = document.getElementById('cNombre').value || '-';
+  document.getElementById('rVendedor').textContent = document.getElementById('cVendedor').value || '-';
+  document.getElementById('rSuperficie').textContent = m2 + ' m2';
+  document.getElementById('rPrecioM2').textContent = tarifa > 0 ? '$' + tarifa.toLocaleString('es-CL') : '$0';
+  document.getElementById('rSubtotal').textContent = '$' + subtotal.toLocaleString('es-CL');
+
+  const itemsDiv = document.getElementById('rItems');
+  itemsDiv.innerHTML = APP.itemsSel.length === 0 ? '<span style="color:#999">Ninguno</span>' : APP.itemsSel.map(it => `<div class="summary-item">${it}</div>`).join('');
+
+  const extrasDiv = document.getElementById('rExtrasList');
+  extrasDiv.innerHTML = extrasSel.length === 0 ? '<span style="color:#999">Ninguno seleccionado</span>' : extrasSel.map(e => `<div class="summary-item">${e.desc} x${e.cant} = $${(e.cant * e.precio).toLocaleString('es-CL')}</div>`).join('');
+
+  document.getElementById('rExtras').textContent = '$' + extras.toLocaleString('es-CL');
+  document.getElementById('rIva').textContent = aplicaIva ? 'Sí aplicado (19%) = $' + iva.toLocaleString('es-CL') : 'No aplicado';
+  document.getElementById('rIva').style.color = aplicaIva ? 'var(--verde)' : 'var(--gris)';
+  document.getElementById('rTotal').textContent = '$' + total.toLocaleString('es-CL');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const vendInput = document.getElementById('cVendedor');
+  if (vendInput) {
+    vendInput.addEventListener('input', function() {
+      document.getElementById('rVendedor').textContent = this.value || '-';
+    });
+  }
+});
+
+// ============================================================
+// GUARDAR PROYECTO
+// ============================================================
+async function guardarProyecto() {
+  const nombre = document.getElementById('cNombre').value.trim();
+  const tel = document.getElementById('cTelefono').value.trim();
+  if (!nombre || !tel) { alert('Nombre y Telefono son obligatorios'); return; }
+  const m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
+  if (m2 < 40) { alert('La superficie minima es 40 m2'); return; }
+
+  const total = parseFloat(document.getElementById('rTotal').textContent.replace(/\$|\./g, '')) || 0;
+  const btn = document.getElementById('btnGuardar');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+
+  const proj = {
+    nombre, tel,
+    email: document.getElementById('cEmail').value,
+    direccion: document.getElementById('cDireccion').value,
+    vendedor: document.getElementById('cVendedor').value.trim(),
+    fecha: document.getElementById('cFecha').value,
+    m2,
+    tarifa: getTarifa(m2),
+    aplicaIva: document.getElementById('cIncluyeIva').checked,
+    extras: JSON.parse(JSON.stringify(APP.extras)),
+    items: JSON.parse(JSON.stringify(APP.itemsSel)),
+    total,
+    updatedAt: new Date().toISOString()
+  };
+
+  try {
+    if (APP.editId) {
+      // Actualizar existente
+      const idx = APP.proyectos.findIndex(p => p.id === APP.editId);
+      if (idx >= 0) {
+        APP.proyectos[idx] = {id: APP.editId, ...proj};
+        actualizarEnFirebase('proyectos', APP.editId, proj);
+      }
+    } else {
+      // Nuevo proyecto
+      if (firebaseReady) {
+        const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js");
+        const ref = await addDoc(collection(db, 'proyectos'), proj);
+        proj.id = ref.id;
+      } else {
+        proj.id = Date.now();
+      }
+      APP.proyectos.push(proj);
+    }
+    
+    guardarLocal();
+    alert('✅ Proyecto guardado correctamente');
+    APP.editId = null;
     document.getElementById('editInfo').textContent = '';
     document.getElementById('btnCancel').style.display = 'none';
     limpiarForm();
-  };
-
-  window.editarProyecto = function(id) {
-    const p = window.state.proyectos.find(x => x.id === id);
-    if (!p) return;
-    window.state.editId = id;
-    document.getElementById('cNombre').value = p.nombre;
-    document.getElementById('cTelefono').value = p.tel;
-    document.getElementById('cEmail').value = p.email || '';
-    document.getElementById('cDireccion').value = p.direccion || '';
-    document.getElementById('cVendedor').value = p.vendedor || '';
-    document.getElementById('cFecha').value = p.fecha;
-    document.getElementById('cSuperficie').value = p.m2;
-    document.getElementById('cIncluyeIva').checked = p.aplicaIva || false;
-    window.state.extras = JSON.parse(JSON.stringify(p.extras || []));
-    window.state.itemsSel = JSON.parse(JSON.stringify(p.items || ITEMS_INCLUIDOS_DEFAULT));
-    renderExtrasGrid();
-    renderExtrasTable();
-    renderItemsList();
-    calcular();
-    document.getElementById('editInfo').textContent = 'Editando proyecto: ' + p.nombre;
-    document.getElementById('btnCancel').style.display = 'inline-flex';
-    showPage('nueva', document.querySelectorAll('.sidebar nav a')[0]);
-  };
-
-  // ===== PROYECTOS =====
-  function renderProyectos() {
-    const tb = document.getElementById('tbodyProyectos');
-    if (!tb) return;
-    tb.innerHTML = '';
-    if (window.state.proyectos.length === 0) {
-      tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">No hay proyectos guardados</td></tr>';
-      return;
-    }
-    window.state.proyectos.forEach((p, i) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${i + 1}</td>
-        <td><strong>${p.nombre}</strong><br><small style="color:#999">${p.tel}</small></td>
-        <td>${p.vendedor || '-'}</td>
-        <td>${p.m2} m2</td>
-        <td><strong>$${(p.total || 0).toLocaleString('es-CL')}</strong></td>
-        <td>${p.fecha || '-'}</td>
-        <td class="proj-actions">
-          <button class="btn btn-warning btn-sm" onclick="editarProyecto('${p.id}')">Editar</button>
-          <button class="btn btn-primary btn-sm" onclick="cargarYpdf('${p.id}')">PDF</button>
-          <button class="btn btn-danger btn-sm" onclick="moverPapelera('${p.id}')">Eliminar</button>
-        </td>`;
-      tb.appendChild(tr);
-    });
+  } catch (e) {
+    alert('Error al guardar: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Guardar Proyecto';
   }
+}
 
-  window.moverPapelera = async function(id) {
-    const idx = window.state.proyectos.findIndex(p => p.id === id);
-    if (idx >= 0) {
-      const proj = window.state.proyectos[idx];
-      try {
-        if (firebaseReady && db) {
-          await addDoc(collection(db, 'papelera'), proj);
-          await deleteDoc(doc(db, 'proyectos', id));
-        }
-        window.state.papelera.push(proj);
-        window.state.proyectos.splice(idx, 1);
-        guardarBackupLocal();
-        renderProyectos();
-      } catch (e) { alert('Error: ' + e.message); }
-    }
-  };
+function limpiarForm() {
+  ['cNombre', 'cTelefono', 'cEmail', 'cDireccion', 'cVendedor', 'cSuperficie'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const fechaInput = document.getElementById('cFecha');
+  if (fechaInput) fechaInput.valueAsDate = new Date();
+  const ivaCheck = document.getElementById('cIncluyeIva');
+  if (ivaCheck) ivaCheck.checked = false;
+  APP.extras = EXTRAS_DEFAULT.map(e => ({...e}));
+  APP.itemsSel = [...ITEMS_DEFAULT];
+  renderExtrasGrid();
+  renderExtrasTable();
+  renderItemsList();
+  calcular();
+}
 
-  window.cargarYpdf = function(id) { editarProyecto(id); setTimeout(generarPDF, 300); };
+function cancelarEdicion() {
+  APP.editId = null;
+  document.getElementById('editInfo').textContent = '';
+  document.getElementById('btnCancel').style.display = 'none';
+  limpiarForm();
+}
 
-  // ===== PAPELERA =====
-  function renderPapelera() {
-    const tb = document.getElementById('tbodyPapelera');
-    if (!tb) return;
-    tb.innerHTML = '';
-    if (window.state.papelera.length === 0) {
-      tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">Papelera vacia</td></tr>';
-      return;
-    }
-    window.state.papelera.forEach((p, i) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><input type="checkbox" class="chkPap" data-id="${p.id}"></td>
-        <td>${i + 1}</td>
-        <td>${p.nombre}</td>
-        <td>${p.m2} m2</td>
-        <td>$${(p.total || 0).toLocaleString('es-CL')}</td>
-        <td>${p.fecha || '-'}</td>
-        <td class="proj-actions">
-          <button class="btn btn-success btn-sm" onclick="restaurar('${p.id}')">Restaurar</button>
-          <button class="btn btn-danger btn-sm" onclick="elimDef('${p.id}')">Eliminar</button>
-        </td>`;
-      tb.appendChild(tr);
-    });
+function editarProyecto(id) {
+  const p = APP.proyectos.find(x => x.id === id);
+  if (!p) return;
+  APP.editId = id;
+  document.getElementById('cNombre').value = p.nombre;
+  document.getElementById('cTelefono').value = p.tel;
+  document.getElementById('cEmail').value = p.email || '';
+  document.getElementById('cDireccion').value = p.direccion || '';
+  document.getElementById('cVendedor').value = p.vendedor || '';
+  document.getElementById('cFecha').value = p.fecha;
+  document.getElementById('cSuperficie').value = p.m2;
+  document.getElementById('cIncluyeIva').checked = p.aplicaIva || false;
+  APP.extras = JSON.parse(JSON.stringify(p.extras || []));
+  APP.itemsSel = JSON.parse(JSON.stringify(p.items || ITEMS_DEFAULT));
+  renderExtrasGrid();
+  renderExtrasTable();
+  renderItemsList();
+  calcular();
+  document.getElementById('editInfo').textContent = 'Editando proyecto: ' + p.nombre;
+  document.getElementById('btnCancel').style.display = 'inline-flex';
+  showPage('nueva', document.querySelectorAll('.sidebar nav a')[0]);
+}
+
+// ============================================================
+// PROYECTOS
+// ============================================================
+function renderProyectos() {
+  const tb = document.getElementById('tbodyProyectos');
+  if (!tb) return;
+  tb.innerHTML = '';
+  if (APP.proyectos.length === 0) {
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">No hay proyectos guardados</td></tr>';
+    return;
   }
+  APP.proyectos.forEach((p, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td><strong>${p.nombre}</strong><br><small style="color:#999">${p.tel}</small></td>
+      <td>${p.vendedor || '-'}</td>
+      <td>${p.m2} m2</td>
+      <td><strong>$${(p.total || 0).toLocaleString('es-CL')}</strong></td>
+      <td>${p.fecha || '-'}</td>
+      <td class="proj-actions">
+        <button class="btn btn-warning btn-sm" onclick="editarProyecto('${p.id}')">Editar</button>
+        <button class="btn btn-primary btn-sm" onclick="cargarYpdf('${p.id}')">PDF</button>
+        <button class="btn btn-danger btn-sm" onclick="moverPapelera('${p.id}')">Eliminar</button>
+      </td>`;
+    tb.appendChild(tr);
+  });
+}
 
-  window.selTodosPapelera = function(v) { document.querySelectorAll('.chkPap').forEach(c => c.checked = v); };
-
-  window.restaurar = async function(id) {
-    const idx = window.state.papelera.findIndex(p => p.id === id);
-    if (idx >= 0) {
-      try {
-        if (firebaseReady && db) {
-          await addDoc(collection(db, 'proyectos'), window.state.papelera[idx]);
-          await deleteDoc(doc(db, 'papelera', id));
-        }
-        window.state.proyectos.push(window.state.papelera[idx]);
-        window.state.papelera.splice(idx, 1);
-        guardarBackupLocal();
-        renderPapelera();
-      } catch (e) { alert('Error: ' + e.message); }
-    }
-  };
-
-  window.restaurarSel = function() { document.querySelectorAll('.chkPap:checked').forEach(c => restaurar(c.dataset.id)); };
-
-  window.elimDef = async function(id) {
-    if (!confirm('Eliminar definitivamente?')) return;
-    try {
-      if (firebaseReady && db) await deleteDoc(doc(db, 'papelera', id));
-      window.state.papelera = window.state.papelera.filter(p => p.id !== id);
-      guardarBackupLocal();
-      renderPapelera();
-    } catch (e) { alert('Error: ' + e.message); }
-  };
-
-  window.eliminarDef = async function() {
-    const sel = [...document.querySelectorAll('.chkPap:checked')].map(c => c.dataset.id);
-    if (sel.length === 0) { alert('Selecciona al menos uno'); return; }
-    if (!confirm('Eliminar definitivamente los seleccionados?')) return;
-    for (const id of sel) {
-      if (firebaseReady && db) await deleteDoc(doc(db, 'papelera', id));
-    }
-    window.state.papelera = window.state.papelera.filter(p => !sel.includes(p.id));
-    guardarBackupLocal();
-    renderPapelera();
-  };
-
-  // ===== TARIFAS =====
-  function renderTarifas() {
-    const tb = document.getElementById('tbodyTarifas');
-    if (!tb) return;
-    tb.innerHTML = '';
-    window.state.tarifas.forEach((t, i) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><input type="number" value="${t.min}" oninput="window.state.tarifas[${i}].min=parseFloat(this.value)" style="width:80px"> - <input type="number" value="${t.max}" oninput="window.state.tarifas[${i}].max=parseFloat(this.value)" style="width:80px"> m2</td>
-        <td><input type="number" value="${t.precio}" oninput="window.state.tarifas[${i}].precio=parseFloat(this.value)"></td>`;
-      tb.appendChild(tr);
-    });
-  }
-
-  window.guardarTarifas = async function() {
-    showSync('syncing', 'Guardando tarifas...');
-    try {
-      if (firebaseReady && db) {
-        const snap = await getDocs(collection(db, 'config', 'tarifas', 'items'));
-        for (const d of snap.docs) {
-          await deleteDoc(d.ref);
-        }
-        for (const t of window.state.tarifas) {
-          await addDoc(collection(db, 'config', 'tarifas', 'items'), {min: t.min, max: t.max, precio: t.precio});
-        }
-      }
-      guardarBackupLocal();
-      alert('✅ Tarifas guardadas correctamente');
-      showSync('online', 'Tarifas actualizadas');
-      setTimeout(() => showSync('', ''), 2000);
-      calcular();
-    } catch (e) { alert('Error: ' + e.message); }
-  };
-
-  // ===== INVENTARIO =====
-  function renderInventario() {
-    const tb = document.getElementById('tbodyInventario');
-    if (!tb) return;
-    tb.innerHTML = '';
-    window.state.inventario.forEach((it, i) => {
-      const total = it.cant * it.precio;
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><input value="${it.item}" oninput="window.state.inventario[${i}].item=this.value"></td>
-        <td><input type="number" value="${it.cant}" oninput="window.state.inventario[${i}].cant=parseFloat(this.value)||0;renderInventario()"></td>
-        <td><input value="${it.unidad}" oninput="window.state.inventario[${i}].unidad=this.value"></td>
-        <td><input type="number" value="${it.precio}" oninput="window.state.inventario[${i}].precio=parseFloat(this.value)||0;renderInventario()"></td>
-        <td style="font-weight:600">$${total.toLocaleString('es-CL')}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="delItemInv(${i})">X</button></td>`;
-      tb.appendChild(tr);
-    });
-  }
-
-  window.addItemInv = function() { window.state.inventario.push({item: "", cant: 1, unidad: "un", precio: 0}); renderInventario(); };
-  window.delItemInv = function(i) { window.state.inventario.splice(i, 1); renderInventario(); };
-
-  // ===== PDF =====
-  window.generarPDF = function() {
-    const {jsPDF} = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'letter');
-    const W = doc.internal.pageSize.getWidth();
-    const H = doc.internal.pageSize.getHeight();
-
-    const nombre = document.getElementById('cNombre').value || 'Cliente';
-    const tel = document.getElementById('cTelefono').value || '';
-    const email = document.getElementById('cEmail').value || '';
-    const direccion = document.getElementById('cDireccion').value || '';
-    const vendedor = document.getElementById('cVendedor').value.trim() || '';
-    const fecha = document.getElementById('cFecha').value || new Date().toISOString().slice(0, 10);
-    const m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
-    const tarifa = getTarifa(m2);
-    const subtotal = Math.round(m2 * tarifa);
-    const extrasSel = window.state.extras.filter(e => e.selected);
-    const extras = extrasSel.reduce((s, e) => s + e.cant * e.precio, 0);
-    const subExt = subtotal + extras;
-    const aplicaIva = document.getElementById('cIncluyeIva').checked;
-    const ivaCalc = aplicaIva ? Math.round(subExt * 0.19) : 0;
-    const total = aplicaIva ? Math.round(subExt + ivaCalc) : Math.round(subExt);
-    const numCot = 'COT-' + String(Date.now()).slice(-6);
-
-    const cafe = [59, 36, 22];
-    const cafeClaro = [166, 124, 82];
-    const mostaza = [201, 160, 90];
-    const crema = [245, 236, 215];
-
-    doc.setFillColor(...cafeClaro);
-    doc.rect(0, 0, W, 35, 'F');
-
-    if (window.state.logoBase64) {
-      try { doc.addImage(window.state.logoBase64, 'PNG', 8, 3, 28, 28); } catch(e) {}
-    }
-
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(16);
-    doc.setFont(undefined, 'bold');
-    doc.text('PAVIMENTOS M&C', 42, 14);
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'normal');
-    doc.text('HORMIGON ESTAMPADO', 42, 21);
-    doc.setFontSize(7);
-    doc.text('ventas@pavimentosmyc.cl  |  +56 9 3066 5920  |  Lampa, Chile', 42, 28);
-
-    doc.setFillColor(...mostaza);
-    doc.rect(0, 35, W, 9, 'F');
-    doc.setTextColor(...cafe);
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
-    doc.text('COTIZACION N° ' + numCot, W / 2, 41.5, {align: 'center'});
-
-    let y = 49;
-    const boxH = 32;
-    doc.setFillColor(...crema);
-    doc.rect(10, y, W - 20, boxH, 'F');
-    doc.setDrawColor(...mostaza);
-    doc.setLineWidth(0.5);
-    doc.rect(10, y, W - 20, boxH, 'S');
-
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(...cafe);
-    doc.setFontSize(10);
-    doc.text('COTIZADO PARA', 14, y + 6);
-
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(40, 40, 40);
-    doc.setFontSize(12);
-    doc.text(nombre, 14, y + 12);
-
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(80, 80, 80);
-    doc.setFontSize(9);
-    doc.text('Tel: ' + tel, 14, y + 18);
-    if (email) doc.text('Email: ' + email, 14, y + 23);
-
-    if (direccion) {
-      doc.setFont(undefined, 'normal');
-      doc.setTextColor(60, 60, 60);
-      doc.setFontSize(9);
-      doc.text('Direccion:', 14, y + 28);
-      const dirLines = doc.splitTextToSize(direccion, W/2 - 20);
-      doc.text(dirLines, 17, y + 32);
-    }
-
-    if (vendedor) {
-      doc.setFont(undefined, 'bold');
-      doc.setTextColor(...cafe);
-      doc.setFontSize(9);
-      doc.text('Vendedor:', W - 75, y + 6);
-      doc.setFont(undefined, 'normal');
-      doc.setTextColor(60, 60, 60);
-      doc.setFontSize(10);
-      doc.text(vendedor, W - 75, y + 12);
-    }
-
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(...cafe);
-    doc.setFontSize(9);
-    doc.text('Fecha:', W - 75, y + (vendedor ? 17 : 6));
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(60, 60, 60);
-    doc.setFontSize(10);
-    doc.text(fecha, W - 75, y + (vendedor ? 23 : 12));
-    doc.setFontSize(8);
-    doc.text('Vigencia: 10 dias', W - 75, y + (vendedor ? 27 : 17));
-
-    y += boxH + 4;
-
-    doc.autoTable({
-      startY: y,
-      head: [['CONDICIONES DE PAGO']],
-      body: [['Anticipo: 50% para iniciar obras | Saldo: 30% hormigonado + 20% contra entrega\nForma de pago: Transferencia, Efectivo, Tarjeta de credito (aplica 19% adicional)']],
-      theme: 'grid',
-      headStyles: {fillColor: cafe, textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold', halign: 'center'},
-      styles: {fontSize: 7, cellPadding: 2},
-      columnStyles: {0: {cellWidth: W - 20}},
-      margin: {left: 10, right: 10}
-    });
-    y = doc.lastAutoTable.finalY + 3;
-
-    const bodyItems = [];
-    bodyItems.push(['Hormigon Estampado', m2 + ' m2', '$' + tarifa.toLocaleString('es-CL') + '/m2', '$' + subtotal.toLocaleString('es-CL')]);
-    extrasSel.forEach(e => {
-      bodyItems.push([e.desc, e.cant, '$' + e.precio.toLocaleString('es-CL'), '$' + (e.cant * e.precio).toLocaleString('es-CL')]);
-    });
-
-    doc.autoTable({
-      startY: y,
-      head: [['DESCRIPCION', 'CANT.', 'PRECIO UNIT.', 'IMPORTE']],
-      body: bodyItems,
-      theme: 'grid',
-      headStyles: {fillColor: cafe, textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold', halign: 'center'},
-      styles: {fontSize: 8, cellPadding: 2.5},
-      columnStyles: {0: {cellWidth: 85}, 1: {cellWidth: 25, halign: 'center'}, 2: {cellWidth: 35, halign: 'right'}, 3: {cellWidth: 35, halign: 'right', fontStyle: 'bold'}},
-      margin: {left: 10, right: 10}
-    });
-    y = doc.lastAutoTable.finalY + 2;
-
-    const totalesBody = [['Subtotal', '', '', '$' + subExt.toLocaleString('es-CL')]];
-    if (aplicaIva) {
-      totalesBody.push(['IVA (19%)', '', '', '$' + ivaCalc.toLocaleString('es-CL')]);
-    }
-    totalesBody.push(['TOTAL', '', '', '$' + total.toLocaleString('es-CL')]);
-
-    doc.autoTable({
-      startY: y,
-      body: totalesBody,
-      theme: 'grid',
-      styles: {fontSize: 9, cellPadding: 2.5},
-      columnStyles: {0: {cellWidth: 85, fontStyle: 'bold'}, 1: {cellWidth: 25}, 2: {cellWidth: 35}, 3: {cellWidth: 35, halign: 'right', fontStyle: 'bold'}},
-      rowStyles: {totalesBody.length - 1: {fillColor: mostaza, textColor: cafe, fontSize: 11}},
-      margin: {left: 10, right: 10}
-    });
-    y = doc.lastAutoTable.finalY + 3;
-
-    const itemsH = 32;
-    doc.setFillColor(...crema);
-    doc.rect(10, y, W - 20, itemsH, 'F');
-    doc.setDrawColor(...mostaza);
-    doc.setLineWidth(0.4);
-    doc.rect(10, y, W - 20, itemsH, 'S');
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(...cafe);
-    doc.setFontSize(9);
-    doc.text('ITEMS INCLUIDOS EN EL PRECIO', 14, y + 5);
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(60, 60, 60);
-    doc.setFontSize(7.5);
-    const itemsCol1 = window.state.itemsSel.slice(0, Math.ceil(window.state.itemsSel.length / 2));
-    const itemsCol2 = window.state.itemsSel.slice(Math.ceil(window.state.itemsSel.length / 2));
-    const maxItems = Math.max(itemsCol1.length, itemsCol2.length);
-    const step = (itemsH - 7) / maxItems;
-    for (let i = 0; i < maxItems; i++) {
-      if (itemsCol1[i]) doc.text('- ' + itemsCol1[i], 14, y + 8 + i * step);
-      if (itemsCol2[i]) doc.text('- ' + itemsCol2[i], W / 2 + 5, y + 8 + i * step);
-    }
-    y += itemsH + 3;
-
-    const alcanceH = 22;
-    doc.setFillColor(...crema);
-    doc.rect(10, y, W - 20, alcanceH, 'F');
-    doc.setDrawColor(...mostaza);
-    doc.setLineWidth(0.4);
-    doc.rect(10, y, W - 20, alcanceH, 'S');
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(...cafe);
-    doc.setFontSize(9);
-    doc.text('ALCANCE DEL PROYECTO', 14, y + 5);
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(60, 60, 60);
-    doc.setFontSize(7.5);
-    const alcance = [
-      'Preparacion, nivelacion y compactacion del terreno con base estabilizado',
-      'Estampado con moldes profesionales - Hormigon HB25, 10 cm de espesor',
-      'Instalacion de malla ACMA C92 - Cuarzo endurecedor 3kg/m2',
-      'Diseno y color a eleccion del cliente - Juntas y cortes de dilatacion',
-      'Sello acrilico protector incoloro - Limpieza y entrega final'
-    ];
-    const aStep = (alcanceH - 6) / alcance.length;
-    alcance.forEach((a, i) => { doc.text('- ' + a, 14, y + 8 + i * aStep); });
-    y += alcanceH + 3;
-
-    const garantiaH = 18;
-    doc.setFillColor(...crema);
-    doc.rect(10, y, W - 20, garantiaH, 'F');
-    doc.setDrawColor(...mostaza);
-    doc.setLineWidth(0.4);
-    doc.rect(10, y, W - 20, garantiaH, 'S');
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(...cafe);
-    doc.setFontSize(9);
-    doc.text('GARANTIA', 14, y + 5);
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(60, 60, 60);
-    doc.setFontSize(7.5);
-    doc.text('12 meses desde el dia del hormigon por concepto de fisuras y fracturas.', 14, y + 9);
-    doc.text('Mantencion anual recomendada: paño con cera acrilica incolora liquida.', 14, y + 13);
-    doc.text('Focos LED: garantia de 4 meses. Post-venta: plazo de 90 dias para ejecucion.', 14, y + 16);
-
-    doc.setFontSize(7);
-    doc.setTextColor(130, 130, 130);
-    doc.text('Pavimentos M&C SPA - Hormigon Estampado - Lampa, Chile', W / 2, H - 6, {align: 'center'});
-
-    doc.save('Cotizacion_' + numCot + '_' + nombre.replace(/\s+/g, '_') + '.pdf');
-  };
-
-  window.enviarWhatsApp = function() {
-    const nombre = document.getElementById('cNombre').value || 'Cliente';
-    const total = document.getElementById('rTotal').textContent;
-    const m2 = document.getElementById('cSuperficie').value || 0;
-    const msg = `Hola ${nombre}, te enviamos la cotizacion de Pavimentos M&C:\n\nSuperficie: ${m2} m2\nTotal: ${total}\n\nFormas de pago: 50% inicio, 30% hormigonado, 20% entrega.\n\nQuedamos atentos.`;
-    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
-  };
-
-  window.enviarCorreo = function() {
-    const email = document.getElementById('cEmail').value;
-    if (!email) { alert('Ingresa un email'); return; }
-    const nombre = document.getElementById('cNombre').value || 'Cliente';
-    const total = document.getElementById('rTotal').textContent;
-    const subject = 'Cotizacion Pavimentos M&C - ' + nombre;
-    const body = `Estimado/a ${nombre},\n\nAdjuntamos cotizacion por ${total}.\n\nSaludos,\nPavimentos M&C`;
-    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  };
-
-  window.cargarProyectos = async function() {
-    await cargarDatos();
+async function moverPapelera(id) {
+  const idx = APP.proyectos.findIndex(p => p.id === id);
+  if (idx >= 0) {
+    const proj = APP.proyectos[idx];
+    APP.papelera.push(proj);
+    APP.proyectos.splice(idx, 1);
+    await eliminarDeFirebase('proyectos', id);
+    await guardarEnFirebase('papelera', proj);
+    guardarLocal();
     renderProyectos();
-  };
+  }
+}
 
-  document.getElementById('loginPass').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+function cargarYpdf(id) { editarProyecto(id); setTimeout(generarPDF, 300); }
+
+// ============================================================
+// PAPELERA
+// ============================================================
+function renderPapelera() {
+  const tb = document.getElementById('tbodyPapelera');
+  if (!tb) return;
+  tb.innerHTML = '';
+  if (APP.papelera.length === 0) {
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">Papelera vacia</td></tr>';
+    return;
+  }
+  APP.papelera.forEach((p, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="checkbox" class="chkPap" data-id="${p.id}"></td>
+      <td>${i + 1}</td>
+      <td>${p.nombre}</td>
+      <td>${p.m2} m2</td>
+      <td>$${(p.total || 0).toLocaleString('es-CL')}</td>
+      <td>${p.fecha || '-'}</td>
+      <td class="proj-actions">
+        <button class="btn btn-success btn-sm" onclick="restaurar('${p.id}')">Restaurar</button>
+        <button class="btn btn-danger btn-sm" onclick="elimDef('${p.id}')">Eliminar</button>
+      </td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function selTodosPapelera(v) { document.querySelectorAll('.chkPap').forEach(c => c.checked = v); }
+
+async function restaurar(id) {
+  const idx = APP.papelera.findIndex(p => p.id === id);
+  if (idx >= 0) {
+    APP.proyectos.push(APP.papelera[idx]);
+    APP.papelera.splice(idx, 1);
+    await eliminarDeFirebase('papelera', id);
+    await guardarEnFirebase('proyectos', APP.proyectos[APP.proyectos.length - 1]);
+    guardarLocal();
+    renderPapelera();
+  }
+}
+
+function restaurarSel() { document.querySelectorAll('.chkPap:checked').forEach(c => restaurar(c.dataset.id)); }
+
+async function elimDef(id) {
+  if (!confirm('Eliminar definitivamente?')) return;
+  await eliminarDeFirebase('papelera', id);
+  APP.papelera = APP.papelera.filter(p => p.id !== id);
+  guardarLocal();
+  renderPapelera();
+}
+
+async function eliminarDef() {
+  const sel = [...document.querySelectorAll('.chkPap:checked')].map(c => c.dataset.id);
+  if (sel.length === 0) { alert('Selecciona al menos uno'); return; }
+  if (!confirm('Eliminar definitivamente los seleccionados?')) return;
+  for (const id of sel) {
+    await eliminarDeFirebase('papelera', id);
+  }
+  APP.papelera = APP.papelera.filter(p => !sel.includes(p.id));
+  guardarLocal();
+  renderPapelera();
+}
+
+// ============================================================
+// TARIFAS
+// ============================================================
+function renderTarifas() {
+  const tb = document.getElementById('tbodyTarifas');
+  if (!tb) return;
+  tb.innerHTML = '';
+  APP.tarifas.forEach((t, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="number" value="${t.min}" oninput="APP.tarifas[${i}].min=parseFloat(this.value)" style="width:80px"> - <input type="number" value="${t.max}" oninput="APP.tarifas[${i}].max=parseFloat(this.value)" style="width:80px"> m2</td>
+      <td><input type="number" value="${t.precio}" oninput="APP.tarifas[${i}].precio=parseFloat(this.value)"></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+async function guardarTarifas() {
+  showSync('syncing', 'Guardando tarifas...');
+  try {
+    if (firebaseReady && db) {
+      const { collection, getDocs, addDoc, deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js");
+      const snap = await getDocs(collection(db, 'config', 'tarifas', 'items'));
+      for (const d of snap.docs) {
+        await deleteDoc(d.ref);
+      }
+      for (const t of APP.tarifas) {
+        await addDoc(collection(db, 'config', 'tarifas', 'items'), {min: t.min, max: t.max, precio: t.precio});
+      }
+    }
+    guardarLocal();
+    alert('✅ Tarifas guardadas');
+    showSync('online', 'Tarifas actualizadas');
+    setTimeout(() => showSync('', ''), 2000);
+    calcular();
+  } catch (e) { alert('Error: ' + e.message); }
+}
+
+// ============================================================
+// INVENTARIO
+// ============================================================
+function renderInventario() {
+  const tb = document.getElementById('tbodyInventario');
+  if (!tb) return;
+  tb.innerHTML = '';
+  APP.inventario.forEach((it, i) => {
+    const total = it.cant * it.precio;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input value="${it.item}" oninput="APP.inventario[${i}].item=this.value"></td>
+      <td><input type="number" value="${it.cant}" oninput="APP.inventario[${i}].cant=parseFloat(this.value)||0;renderInventario()"></td>
+      <td><input value="${it.unidad}" oninput="APP.inventario[${i}].unidad=this.value"></td>
+      <td><input type="number" value="${it.precio}" oninput="APP.inventario[${i}].precio=parseFloat(this.value)||0;renderInventario()"></td>
+      <td style="font-weight:600">$${total.toLocaleString('es-CL')}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="delItemInv(${i})">X</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function addItemInv() { APP.inventario.push({item: "", cant: 1, unidad: "un", precio: 0}); renderInventario(); }
+function delItemInv(i) { APP.inventario.splice(i, 1); renderInventario(); }
+
+// ============================================================
+// PDF
+// ============================================================
+function generarPDF() {
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'letter');
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+
+  const nombre = document.getElementById('cNombre').value || 'Cliente';
+  const tel = document.getElementById('cTelefono').value || '';
+  const email = document.getElementById('cEmail').value || '';
+  const direccion = document.getElementById('cDireccion').value || '';
+  const vendedor = document.getElementById('cVendedor').value.trim() || '';
+  const fecha = document.getElementById('cFecha').value || new Date().toISOString().slice(0, 10);
+  const m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
+  const tarifa = getTarifa(m2);
+  const subtotal = Math.round(m2 * tarifa);
+  const extrasSel = APP.extras.filter(e => e.selected);
+  const extras = extrasSel.reduce((s, e) => s + e.cant * e.precio, 0);
+  const subExt = subtotal + extras;
+  const aplicaIva = document.getElementById('cIncluyeIva').checked;
+  const ivaCalc = aplicaIva ? Math.round(subExt * 0.19) : 0;
+  const total = aplicaIva ? Math.round(subExt + ivaCalc) : Math.round(subExt);
+  const numCot = 'COT-' + String(Date.now()).slice(-6);
+
+  const cafe = [59, 36, 22];
+  const cafeClaro = [166, 124, 82];
+  const mostaza = [201, 160, 90];
+  const crema = [245, 236, 215];
+
+  doc.setFillColor(...cafeClaro);
+  doc.rect(0, 0, W, 35, 'F');
+
+  if (APP.logoBase64) {
+    try { doc.addImage(APP.logoBase64, 'PNG', 8, 3, 28, 28); } catch(e) {}
+  }
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(16);
+  doc.setFont(undefined, 'bold');
+  doc.text('PAVIMENTOS M&C', 42, 14);
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  doc.text('HORMIGON ESTAMPADO', 42, 21);
+  doc.setFontSize(7);
+  doc.text('ventas@pavimentosmyc.cl  |  +56 9 3066 5920  |  Lampa, Chile', 42, 28);
+
+  doc.setFillColor(...mostaza);
+  doc.rect(0, 35, W, 9, 'F');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(12);
+  doc.setFont(undefined, 'bold');
+  doc.text('COTIZACION N° ' + numCot, W / 2, 41.5, {align: 'center'});
+
+  let y = 49;
+  const boxH = 32;
+  doc.setFillColor(...crema);
+  doc.rect(10, y, W - 20, boxH, 'F');
+  doc.setDrawColor(...mostaza);
+  doc.setLineWidth(0.5);
+  doc.rect(10, y, W - 20, boxH, 'S');
+
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(10);
+  doc.text('COTIZADO PARA', 14, y + 6);
+
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(40, 40, 40);
+  doc.setFontSize(12);
+  doc.text(nombre, 14, y + 12);
+
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(80, 80, 80);
+  doc.setFontSize(9);
+  doc.text('Tel: ' + tel, 14, y + 18);
+  if (email) doc.text('Email: ' + email, 14, y + 23);
+
+  if (direccion) {
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(60, 60, 60);
+    doc.setFontSize(9);
+    doc.text('Direccion:', 14, y + 28);
+    const dirLines = doc.splitTextToSize(direccion, W/2 - 20);
+    doc.text(dirLines, 17, y + 32);
+  }
+
+  if (vendedor) {
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(...cafe);
+    doc.setFontSize(9);
+    doc.text('Vendedor:', W - 75, y + 6);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(60, 60, 60);
+    doc.setFontSize(10);
+    doc.text(vendedor, W - 75, y + 12);
+  }
+
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(9);
+  doc.text('Fecha:', W - 75, y + (vendedor ? 17 : 6));
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(60, 60, 60);
+  doc.setFontSize(10);
+  doc.text(fecha, W - 75, y + (vendedor ? 23 : 12));
+  doc.setFontSize(8);
+  doc.text('Vigencia: 10 dias', W - 75, y + (vendedor ? 27 : 17));
+
+  y += boxH + 4;
+
+  doc.autoTable({
+    startY: y,
+    head: [['CONDICIONES DE PAGO']],
+    body: [['Anticipo: 50% para iniciar obras | Saldo: 30% hormigonado + 20% contra entrega\nForma de pago: Transferencia, Efectivo, Tarjeta de credito (aplica 19% adicional)']],
+    theme: 'grid',
+    headStyles: {fillColor: cafe, textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold', halign: 'center'},
+    styles: {fontSize: 7, cellPadding: 2},
+    columnStyles: {0: {cellWidth: W - 20}},
+    margin: {left: 10, right: 10}
+  });
+  y = doc.lastAutoTable.finalY + 3;
+
+  const bodyItems = [];
+  bodyItems.push(['Hormigon Estampado', m2 + ' m2', '$' + tarifa.toLocaleString('es-CL') + '/m2', '$' + subtotal.toLocaleString('es-CL')]);
+  extrasSel.forEach(e => {
+    bodyItems.push([e.desc, e.cant, '$' + e.precio.toLocaleString('es-CL'), '$' + (e.cant * e.precio).toLocaleString('es-CL')]);
+  });
+
+  doc.autoTable({
+    startY: y,
+    head: [['DESCRIPCION', 'CANT.', 'PRECIO UNIT.', 'IMPORTE']],
+    body: bodyItems,
+    theme: 'grid',
+    headStyles: {fillColor: cafe, textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold', halign: 'center'},
+    styles: {fontSize: 8, cellPadding: 2.5},
+    columnStyles: {0: {cellWidth: 85}, 1: {cellWidth: 25, halign: 'center'}, 2: {cellWidth: 35, halign: 'right'}, 3: {cellWidth: 35, halign: 'right', fontStyle: 'bold'}},
+    margin: {left: 10, right: 10}
+  });
+  y = doc.lastAutoTable.finalY + 2;
+
+  const totalesBody = [['Subtotal', '', '', '$' + subExt.toLocaleString('es-CL')]];
+  if (aplicaIva) {
+    totalesBody.push(['IVA (19%)', '', '', '$' + ivaCalc.toLocaleString('es-CL')]);
+  }
+  totalesBody.push(['TOTAL', '', '', '$' + total.toLocaleString('es-CL')]);
+
+  doc.autoTable({
+    startY: y,
+    body: totalesBody,
+    theme: 'grid',
+    styles: {fontSize: 9, cellPadding: 2.5},
+    columnStyles: {0: {cellWidth: 85, fontStyle: 'bold'}, 1: {cellWidth: 25}, 2: {cellWidth: 35}, 3: {cellWidth: 35, halign: 'right', fontStyle: 'bold'}},
+    rowStyles: {totalesBody.length - 1: {fillColor: mostaza, textColor: cafe, fontSize: 11}},
+    margin: {left: 10, right: 10}
+  });
+  y = doc.lastAutoTable.finalY + 3;
+
+  const itemsH = 32;
+  doc.setFillColor(...crema);
+  doc.rect(10, y, W - 20, itemsH, 'F');
+  doc.setDrawColor(...mostaza);
+  doc.setLineWidth(0.4);
+  doc.rect(10, y, W - 20, itemsH, 'S');
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(9);
+  doc.text('ITEMS INCLUIDOS EN EL PRECIO', 14, y + 5);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(60, 60, 60);
+  doc.setFontSize(7.5);
+  const itemsCol1 = APP.itemsSel.slice(0, Math.ceil(APP.itemsSel.length / 2));
+  const itemsCol2 = APP.itemsSel.slice(Math.ceil(APP.itemsSel.length / 2));
+  const maxItems = Math.max(itemsCol1.length, itemsCol2.length);
+  const step = (itemsH - 7) / maxItems;
+  for (let i = 0; i < maxItems; i++) {
+    if (itemsCol1[i]) doc.text('- ' + itemsCol1[i], 14, y + 8 + i * step);
+    if (itemsCol2[i]) doc.text('- ' + itemsCol2[i], W / 2 + 5, y + 8 + i * step);
+  }
+  y += itemsH + 3;
+
+  const alcanceH = 22;
+  doc.setFillColor(...crema);
+  doc.rect(10, y, W - 20, alcanceH, 'F');
+  doc.setDrawColor(...mostaza);
+  doc.setLineWidth(0.4);
+  doc.rect(10, y, W - 20, alcanceH, 'S');
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(9);
+  doc.text('ALCANCE DEL PROYECTO', 14, y + 5);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(60, 60, 60);
+  doc.setFontSize(7.5);
+  const alcance = [
+    'Preparacion, nivelacion y compactacion del terreno con base estabilizado',
+    'Estampado con moldes profesionales - Hormigon HB25, 10 cm de espesor',
+    'Instalacion de malla ACMA C92 - Cuarzo endurecedor 3kg/m2',
+    'Diseno y color a eleccion del cliente - Juntas y cortes de dilatacion',
+    'Sello acrilico protector incoloro - Limpieza y entrega final'
+  ];
+  const aStep = (alcanceH - 6) / alcance.length;
+  alcance.forEach((a, i) => { doc.text('- ' + a, 14, y + 8 + i * aStep); });
+  y += alcanceH + 3;
+
+  const garantiaH = 18;
+  doc.setFillColor(...crema);
+  doc.rect(10, y, W - 20, garantiaH, 'F');
+  doc.setDrawColor(...mostaza);
+  doc.setLineWidth(0.4);
+  doc.rect(10, y, W - 20, garantiaH, 'S');
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(...cafe);
+  doc.setFontSize(9);
+  doc.text('GARANTIA', 14, y + 5);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(60, 60, 60);
+  doc.setFontSize(7.5);
+  doc.text('12 meses desde el dia del hormigon por concepto de fisuras y fracturas.', 14, y + 9);
+  doc.text('Mantencion anual recomendada: paño con cera acrilica incolora liquida.', 14, y + 13);
+  doc.text('Focos LED: garantia de 4 meses. Post-venta: plazo de 90 dias para ejecucion.', 14, y + 16);
+
+  doc.setFontSize(7);
+  doc.setTextColor(130, 130, 130);
+  doc.text('Pavimentos M&C SPA - Hormigon Estampado - Lampa, Chile', W / 2, H - 6, {align: 'center'});
+
+  doc.save('Cotizacion_' + numCot + '_' + nombre.replace(/\s+/g, '_') + '.pdf');
+}
+
+function enviarWhatsApp() {
+  const nombre = document.getElementById('cNombre').value || 'Cliente';
+  const total = document.getElementById('rTotal').textContent;
+  const m2 = document.getElementById('cSuperficie').value || 0;
+  const msg = `Hola ${nombre}, te enviamos la cotizacion de Pavimentos M&C:\n\nSuperficie: ${m2} m2\nTotal: ${total}\n\nFormas de pago: 50% inicio, 30% hormigonado, 20% entrega.\n\nQuedamos atentos.`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function enviarCorreo() {
+  const email = document.getElementById('cEmail').value;
+  if (!email) { alert('Ingresa un email'); return; }
+  const nombre = document.getElementById('cNombre').value || 'Cliente';
+  const total = document.getElementById('rTotal').textContent;
+  const subject = 'Cotizacion Pavimentos M&C - ' + nombre;
+  const body = `Estimado/a ${nombre},\n\nAdjuntamos cotizacion por ${total}.\n\nSaludos,\nPavimentos M&C`;
+  window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+async function cargarProyectos() {
+  await sincronizarDesdeFirebase();
+  renderProyectos();
+}
+
+// Enter en login
+document.getElementById('loginPass').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
 </script>
 </body>
 </html>
