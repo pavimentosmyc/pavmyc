@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Pavimentos M&amp;C - Sistema de Cotizaciones</title>
   <link rel="icon" href="logo.png">
   <style>
@@ -15,11 +15,13 @@
       --blanco: #ffffff;
       --rojo: #b23a2a;
       --verde: #2e8b57;
+      --sidebar-w: 270px;
+      --topbar-h: 58px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
+
+    html { -webkit-text-size-adjust: 100%; }
 
     body {
       margin: 0;
@@ -28,22 +30,13 @@
       color: #28221d;
     }
 
-    a {
-      color: inherit;
-    }
+    a { color: inherit; }
 
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
+    button, input, select, textarea { font: inherit; }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
 
-    /* LOGIN */
+    /* ============ LOGIN ============ */
     .login-overlay {
       position: fixed;
       inset: 0;
@@ -52,9 +45,7 @@
       align-items: center;
       justify-content: center;
       padding: 18px;
-      background:
-        linear-gradient(rgba(59, 36, 22, 0.88), rgba(59, 36, 22, 0.88)),
-        #5c3a21;
+      background: linear-gradient(rgba(59, 36, 22, 0.88), rgba(59, 36, 22, 0.88)), #5c3a21;
     }
 
     .login-box {
@@ -66,6 +57,8 @@
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
       padding: 28px;
       text-align: center;
+      max-height: 92vh;
+      overflow-y: auto;
     }
 
     .login-logo {
@@ -79,33 +72,12 @@
       padding: 8px;
     }
 
-    .login-box h1 {
-      margin: 0;
-      color: var(--cafe-oscuro);
-      font-size: 28px;
-      line-height: 1.1;
-    }
+    .login-box h1 { margin: 0; color: var(--cafe-oscuro); font-size: 28px; line-height: 1.1; }
+    .login-box .subtitle { margin: 6px 0 18px; color: var(--cafe); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; }
 
-    .login-box .subtitle {
-      margin: 6px 0 18px;
-      color: var(--cafe);
-      font-size: 13px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .field {
-      margin-bottom: 12px;
-      text-align: left;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: bold;
-      color: var(--cafe);
-      font-size: 14px;
-    }
+    /* ============ FORMULARIOS ============ */
+    .field { margin-bottom: 12px; text-align: left; }
+    .field label { display: block; margin-bottom: 6px; font-weight: bold; color: var(--cafe); font-size: 14px; }
 
     .form-control {
       width: 100%;
@@ -115,13 +87,12 @@
       border-radius: 10px;
       background: #fffdf8;
       color: #2c231a;
+      font-size: 16px; /* evita zoom automático en iOS */
     }
 
-    .form-control:focus {
-      outline: 2px solid rgba(201, 160, 90, 0.45);
-      border-color: var(--mostaza);
-    }
+    .form-control:focus { outline: 2px solid rgba(201, 160, 90, 0.45); border-color: var(--mostaza); }
 
+    /* ============ BOTONES ============ */
     .btn {
       border: 1px solid var(--cafe);
       background: var(--mostaza);
@@ -132,46 +103,19 @@
       padding: 9px 14px;
       cursor: pointer;
       transition: 0.18s ease;
+      touch-action: manipulation;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-      filter: brightness(0.98);
-    }
+    .btn:hover { transform: translateY(-1px); filter: brightness(0.98); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary { background: var(--cafe); color: #fff; }
+    .btn-danger { background: var(--rojo); border-color: var(--rojo); color: #fff; }
+    .btn-dark { background: var(--cafe-oscuro); border-color: var(--cafe-oscuro); color: #fff; }
+    .btn-light { background: var(--crema); }
+    .btn-block { width: 100%; }
+    .btn-sm { min-height: 36px; padding: 6px 10px; border-radius: 8px; font-size: 13px; }
 
-    .btn-primary {
-      background: var(--cafe);
-      color: #fff;
-    }
-
-    .btn-danger {
-      background: var(--rojo);
-      border-color: var(--rojo);
-      color: #fff;
-    }
-
-    .btn-dark {
-      background: var(--cafe-oscuro);
-      border-color: var(--cafe-oscuro);
-      color: #fff;
-    }
-
-    .btn-light {
-      background: var(--crema);
-    }
-
-    .btn-block {
-      width: 100%;
-    }
-
-    .btn-sm {
-      min-height: 34px;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 13px;
-    }
-
-    /* STATUS DB */
+    /* ============ INDICADOR DB ============ */
     .db-status {
       position: fixed;
       top: 12px;
@@ -190,427 +134,225 @@
       color: var(--cafe-oscuro);
     }
 
-    .db-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--rojo);
+    .db-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--rojo); flex: 0 0 auto; }
+    .db-status.online .db-dot { background: var(--verde); }
+
+    /* ============ TOPBAR MOVIL ============ */
+    .topbar {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--topbar-h);
+      background: var(--cafe-oscuro);
+      color: #fff;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      z-index: 1200;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
+
+    .menu-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      border-radius: 10px;
+      min-height: 42px;
+      min-width: 42px;
+      font-size: 20px;
+      cursor: pointer;
       flex: 0 0 auto;
     }
 
-    .db-status.online .db-dot {
-      background: var(--verde);
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: bold;
+      color: var(--mostaza);
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* LAYOUT */
+    .topbar-brand img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      background: var(--crema);
+      border-radius: 8px;
+      padding: 3px;
+      flex: 0 0 auto;
+    }
+
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 1400;
+      display: none;
+    }
+
+    /* ============ SIDEBAR ============ */
     .sidebar {
       position: fixed;
       top: 0;
       left: 0;
-      width: 270px;
+      width: var(--sidebar-w);
       height: 100vh;
-      overflow: auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       padding: 18px 16px 24px;
       background: linear-gradient(180deg, var(--cafe-oscuro), #2c1a10);
       color: #fff;
-      z-index: 1000;
+      z-index: 1500;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 6px 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-      margin-bottom: 16px;
-    }
+    .brand { display: flex; align-items: center; gap: 12px; padding: 8px 6px 14px; border-bottom: 1px solid rgba(255,255,255,0.14); margin-bottom: 16px; }
+    .brand img { width: 56px; height: 56px; object-fit: contain; background: var(--crema); border-radius: 14px; padding: 5px; flex: 0 0 auto; }
+    .brand .brand-text strong { display: block; font-size: 18px; line-height: 1.05; color: var(--mostaza); }
+    .brand .brand-text span { display: block; margin-top: 5px; font-size: 11px; color: #f2e8d8; letter-spacing: 0.4px; }
 
-    .brand img {
-      width: 56px;
-      height: 56px;
-      object-fit: contain;
-      background: var(--crema);
-      border-radius: 14px;
-      padding: 5px;
-      flex: 0 0 auto;
-    }
+    .nav-link { display: block; width: 100%; text-align: left; padding: 13px 14px; margin-bottom: 8px; border: 0; border-radius: 12px; background: transparent; color: #fff; font-weight: bold; cursor: pointer; font-size: 15px; }
+    .nav-link:hover, .nav-link.active { background: rgba(201, 160, 90, 0.22); color: #fff; }
+    .nav-link.active { box-shadow: inset 0 0 0 1px rgba(201, 160, 90, 0.35); }
 
-    .brand .brand-text strong {
-      display: block;
-      font-size: 18px;
-      line-height: 1.05;
-      color: var(--mostaza);
-    }
+    .sidebar-contact { margin-top: 18px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.14); font-size: 14px; line-height: 1.7; }
+    .sidebar-contact a { color: #ffe8c5; text-decoration: none; }
+    .sidebar-contact a:hover { text-decoration: underline; }
 
-    .brand .brand-text span {
-      display: block;
-      margin-top: 5px;
-      font-size: 11px;
-      color: #f2e8d8;
-      letter-spacing: 0.4px;
-    }
+    /* ============ MAIN ============ */
+    .main { margin-left: var(--sidebar-w); padding: 20px; min-height: 100vh; }
 
-    .nav-link {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 12px 13px;
-      margin-bottom: 8px;
-      border: 0;
-      border-radius: 12px;
-      background: transparent;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-    }
+    .page-title { margin: 0 0 18px; color: var(--cafe-oscuro); font-size: clamp(24px, 5vw, 34px); line-height: 1.1; }
+    .page-title small { display: inline-block; margin-left: 8px; color: var(--rojo); font-size: 14px; vertical-align: middle; }
 
-    .nav-link:hover,
-    .nav-link.active {
-      background: rgba(201, 160, 90, 0.22);
-      color: #fff;
-    }
+    .section { display: none; }
+    .section.active { display: block; }
 
-    .nav-link.active {
-      box-shadow: inset 0 0 0 1px rgba(201, 160, 90, 0.35);
-    }
+    /* ============ CARDS ============ */
+    .card { background: var(--blanco); border: 1px solid rgba(92,58,33,0.14); border-radius: 18px; box-shadow: 0 10px 24px rgba(59,36,22,0.06); margin-bottom: 18px; overflow: hidden; }
+    .card-header { padding: 15px 18px; background: linear-gradient(90deg, var(--crema), #fff8ec); border-bottom: 1px solid rgba(92,58,33,0.12); color: var(--cafe-oscuro); font-weight: bold; }
+    .card-body { padding: 18px; }
 
-    .sidebar-contact {
-      margin-top: 18px;
-      padding-top: 15px;
-      border-top: 1px solid rgba(255, 255, 255, 0.14);
-      font-size: 14px;
-      line-height: 1.7;
-    }
+    /* ============ GRIDS ============ */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 
-    .sidebar-contact a {
-      color: #ffe8c5;
-      text-decoration: none;
-    }
+    .muted { color: #7b6c5c; font-size: 14px; }
 
-    .sidebar-contact a:hover {
-      text-decoration: underline;
-    }
+    .summary-card { position: sticky; top: 16px; border-top: 6px solid var(--mostaza); }
+    .summary-row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px dashed #e2d4bc; font-size: 14px; }
+    .summary-row span:first-child { color: #7b6c5c; font-weight: bold; flex: 0 0 auto; }
+    .summary-row span:last-child { text-align: right; font-weight: bold; word-break: break-word; }
 
-    .sidebar-meta {
-      margin-top: 16px;
-      font-size: 13px;
-      color: #eadfcd;
-    }
+    .summary-total { margin-top: 12px; padding: 14px; border-radius: 14px; background: var(--cafe-oscuro); color: #fff; text-align: center; }
+    .summary-total .label { font-size: 12px; letter-spacing: 1px; color: #f0e4cd; text-transform: uppercase; }
+    .summary-total .value { margin-top: 6px; font-size: clamp(26px, 7vw, 34px); font-weight: 900; color: var(--mostaza); word-break: break-all; }
 
-    .main {
-      margin-left: 270px;
-      padding: 20px;
-      min-height: 100vh;
-    }
+    .demo-box { border: 2px solid #d9b74c; background: var(--amarillo); border-radius: 14px; padding: 14px; margin-bottom: 16px; }
+    .demo-box h4 { margin: 0 0 10px; color: #6d4f12; }
 
-    .page-title {
-      margin: 0 0 18px;
-      color: var(--cafe-oscuro);
-      font-size: 34px;
-      line-height: 1.05;
-    }
+    .checkbox-line { display: flex; align-items: center; gap: 8px; margin: 8px 0; color: #473421; font-weight: bold; font-size: 14px; }
+    .checkbox-line input { width: 20px; height: 20px; flex: 0 0 auto; }
 
-    .page-title small {
-      display: inline-block;
-      margin-left: 8px;
-      color: var(--rojo);
-      font-size: 14px;
-      vertical-align: middle;
-    }
+    .items-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .item-check { background: #fffaf0; border: 1px solid #e8d9bc; border-radius: 10px; padding: 10px; font-size: 14px; }
+    .item-check label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+    .item-check input { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 2px; }
 
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
-
-    .card {
-      background: var(--blanco);
-      border: 1px solid rgba(92, 58, 33, 0.14);
-      border-radius: 18px;
-      box-shadow: 0 10px 24px rgba(59, 36, 22, 0.06);
-      margin-bottom: 18px;
-      overflow: hidden;
-    }
-
-    .card-header {
-      padding: 15px 18px;
-      background: linear-gradient(90deg, var(--crema), #fff8ec);
-      border-bottom: 1px solid rgba(92, 58, 33, 0.12);
-      color: var(--cafe-oscuro);
-      font-weight: bold;
-    }
-
-    .card-body {
-      padding: 18px;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-    }
-
-    .grid-6 {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 12px;
-    }
-
-    .muted {
-      color: #7b6c5c;
-      font-size: 14px;
-    }
-
-    .summary-card {
-      position: sticky;
-      top: 16px;
-      border-top: 6px solid var(--mostaza);
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 7px 0;
-      border-bottom: 1px dashed #e2d4bc;
-    }
-
-    .summary-row span:first-child {
-      color: #7b6c5c;
-      font-weight: bold;
-    }
-
-    .summary-row span:last-child {
-      text-align: right;
-      font-weight: bold;
-    }
-
-    .summary-total {
-      margin-top: 12px;
-      padding: 14px;
-      border-radius: 14px;
-      background: var(--cafe-oscuro);
-      color: #fff;
-      text-align: center;
-    }
-
-    .summary-total .label {
-      font-size: 12px;
-      letter-spacing: 1px;
-      color: #f0e4cd;
-      text-transform: uppercase;
-    }
-
-    .summary-total .value {
-      margin-top: 6px;
-      font-size: 34px;
-      font-weight: 900;
-      color: var(--mostaza);
-    }
-
-    .demo-box {
-      border: 2px solid #d9b74c;
-      background: var(--amarillo);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 16px;
-    }
-
-    .demo-box h4 {
-      margin: 0 0 10px;
-      color: #6d4f12;
-    }
-
-    .checkbox-line {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 8px 0;
-      color: #473421;
-      font-weight: bold;
-    }
-
-    .items-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .item-check {
-      background: #fffaf0;
-      border: 1px solid #e8d9bc;
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 14px;
-    }
-
-    .item-check label {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      cursor: pointer;
-    }
-
+    /* ============ TABLAS ============ */
     .table-wrap {
-      overflow: auto;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       border: 1px solid #eee0c8;
       border-radius: 12px;
       background: #fff;
+      max-width: 100%;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 720px;
-    }
+    table { width: 100%; border-collapse: collapse; min-width: 640px; }
+    th, td { padding: 10px; border-bottom: 1px solid #efe3ca; vertical-align: middle; text-align: left; font-size: 14px; }
+    th { background: var(--crema); color: var(--cafe-oscuro); white-space: nowrap; }
+    .center { text-align: center; }
 
-    th,
-    td {
-      padding: 10px;
-      border-bottom: 1px solid #efe3ca;
-      vertical-align: middle;
-      text-align: left;
-    }
+    /* ============ BARRAS DE ACCION ============ */
+    .action-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; align-items: center; }
 
-    th {
-      background: var(--crema);
-      color: var(--cafe-oscuro);
-    }
+    .app-footer { margin: 24px 0 8px; padding-top: 12px; border-top: 1px solid #dfd0b5; color: #7b6c5c; font-size: 14px; }
+    .app-footer a { color: var(--cafe); font-weight: bold; text-decoration: none; }
+    .app-footer a:hover { text-decoration: underline; }
 
-    .center {
-      text-align: center;
-    }
+    .small-input { max-width: 110px; }
+    .mt { margin-top: 12px; }
+    .mb { margin-bottom: 12px; }
 
-    .right {
-      text-align: right;
-    }
-
-    .action-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .app-footer {
-      margin: 24px 0 8px;
-      padding-top: 12px;
-      border-top: 1px solid #dfd0b5;
-      color: #7b6c5c;
-      font-size: 14px;
-    }
-
-    .app-footer a {
-      color: var(--cafe);
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    .app-footer a:hover {
-      text-decoration: underline;
-    }
-
-    .small-input {
-      max-width: 110px;
-    }
-
-    .w-100 {
-      width: 100%;
-    }
-
-    .mt {
-      margin-top: 12px;
-    }
-
-    .mb {
-      margin-bottom: 12px;
-    }
-
+    /* ============ RESPONSIVE ============ */
     @media (max-width: 1100px) {
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-
-      .summary-card {
-        position: relative;
-        top: 0;
-      }
+      .grid-2 { grid-template-columns: 1fr; }
+      .summary-card { position: relative; top: 0; }
+      .items-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
+      .topbar { display: flex; }
+
       .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
+        width: min(82vw, 300px);
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.35);
       }
+
+      .sidebar.open { transform: translateX(0); }
+
+      .sidebar-backdrop.show { display: block; }
 
       .main {
         margin-left: 0;
-        padding: 14px;
+        padding: calc(var(--topbar-h) + 14px) 12px 20px;
       }
 
-      .grid-3,
-      .grid-4,
-      .grid-6,
-      .items-grid {
-        grid-template-columns: 1fr;
-      }
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
 
-      .page-title {
-        font-size: 28px;
+      .db-status {
+        top: auto;
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+        right: 12px;
+        font-size: 12px;
+        padding: 7px 10px;
       }
     }
 
-    @media (max-width: 480px) {
-      .action-buttons {
-        flex-direction: column;
-      }
+    @media (max-width: 640px) {
+      .grid-3 { grid-template-columns: 1fr; }
+      .items-grid { grid-template-columns: 1fr; }
 
-      .action-buttons .btn {
-        width: 100%;
-      }
+      .card-body { padding: 14px; }
+      .card-header { padding: 13px 14px; }
 
-      .toolbar {
-        flex-direction: column;
-      }
+      th, td { padding: 8px; font-size: 13px; }
+      table { min-width: 560px; }
 
-      .toolbar .btn {
-        width: 100%;
-      }
+      .action-buttons { flex-direction: column; }
+      .action-buttons .btn { width: 100%; min-height: 46px; }
 
-      .db-status {
-        top: 8px;
-        right: 8px;
-        padding: 6px 9px;
-        font-size: 11px;
-      }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .toolbar .btn { width: 100%; min-height: 44px; }
+      .toolbar .checkbox-line { justify-content: flex-start; }
 
-      .summary-total .value {
-        font-size: 28px;
-      }
+      .btn-sm { min-height: 38px; }
+
+      .login-box { padding: 22px 18px; }
+    }
+
+    @media (max-width: 380px) {
+      .topbar-brand span { display: none; }
+      .summary-row { font-size: 13px; }
     }
   </style>
 </head>
@@ -641,7 +383,18 @@
     </div>
   </div>
 
-  <aside class="sidebar">
+  <!-- BARRA SUPERIOR MOVIL -->
+  <header class="topbar">
+    <button class="menu-btn" onclick="openSidebar()" aria-label="Abrir menú">&#9776;</button>
+    <div class="topbar-brand">
+      <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+      <span>PAVIMENTOS M&amp;C</span>
+    </div>
+  </header>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
+  <aside class="sidebar" id="appSidebar">
     <div class="brand">
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
       <div class="brand-text">
@@ -661,10 +414,6 @@
       <a href="https://wa.me/56930665920" target="_blank" rel="noopener">+56 9 3066 5920</a><br>
       <a href="mailto:ventas@pavimentosmyc.cl">ventas@pavimentosmyc.cl</a><br>
       Lampa, Chile
-    </div>
-
-    <div class="sidebar-meta">
-      Usuario: admin
     </div>
   </aside>
 
@@ -686,7 +435,7 @@
                 </div>
                 <div class="field">
                   <label for="clienteTelefono">Telefono *</label>
-                  <input type="text" id="clienteTelefono" class="form-control" oninput="calcularTotal()">
+                  <input type="tel" id="clienteTelefono" class="form-control" value="+56 " placeholder="+56 9 1234 5678" oninput="calcularTotal()">
                 </div>
                 <div class="field">
                   <label for="clienteEmail">Email</label>
@@ -701,7 +450,7 @@
                 </div>
                 <div class="field">
                   <label for="vendedor">Vendedor</label>
-                  <input type="text" id="vendedor" class="form-control" value="admin" oninput="calcularTotal()">
+                  <input type="text" id="vendedor" class="form-control" value="" placeholder="Nombre del vendedor" oninput="calcularTotal()">
                 </div>
                 <div class="field">
                   <label for="fechaCotizacion">Fecha</label>
@@ -778,9 +527,9 @@
                     <tr>
                       <th style="width:50px;"></th>
                       <th>Descripcion</th>
-                      <th style="width:110px;">Cant.</th>
-                      <th style="width:150px;">Precio Unit.</th>
-                      <th style="width:90px;"></th>
+                      <th style="width:100px;">Cant.</th>
+                      <th style="width:130px;">Precio Unit.</th>
+                      <th style="width:70px;"></th>
                     </tr>
                   </thead>
                   <tbody id="extrasBody"></tbody>
@@ -845,6 +594,7 @@
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>N° Cot.</th>
                   <th>Cliente</th>
                   <th>Superficie</th>
                   <th>Total</th>
@@ -880,6 +630,7 @@
                 <tr>
                   <th style="width:44px;"></th>
                   <th>#</th>
+                  <th>N° Cot.</th>
                   <th>Cliente</th>
                   <th>Superficie</th>
                   <th>Total</th>
@@ -924,6 +675,32 @@
     <!-- INVENTARIO -->
     <section id="inventario" class="section">
       <h2 class="page-title">Gestion de Inventario</h2>
+
+      <div class="card">
+        <div class="card-header">Items Incluidos en el Precio (Catálogo)</div>
+        <div class="card-body">
+          <div class="muted mb">
+            Edita o agrega los items que aparecen como incluidos en el precio de la cotización.
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:60px;">#</th>
+                  <th>Item</th>
+                  <th style="width:120px;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyItemsCatalogo"></tbody>
+            </table>
+          </div>
+          <div class="toolbar mt">
+            <input type="text" id="newItemNombre" class="form-control" style="max-width:320px;" placeholder="Nombre del nuevo item">
+            <button class="btn btn-light" onclick="addItemCatalogo()">+ Agregar Item Incluido</button>
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-header">Items de inventario</div>
         <div class="card-body">
@@ -964,12 +741,14 @@
     var firebaseLoaded = false;
     var logoData = '';
     var editingId = null;
-    var currentNumero = 'COT-' + Date.now();
+    var currentNumero = '';
+    var cotSeq = 1;
 
     var tarifas = [];
     var proyectos = [];
     var papelera = [];
     var inventario = [];
+    var itemsCatalogo = [];
 
     var itemsDefault = [
       'Encarpe',
@@ -988,6 +767,17 @@
       'Desgaste de maquinaria',
       'Transporte'
     ];
+
+    /* ============ MENU MOVIL ============ */
+    function openSidebar() {
+      document.getElementById('appSidebar').classList.add('open');
+      document.getElementById('sidebarBackdrop').classList.add('show');
+    }
+
+    function closeSidebar() {
+      document.getElementById('appSidebar').classList.remove('open');
+      document.getElementById('sidebarBackdrop').classList.remove('show');
+    }
 
     function buildDefaultTarifas() {
       var arr = [];
@@ -1061,8 +851,10 @@
         localStorage.setItem('pavmyc_proyectos', JSON.stringify(proyectos));
         localStorage.setItem('pavmyc_papelera', JSON.stringify(papelera));
         localStorage.setItem('pavmyc_inventario', JSON.stringify(inventario));
+        localStorage.setItem('pavmyc_items', JSON.stringify(itemsCatalogo));
+        localStorage.setItem('pavmyc_seq', String(cotSeq));
       } catch (e) {
-        // localStorage puede fallar en algunos navegadores o contextos privados.
+        // localStorage puede fallar en contextos privados.
       }
     }
 
@@ -1072,39 +864,37 @@
         var p = localStorage.getItem('pavmyc_proyectos');
         var b = localStorage.getItem('pavmyc_papelera');
         var inv = localStorage.getItem('pavmyc_inventario');
+        var it = localStorage.getItem('pavmyc_items');
+        var sq = localStorage.getItem('pavmyc_seq');
 
         tarifas = t ? JSON.parse(t) : buildDefaultTarifas();
         proyectos = p ? JSON.parse(p) : [];
         papelera = b ? JSON.parse(b) : [];
         inventario = inv ? JSON.parse(inv) : [];
+        itemsCatalogo = it ? JSON.parse(it) : itemsDefault.slice();
+        cotSeq = parseInt(sq, 10) || 1;
       } catch (e) {
         tarifas = buildDefaultTarifas();
         proyectos = [];
         papelera = [];
         inventario = [];
+        itemsCatalogo = itemsDefault.slice();
+        cotSeq = 1;
       }
 
-      if (!tarifas || !tarifas.length) {
-        tarifas = buildDefaultTarifas();
-      }
-      if (!proyectos) {
-        proyectos = [];
-      }
-      if (!papelera) {
-        papelera = [];
-      }
-      if (!inventario) {
-        inventario = [];
-      }
+      if (!tarifas || !tarifas.length) { tarifas = buildDefaultTarifas(); }
+      if (!proyectos) { proyectos = []; }
+      if (!papelera) { papelera = []; }
+      if (!inventario) { inventario = []; }
+      if (!itemsCatalogo || !itemsCatalogo.length) { itemsCatalogo = itemsDefault.slice(); }
+      if (!cotSeq || cotSeq < 1) { cotSeq = 1; }
     }
 
     function setDbStatus(connected) {
       useFirebase = !!connected;
       var box = document.getElementById('dbStatus');
       var txt = document.getElementById('dbText');
-      if (!box || !txt) {
-        return;
-      }
+      if (!box || !txt) { return; }
       if (connected) {
         box.className = 'db-status online';
         txt.innerText = 'Conectado';
@@ -1140,15 +930,24 @@
     }
 
     function loadFromFirebase() {
-      if (!db) {
-        return;
-      }
+      if (!db) { return; }
 
-      db.collection('config').doc('tarifas').get()
+      db.collection('config').doc('numeracion').get()
         .then(function (doc) {
           firebaseLoaded = true;
           setDbStatus(true);
 
+          if (doc.exists && doc.data() && doc.data().seq) {
+            var remoteSeq = parseInt(doc.data().seq, 10) || 1;
+            if (remoteSeq > cotSeq) {
+              cotSeq = remoteSeq;
+              saveLocalAll();
+            }
+          }
+
+          return db.collection('config').doc('tarifas').get();
+        })
+        .then(function (doc) {
           if (doc.exists && doc.data() && doc.data().tarifas) {
             tarifas = doc.data().tarifas;
             saveLocalAll();
@@ -1167,6 +966,19 @@
             renderInventario();
           } else {
             db.collection('config').doc('inventario').set({ items: inventario }).catch(function () { });
+          }
+
+          return db.collection('config').doc('items').get();
+        })
+        .then(function (doc) {
+          if (doc.exists && doc.data() && doc.data().items) {
+            itemsCatalogo = doc.data().items;
+            saveLocalAll();
+            rebuildItemsPreserving();
+            renderItemsCatalogo();
+            calcularTotal();
+          } else {
+            db.collection('config').doc('items').set({ items: itemsCatalogo }).catch(function () { });
           }
 
           return db.collection('proyectos').get();
@@ -1215,9 +1027,7 @@
     }
 
     function syncSaveProject(project) {
-      if (!useFirebase || !db) {
-        return;
-      }
+      if (!useFirebase || !db) { return; }
       try {
         var clean = JSON.parse(JSON.stringify(project));
         db.collection('proyectos').doc(String(project.id)).set(clean).catch(function () {
@@ -1229,9 +1039,7 @@
     }
 
     function syncSavePapelera(project) {
-      if (!useFirebase || !db) {
-        return;
-      }
+      if (!useFirebase || !db) { return; }
       try {
         var clean = JSON.parse(JSON.stringify(project));
         db.collection('papelera').doc(String(project.id)).set(clean).catch(function () {
@@ -1243,18 +1051,14 @@
     }
 
     function syncDeleteProject(id) {
-      if (!useFirebase || !db) {
-        return;
-      }
+      if (!useFirebase || !db) { return; }
       db.collection('proyectos').doc(String(id)).delete().catch(function () {
         setDbStatus(false);
       });
     }
 
     function syncDeletePapelera(id) {
-      if (!useFirebase || !db) {
-        return;
-      }
+      if (!useFirebase || !db) { return; }
       db.collection('papelera').doc(String(id)).delete().catch(function () {
         setDbStatus(false);
       });
@@ -1271,37 +1075,58 @@
     }
 
     function syncTarifas() {
-      if (!useFirebase || !db) {
-        return;
-      }
+      if (!useFirebase || !db) { return; }
       db.collection('config').doc('tarifas').set({ tarifas: tarifas }).catch(function () {
         setDbStatus(false);
       });
     }
 
     function syncInventario() {
-      if (!useFirebase || !db) {
-        return;
-      }
+      if (!useFirebase || !db) { return; }
       db.collection('config').doc('inventario').set({ items: inventario }).catch(function () {
         setDbStatus(false);
       });
     }
 
+    function syncItemsCatalogo() {
+      if (!useFirebase || !db) { return; }
+      db.collection('config').doc('items').set({ items: itemsCatalogo }).catch(function () {
+        setDbStatus(false);
+      });
+    }
+
+    function syncNumeracion() {
+      if (!useFirebase || !db) { return; }
+      db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () {
+        setDbStatus(false);
+      });
+    }
+
+    function reserveNumero() {
+      var num = 'C-' + cotSeq;
+      cotSeq = cotSeq + 1;
+      saveLocalAll();
+      syncNumeracion();
+      return num;
+    }
+
+    function ensureNumero() {
+      if (!currentNumero) {
+        currentNumero = reserveNumero();
+      }
+      return currentNumero;
+    }
+
     function findProjectIndex(id) {
       for (var i = 0; i < proyectos.length; i++) {
-        if (String(proyectos[i].id) === String(id)) {
-          return i;
-        }
+        if (String(proyectos[i].id) === String(id)) { return i; }
       }
       return -1;
     }
 
     function findPapeleraIndex(id) {
       for (var i = 0; i < papelera.length; i++) {
-        if (String(papelera[i].id) === String(id)) {
-          return i;
-        }
+        if (String(papelera[i].id) === String(id)) { return i; }
       }
       return -1;
     }
@@ -1326,6 +1151,7 @@
       try {
         sessionStorage.removeItem('pavmyc_logged');
       } catch (e) { }
+      closeSidebar();
       document.getElementById('loginScreen').style.display = 'flex';
     }
 
@@ -1341,33 +1167,24 @@
       }
 
       var target = document.getElementById(sectionId);
-      if (target) {
-        target.classList.add('active');
-      }
+      if (target) { target.classList.add('active'); }
 
-      if (link) {
-        link.classList.add('active');
-      }
+      if (link) { link.classList.add('active'); }
 
-      if (sectionId === 'proyectos') {
-        renderProyectos();
-      }
-      if (sectionId === 'papelera') {
-        renderPapelera();
-      }
-      if (sectionId === 'tarifas') {
-        renderTarifas();
-      }
-      if (sectionId === 'inventario') {
-        renderInventario();
-      }
+      closeSidebar();
+      window.scrollTo(0, 0);
+
+      if (sectionId === 'proyectos') { renderProyectos(); }
+      if (sectionId === 'papelera') { renderPapelera(); }
+      if (sectionId === 'tarifas') { renderTarifas(); }
+      if (sectionId === 'inventario') { renderInventario(); renderItemsCatalogo(); }
     }
 
     function buildItems() {
       var container = document.getElementById('itemsContainer');
       container.innerHTML = '';
 
-      for (var i = 0; i < itemsDefault.length; i++) {
+      for (var i = 0; i < itemsCatalogo.length; i++) {
         var wrap = document.createElement('div');
         wrap.className = 'item-check';
 
@@ -1376,12 +1193,12 @@
         var chk = document.createElement('input');
         chk.type = 'checkbox';
         chk.className = 'item-incluido';
-        chk.setAttribute('data-nombre', itemsDefault[i]);
+        chk.setAttribute('data-nombre', itemsCatalogo[i]);
         chk.checked = true;
         chk.onchange = calcularTotal;
 
         var txt = document.createElement('span');
-        txt.innerText = itemsDefault[i];
+        txt.innerText = itemsCatalogo[i];
 
         label.appendChild(chk);
         label.appendChild(txt);
@@ -1390,15 +1207,18 @@
       }
     }
 
+    function rebuildItemsPreserving() {
+      var checkedNames = getItemsChecked();
+      buildItems();
+      setItemsChecked(checkedNames);
+    }
+
     function toggleAllItems() {
       var boxes = document.getElementsByClassName('item-incluido');
       var allChecked = true;
 
       for (var i = 0; i < boxes.length; i++) {
-        if (!boxes[i].checked) {
-          allChecked = false;
-          break;
-        }
+        if (!boxes[i].checked) { allChecked = false; break; }
       }
 
       for (var j = 0; j < boxes.length; j++) {
@@ -1425,9 +1245,7 @@
       var boxes = document.getElementsByClassName('item-incluido');
       var checkAll = false;
 
-      if (names === null || typeof names === 'undefined') {
-        checkAll = true;
-      }
+      if (names === null || typeof names === 'undefined') { checkAll = true; }
 
       for (var i = 0; i < boxes.length; i++) {
         if (checkAll) {
@@ -1437,6 +1255,96 @@
           boxes[i].checked = names.indexOf(itemName) !== -1;
         }
       }
+    }
+
+    function isItemCheckedByName(name) {
+      var boxes = document.getElementsByClassName('item-incluido');
+      for (var i = 0; i < boxes.length; i++) {
+        if (boxes[i].getAttribute('data-nombre') === name) {
+          return boxes[i].checked;
+        }
+      }
+      return false;
+    }
+
+    function setItemCheckedByName(name, checked) {
+      var boxes = document.getElementsByClassName('item-incluido');
+      for (var i = 0; i < boxes.length; i++) {
+        if (boxes[i].getAttribute('data-nombre') === name) {
+          boxes[i].checked = !!checked;
+        }
+      }
+    }
+
+    function renderItemsCatalogo() {
+      var tbody = document.getElementById('tbodyItemsCatalogo');
+      var html = '';
+
+      if (!itemsCatalogo.length) {
+        html = '<tr><td colspan="3" class="center">No hay items en el catálogo</td></tr>';
+      }
+
+      for (var i = 0; i < itemsCatalogo.length; i++) {
+        html += '<tr>';
+        html += '<td>' + (i + 1) + '</td>';
+        html += '<td><input type="text" class="form-control" value="' + escapeAttr(itemsCatalogo[i]) + '" onchange="updateItemCatalogo(' + i + ', this.value)"></td>';
+        html += '<td><button class="btn btn-sm btn-danger" onclick="removeItemCatalogo(' + i + ')">Eliminar</button></td>';
+        html += '</tr>';
+      }
+
+      tbody.innerHTML = html;
+    }
+
+    function updateItemCatalogo(index, value) {
+      if (!itemsCatalogo[index] && itemsCatalogo[index] !== '') { return; }
+
+      var oldName = itemsCatalogo[index];
+      var wasChecked = isItemCheckedByName(oldName);
+
+      itemsCatalogo[index] = value;
+
+      saveLocalAll();
+      syncItemsCatalogo();
+      rebuildItemsPreserving();
+      setItemCheckedByName(value, wasChecked);
+      calcularTotal();
+    }
+
+    function addItemCatalogo() {
+      var input = document.getElementById('newItemNombre');
+      var name = input.value.trim();
+
+      if (!name) {
+        alert('Escribe el nombre del nuevo item.');
+        return;
+      }
+
+      if (itemsCatalogo.indexOf(name) !== -1) {
+        alert('Ese item ya existe en el catálogo.');
+        return;
+      }
+
+      itemsCatalogo.push(name);
+      input.value = '';
+
+      saveLocalAll();
+      syncItemsCatalogo();
+      renderItemsCatalogo();
+      rebuildItemsPreserving();
+      setItemCheckedByName(name, true);
+      calcularTotal();
+    }
+
+    function removeItemCatalogo(index) {
+      if (!confirm('¿Eliminar este item del catálogo de items incluidos?')) { return; }
+
+      itemsCatalogo.splice(index, 1);
+
+      saveLocalAll();
+      syncItemsCatalogo();
+      renderItemsCatalogo();
+      rebuildItemsPreserving();
+      calcularTotal();
     }
 
     function clearExtras() {
@@ -1503,9 +1411,7 @@
       delBtn.innerText = 'X';
       delBtn.onclick = function () {
         var row = this.closest('tr');
-        if (row && row.parentNode) {
-          row.parentNode.removeChild(row);
-        }
+        if (row && row.parentNode) { row.parentNode.removeChild(row); }
         calcularTotal();
       };
       tdDel.appendChild(delBtn);
@@ -1524,16 +1430,12 @@
     }
 
     function enforceExtraMin(row) {
-      if (!row) {
-        return;
-      }
+      if (!row) { return; }
 
       var min = parseInt(row.getAttribute('data-min') || '0', 10);
       var cantInput = row.querySelector('.extra-cant');
 
-      if (!cantInput) {
-        return;
-      }
+      if (!cantInput) { return; }
 
       var value = parseFloat(cantInput.value) || 0;
       if (min > 0 && value < min) {
@@ -1552,9 +1454,7 @@
         var cant = row.querySelector('.extra-cant');
         var precio = row.querySelector('.extra-precio');
 
-        if (!chk || !desc || !cant || !precio) {
-          continue;
-        }
+        if (!chk || !desc || !cant || !precio) { continue; }
 
         enforceExtraMin(row);
 
@@ -1592,9 +1492,7 @@
     function getTarifa(superficie) {
       for (var i = 0; i < tarifas.length; i++) {
         var t = tarifas[i];
-        if (superficie >= t.min && superficie <= t.max) {
-          return t;
-        }
+        if (superficie >= t.min && superficie <= t.max) { return t; }
       }
 
       if (superficie > 800 && tarifas.length) {
@@ -1613,9 +1511,7 @@
       var fecha = document.getElementById('fechaCotizacion').value;
 
       var superficie = parseFloat(document.getElementById('superficie').value) || 0;
-      if (superficie < 40) {
-        superficie = 40;
-      }
+      if (superficie < 40) { superficie = 40; }
 
       var tarifa = getTarifa(superficie);
       var precioM2 = parseFloat(tarifa.precio) || 0;
@@ -1637,7 +1533,8 @@
             desc: extra.desc,
             cant: extra.cant,
             precio: extra.precio,
-            importe: importe
+            importe: importe,
+            unidad: 'un'
           });
         }
       }
@@ -1714,13 +1611,13 @@
 
     function resetForm() {
       editingId = null;
-      currentNumero = 'COT-' + Date.now();
+      currentNumero = '';
 
       document.getElementById('clienteNombre').value = '';
-      document.getElementById('clienteTelefono').value = '';
+      document.getElementById('clienteTelefono').value = '+56 ';
       document.getElementById('clienteEmail').value = '';
       document.getElementById('clienteDireccion').value = '';
-      document.getElementById('vendedor').value = 'admin';
+      document.getElementById('vendedor').value = '';
 
       var today = new Date();
       var yyyy = today.getFullYear();
@@ -1764,11 +1661,18 @@
         return;
       }
 
-      var id = editingId || String(Date.now());
+      var digits = q.telefono.replace(/\D/g, '');
+      if (digits.length < 8) {
+        alert('Ingrese un teléfono válido después de +56.');
+        return;
+      }
 
       if (!editingId) {
-        currentNumero = 'COT-' + id;
+        ensureNumero();
+        q.numero = currentNumero;
       }
+
+      var id = editingId || String(Date.now());
 
       var project = {
         id: id,
@@ -1812,7 +1716,7 @@
       updateEditModeUI();
       calcularTotal();
 
-      alert('Proyecto guardado correctamente.');
+      alert('Proyecto guardado con N° ' + project.numero);
     }
 
     function editarProyecto(id) {
@@ -1825,13 +1729,13 @@
       var p = proyectos[index];
 
       editingId = String(p.id);
-      currentNumero = p.numero || ('COT-' + p.id);
+      currentNumero = p.numero || ('C-' + p.id);
 
       document.getElementById('clienteNombre').value = p.cliente || '';
-      document.getElementById('clienteTelefono').value = p.telefono || '';
+      document.getElementById('clienteTelefono').value = p.telefono || '+56 ';
       document.getElementById('clienteEmail').value = p.email || '';
       document.getElementById('clienteDireccion').value = p.direccion || '';
-      document.getElementById('vendedor').value = p.vendedor || 'admin';
+      document.getElementById('vendedor').value = p.vendedor || '';
       document.getElementById('fechaCotizacion').value = p.fecha || '';
       document.getElementById('superficie').value = p.superficieNum || 40;
       document.getElementById('aplicarIva').checked = !!p.iva;
@@ -1857,14 +1761,10 @@
     }
 
     function eliminarProyecto(id) {
-      if (!confirm('¿Mover este proyecto a la papelera?')) {
-        return;
-      }
+      if (!confirm('¿Mover este proyecto a la papelera?')) { return; }
 
       var index = findProjectIndex(id);
-      if (index < 0) {
-        return;
-      }
+      if (index < 0) { return; }
 
       var project = proyectos[index];
       proyectos.splice(index, 1);
@@ -1878,9 +1778,7 @@
 
     function restoreProject(id, silent) {
       var index = findPapeleraIndex(id);
-      if (index < 0) {
-        return;
-      }
+      if (index < 0) { return; }
 
       var project = papelera[index];
       papelera.splice(index, 1);
@@ -1897,17 +1795,13 @@
 
     function deleteProjectPermanent(id, silent) {
       var index = findPapeleraIndex(id);
-      if (index < 0) {
-        return;
-      }
+      if (index < 0) { return; }
 
       papelera.splice(index, 1);
       saveLocalAll();
       syncDeletePapelera(id);
 
-      if (!silent) {
-        renderPapelera();
-      }
+      if (!silent) { renderPapelera(); }
     }
 
     function toggleAllTrash() {
@@ -1924,9 +1818,7 @@
       var ids = [];
 
       for (var i = 0; i < boxes.length; i++) {
-        if (boxes[i].checked) {
-          ids.push(boxes[i].value);
-        }
+        if (boxes[i].checked) { ids.push(boxes[i].value); }
       }
 
       if (!ids.length) {
@@ -1948,9 +1840,7 @@
       var ids = [];
 
       for (var i = 0; i < boxes.length; i++) {
-        if (boxes[i].checked) {
-          ids.push(boxes[i].value);
-        }
+        if (boxes[i].checked) { ids.push(boxes[i].value); }
       }
 
       if (!ids.length) {
@@ -1958,9 +1848,7 @@
         return;
       }
 
-      if (!confirm('¿Eliminar definitivamente los proyectos seleccionados?')) {
-        return;
-      }
+      if (!confirm('¿Eliminar definitivamente los proyectos seleccionados?')) { return; }
 
       for (var j = 0; j < ids.length; j++) {
         deleteProjectPermanent(ids[j], true);
@@ -1975,7 +1863,7 @@
       var html = '';
 
       if (!proyectos.length) {
-        html = '<tr><td colspan="6" class="center">No hay proyectos guardados</td></tr>';
+        html = '<tr><td colspan="7" class="center">No hay proyectos guardados</td></tr>';
       }
 
       for (var i = 0; i < proyectos.length; i++) {
@@ -1983,6 +1871,7 @@
 
         html += '<tr>';
         html += '<td>' + (i + 1) + '</td>';
+        html += '<td><strong>' + escapeHtml(p.numero || '-') + '</strong></td>';
         html += '<td>' + escapeHtml(p.cliente || '') + '</td>';
         html += '<td>' + escapeHtml(p.superficieNum || 0) + ' m²</td>';
         html += '<td>$' + formatMoney(p.totalNum || 0) + '</td>';
@@ -2003,7 +1892,7 @@
       var html = '';
 
       if (!papelera.length) {
-        html = '<tr><td colspan="7" class="center">La papelera está vacía</td></tr>';
+        html = '<tr><td colspan="8" class="center">La papelera está vacía</td></tr>';
       }
 
       for (var i = 0; i < papelera.length; i++) {
@@ -2012,6 +1901,7 @@
         html += '<tr>';
         html += '<td><input type="checkbox" class="trash-check" value="' + escapeAttr(p.id) + '"></td>';
         html += '<td>' + (i + 1) + '</td>';
+        html += '<td><strong>' + escapeHtml(p.numero || '-') + '</strong></td>';
         html += '<td>' + escapeHtml(p.cliente || '') + '</td>';
         html += '<td>' + escapeHtml(p.superficieNum || 0) + ' m²</td>';
         html += '<td>$' + formatMoney(p.totalNum || 0) + '</td>';
@@ -2042,9 +1932,7 @@
     }
 
     function updateTarifa(index, value) {
-      if (!tarifas[index]) {
-        return;
-      }
+      if (!tarifas[index]) { return; }
       tarifas[index].precio = parseMoneyValue(value);
       calcularTotal();
     }
@@ -2095,9 +1983,7 @@
     }
 
     function updateInventario(index, field, value) {
-      if (!inventario[index]) {
-        return;
-      }
+      if (!inventario[index]) { return; }
 
       if (field === 'cantidad' || field === 'precio') {
         inventario[index][field] = parseMoneyValue(value);
@@ -2111,9 +1997,7 @@
     }
 
     function removeInventoryItem(index) {
-      if (!confirm('¿Eliminar este item del inventario?')) {
-        return;
-      }
+      if (!confirm('¿Eliminar este item del inventario?')) { return; }
 
       inventario.splice(index, 1);
       saveLocalAll();
@@ -2124,25 +2008,15 @@
     function normalizeChilePhone(phone) {
       var digits = String(phone || '').replace(/\D/g, '');
 
-      if (!digits) {
-        return '';
-      }
+      if (!digits) { return ''; }
 
-      if (digits.indexOf('0') === 0) {
-        digits = digits.substring(1);
-      }
+      if (digits.indexOf('0') === 0) { digits = digits.substring(1); }
 
-      if (digits.length === 9 && digits.indexOf('9') === 0) {
-        digits = '56' + digits;
-      }
+      if (digits.length === 9 && digits.indexOf('9') === 0) { digits = '56' + digits; }
 
-      if (digits.length === 8) {
-        digits = '569' + digits;
-      }
+      if (digits.length === 8) { digits = '569' + digits; }
 
-      if (digits.indexOf('56') !== 0 && digits.length >= 9) {
-        digits = '56' + digits;
-      }
+      if (digits.indexOf('56') !== 0 && digits.length >= 9) { digits = '56' + digits; }
 
       return digits;
     }
@@ -2156,8 +2030,8 @@
       }
 
       var phone = normalizeChilePhone(q.telefono);
-      if (!phone) {
-        alert('Ingresa un teléfono válido antes de enviar.');
+      if (!phone || phone.length < 8) {
+        alert('Ingresa un teléfono válido después de +56.');
         return;
       }
 
@@ -2184,7 +2058,8 @@
       body += 'Superficie: ' + q.superficie + ' m²\n';
       body += 'Precio m²: $' + formatMoney(q.precioM2) + '\n';
       body += 'Total: $' + formatMoney(q.total) + '\n\n';
-      body += 'Pavimentos M&C - Hormigón Estampado\n';
+      body += 'Pavimentos M&C SPA - RUT: 77.145.822-K\n';
+      body += 'Hormigón Estampado\n';
       body += '+56 9 3066 5920 | ventas@pavimentosmyc.cl | Lampa, Chile';
 
       window.location.href = 'mailto:' + encodeURIComponent(q.email) +
@@ -2227,13 +2102,15 @@
     }
 
     function generarPDFActual() {
-      var q = getQuoteData();
+      var q0 = getQuoteData();
 
-      if (!q.cliente) {
+      if (!q0.cliente) {
         alert('Ingresa el nombre del cliente para generar el PDF.');
         return;
       }
 
+      ensureNumero();
+      var q = getQuoteData();
       var data = buildPdfDataFromQuote(q);
 
       getLogoData(function () {
@@ -2262,7 +2139,8 @@
         desc: 'Hormigón estampado',
         cant: q.superficie,
         precio: q.precioM2,
-        importe: q.subtotalM2
+        importe: q.subtotalM2,
+        unidad: 'm²'
       });
 
       if (q.demTotal > 0) {
@@ -2270,7 +2148,8 @@
           desc: 'Demolición de pavimento existente',
           cant: q.demM2,
           precio: 4000,
-          importe: q.demTotal
+          importe: q.demTotal,
+          unidad: 'm²'
         });
       }
 
@@ -2305,7 +2184,8 @@
         desc: 'Hormigón estampado',
         cant: superficie,
         precio: precioM2,
-        importe: superficie * precioM2
+        importe: superficie * precioM2,
+        unidad: 'm²'
       });
 
       if (p.demolition && parseMoneyValue(p.demolition.total) > 0) {
@@ -2313,7 +2193,8 @@
           desc: 'Demolición de pavimento existente',
           cant: parseMoneyValue(p.demolition.m2),
           precio: 4000,
-          importe: parseMoneyValue(p.demolition.total)
+          importe: parseMoneyValue(p.demolition.total),
+          unidad: 'm²'
         });
       }
 
@@ -2326,7 +2207,8 @@
               desc: extra.desc,
               cant: parseMoneyValue(extra.cant),
               precio: parseMoneyValue(extra.precio),
-              importe: parseMoneyValue(extra.cant) * parseMoneyValue(extra.precio)
+              importe: parseMoneyValue(extra.cant) * parseMoneyValue(extra.precio),
+              unidad: extra.unidad || 'un'
             });
           }
         }
@@ -2343,18 +2225,14 @@
       var iva = 0;
       if (p.iva) {
         iva = parseMoneyValue(p.ivaMonto);
-        if (!iva) {
-          iva = Math.round(subtotal * 0.19);
-        }
+        if (!iva) { iva = Math.round(subtotal * 0.19); }
       }
 
       var total = parseMoneyValue(p.totalNum);
-      if (!total) {
-        total = subtotal + iva;
-      }
+      if (!total) { total = subtotal + iva; }
 
       return {
-        numero: p.numero || ('COT-' + p.id),
+        numero: p.numero || ('C-' + p.id),
         cliente: p.cliente || '',
         telefono: p.telefono || '',
         email: p.email || '',
@@ -2370,26 +2248,39 @@
       };
     }
 
+    function pdfFilename(data) {
+      var safeNum = String(data.numero || 'cotizacion').replace(/[^a-zA-Z0-9_-]/g, '-');
+      var safeCliente = String(data.cliente || 'cliente').replace(/[^a-zA-Z0-9_-]/g, '_');
+      return safeNum + '_' + safeCliente + '.pdf';
+    }
+
     function drawPdfInfoBox(doc, title, text, startY, minHeight) {
       var margin = 8;
       var contentW = 194;
 
-      var lines = doc.splitTextToSize(text, contentW - 6);
-      var bodyH = lines.length * 3.4 + 4;
+      var fontSize = 8;
+      var line = 4.1;
 
-      if (bodyH < minHeight - 5) {
-        bodyH = minHeight - 5;
+      if (startY > 240) {
+        fontSize = 7;
+        line = 3.4;
       }
 
+      doc.setFontSize(fontSize);
+      var lines = doc.splitTextToSize(text, contentW - 6);
+      var bodyH = lines.length * line + 5;
+
+      if (bodyH < minHeight - 6) { bodyH = minHeight - 6; }
+
       doc.setFillColor(166, 124, 82);
-      doc.rect(margin, startY, contentW, 5, 'F');
+      doc.rect(margin, startY, contentW, 6, 'F');
 
       doc.setTextColor(255, 255, 255);
-      doc.setFontSize(8);
       doc.setFont('helvetica', 'bold');
-      doc.text(title, margin + 2, startY + 3.5);
+      doc.setFontSize(9);
+      doc.text(title, margin + 2, startY + 4.2);
 
-      startY += 5;
+      startY += 6;
 
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
@@ -2397,8 +2288,8 @@
 
       doc.setTextColor(59, 36, 22);
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7);
-      doc.text(lines, margin + 3, startY + 4);
+      doc.setFontSize(fontSize);
+      doc.text(lines, margin + 3, startY + 4.5);
 
       return startY + bodyH + 3;
     }
@@ -2416,13 +2307,12 @@
       var margin = 8;
       var contentW = 194;
 
-      // Header café claro para que el logo PNG se vea bien.
       doc.setFillColor(166, 124, 82);
-      doc.rect(0, 0, pageW, 30, 'F');
+      doc.rect(0, 0, pageW, 32, 'F');
 
       if (logoData) {
         try {
-          doc.addImage(logoData, 'PNG', 10, 5, 28, 20);
+          doc.addImage(logoData, 'PNG', 10, 6, 28, 20);
         } catch (e) {
           logoData = '';
         }
@@ -2430,131 +2320,130 @@
 
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(18);
-      doc.text('PAVIMENTOS M&C', 44, 12);
+      doc.setFontSize(20);
+      doc.text('PAVIMENTOS M&C', 44, 14);
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9);
-      doc.text('Hormigón Estampado', 44, 17);
-
-      doc.setFontSize(7.5);
-      doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl  |  Lampa, Chile', 44, 22);
-
-      // Franja mostaza con número de cotización.
-      doc.setFillColor(201, 160, 90);
-      doc.rect(0, 30, pageW, 8, 'F');
-      doc.setTextColor(59, 36, 22);
       doc.setFontSize(10);
-      doc.setFont('helvetica', 'bold');
-      doc.text('N° COTIZACIÓN: ' + (data.numero || ''), margin, 35.2);
+      doc.text('Hormigón Estampado', 44, 20);
 
-      // Box COTIZADO PARA.
-      var y = 41;
-      var boxH = 31;
+      doc.setFontSize(8.5);
+      doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl  |  Lampa, Chile', 44, 25.5);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9.5);
+      doc.text('RUT: 77.145.822-K', 202, 12, { align: 'right' });
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.text('Pavimentos M&C SPA', 202, 17, { align: 'right' });
+
+      doc.setFillColor(201, 160, 90);
+      doc.rect(0, 32, pageW, 9, 'F');
+      doc.setTextColor(59, 36, 22);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.text('N° COTIZACIÓN: ' + (data.numero || ''), margin, 38);
+
+      var y = 44;
+      var boxH = 38;
 
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(245, 236, 215);
       doc.roundedRect(margin, y, contentW, boxH, 2, 2, 'FD');
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
+      doc.setFontSize(10);
       doc.setTextColor(92, 58, 33);
-      doc.text('COTIZADO PARA', margin + 4, y + 6);
+      doc.text('COTIZADO PARA', margin + 4, y + 7);
 
-      doc.setFontSize(12);
-      doc.text(truncateText(data.cliente || '-', 45), margin + 4, y + 12);
+      doc.setFontSize(13);
+      doc.text(truncateText(data.cliente || '-', 40), margin + 4, y + 14.5);
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
+      doc.setFontSize(9);
+      doc.setTextColor(59, 36, 22);
 
       var leftX = margin + 4;
-      var rightX = margin + 100;
+      var rightX = margin + 102;
 
-      doc.text('Telefono: ' + (data.telefono || '-'), leftX, y + 17);
-      doc.text('Email: ' + truncateText(data.email || '-', 42), leftX, y + 21);
+      doc.text('Telefono: ' + (data.telefono || '-'), leftX, y + 20.5);
+      doc.text('Email: ' + truncateText(data.email || '-', 40), leftX, y + 25.5);
 
-      var addr = 'Direccion: ' + (data.direccion || '-');
-      var addrLines = doc.splitTextToSize(addr, 88);
-      doc.text(addrLines.slice(0, 2), leftX, y + 25);
+      var addrLines = doc.splitTextToSize('Direccion: ' + (data.direccion || '-'), 88);
+      doc.text(addrLines.slice(0, 2), leftX, y + 30.5);
 
-      doc.text('Vendedor: ' + (data.vendedor || '-'), rightX, y + 12);
-      doc.text('Fecha: ' + (data.fecha || '-'), rightX, y + 17);
-      doc.text('Vigencia: ' + (data.vigencia || '15 días'), rightX, y + 22);
-      doc.text('Especialidad: Hormigón estampado', rightX, y + 27);
+      doc.text('Vendedor: ' + (data.vendedor || '-'), rightX, y + 14.5);
+      doc.text('Fecha: ' + (data.fecha || '-'), rightX, y + 20.5);
+      doc.text('Vigencia: ' + (data.vigencia || '15 días'), rightX, y + 25.5);
+      doc.text('RUT: 77.145.822-K', rightX, y + 30.5);
 
       y += boxH + 3;
 
-      // Condiciones de pago.
       doc.setFillColor(92, 58, 33);
-      doc.rect(margin, y, contentW, 6, 'F');
+      doc.rect(margin, y, contentW, 7, 'F');
       doc.setTextColor(255, 255, 255);
-      doc.setFontSize(8);
       doc.setFont('helvetica', 'bold');
-      doc.text('CONDICIONES DE PAGO', margin + 2, y + 4);
+      doc.setFontSize(9);
+      doc.text('CONDICIONES DE PAGO', margin + 2, y + 4.8);
 
-      y += 6;
+      y += 7;
 
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
-      doc.rect(margin, y, contentW, 11, 'FD');
+      doc.rect(margin, y, contentW, 13, 'FD');
 
       doc.setTextColor(59, 36, 22);
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7.5);
-      doc.text('Anticipo 50% al confirmar.', margin + 2, y + 4);
-      doc.text('Saldo 50% al finalizar obra.', margin + 2, y + 8.5);
-      doc.text('Validez de oferta: 15 días.', margin + 100, y + 4);
-      doc.text('Forma de pago: transferencia / efectivo.', margin + 100, y + 8.5);
+      doc.setFontSize(8.5);
+      doc.text('Anticipo 50% al confirmar.', margin + 2, y + 5);
+      doc.text('Saldo 50% al finalizar obra.', margin + 2, y + 10);
+      doc.text('Validez de oferta: 15 días.', margin + 102, y + 5);
+      doc.text('Forma de pago: transferencia / efectivo.', margin + 102, y + 10);
 
-      y += 13;
+      y += 16;
 
-      // Tabla principal.
       var rows = data.rows || [];
-      var rowH = 5.2;
+      var fontBody = 9;
+      var rowH = 6.4;
 
-      if (rows.length > 8) {
-        rowH = 4.8;
-      }
-      if (rows.length > 12) {
-        rowH = 4.3;
-      }
-      if (rows.length > 16) {
-        rowH = 3.9;
-      }
-      if (rows.length > 20) {
-        rowH = 3.5;
-      }
+      if (rows.length > 8) { rowH = 5.8; fontBody = 8.5; }
+      if (rows.length > 12) { rowH = 5.2; fontBody = 8; }
+      if (rows.length > 16) { rowH = 4.8; fontBody = 7.5; }
 
-      var col0 = 94;
-      var col1 = 20;
+      var col0 = 92;
+      var col1 = 22;
       var col2 = 40;
       var col3 = 40;
 
       doc.setFillColor(92, 58, 33);
-      doc.rect(margin, y, contentW, 6, 'F');
+      doc.rect(margin, y, contentW, 7, 'F');
 
       doc.setTextColor(255, 255, 255);
-      doc.setFontSize(8);
       doc.setFont('helvetica', 'bold');
-      doc.text('DESCRIPCION', margin + 2, y + 4);
-      doc.text('CANT.', margin + col0 + 2, y + 4);
-      doc.text('PRECIO UNIT.', margin + col0 + col1 + 2, y + 4);
-      doc.text('IMPORTE', margin + col0 + col1 + col2 + 2, y + 4);
+      doc.setFontSize(9);
+      doc.text('DESCRIPCION', margin + 2, y + 4.8);
+      doc.text('CANT.', margin + col0 + 2, y + 4.8);
+      doc.text('PRECIO UNIT.', margin + col0 + col1 + 2, y + 4.8);
+      doc.text('IMPORTE', margin + col0 + col1 + col2 + 2, y + 4.8);
 
-      y += 6;
+      y += 7;
 
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(59, 36, 22);
-      doc.setFontSize(7.5);
+      doc.setFontSize(fontBody);
 
       for (var i = 0; i < rows.length; i++) {
         doc.setDrawColor(201, 160, 90);
         doc.rect(margin, y, contentW, rowH);
 
-        doc.text(truncateText(rows[i].desc || '', 60), margin + 2, y + rowH - 1.7);
-        doc.text(String(rows[i].cant), margin + col0 + 2, y + rowH - 1.7);
-        doc.text('$' + formatMoney(rows[i].precio), margin + col0 + col1 + 2, y + rowH - 1.7);
-        doc.text('$' + formatMoney(rows[i].importe), margin + col0 + col1 + col2 + 2, y + rowH - 1.7);
+        var cantText = String(rows[i].cant);
+        if (rows[i].unidad) { cantText = cantText + ' ' + rows[i].unidad; }
+
+        doc.text(truncateText(rows[i].desc || '', 52), margin + 2, y + rowH - 2);
+        doc.text(cantText, margin + col0 + 2, y + rowH - 2);
+        doc.text('$' + formatMoney(rows[i].precio), margin + col0 + col1 + 2, y + rowH - 2);
+        doc.text('$' + formatMoney(rows[i].importe), margin + col0 + col1 + col2 + 2, y + rowH - 2);
 
         y += rowH;
       }
@@ -2564,100 +2453,91 @@
 
       var tableBottom = y;
 
-      // Totales.
-      var totX = margin + 112;
-      var totW = 82;
+      var totX = margin + 110;
+      var totW = 84;
       var totY = tableBottom + 3;
 
-      doc.setFontSize(8);
+      doc.setFontSize(9.5);
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
 
-      doc.rect(totX, totY, totW, 6);
-      doc.text('Subtotal', totX + 2, totY + 4);
-      doc.text('$' + formatMoney(data.subtotal), totX + totW - 2, totY + 4, { align: 'right' });
-      totY += 6;
+      doc.rect(totX, totY, totW, 7);
+      doc.text('Subtotal', totX + 2, totY + 4.8);
+      doc.text('$' + formatMoney(data.subtotal), totX + totW - 2, totY + 4.8, { align: 'right' });
+      totY += 7;
 
       if (parseMoneyValue(data.iva) > 0) {
-        doc.rect(totX, totY, totW, 6);
-        doc.text('IVA 19%', totX + 2, totY + 4);
-        doc.text('$' + formatMoney(data.iva), totX + totW - 2, totY + 4, { align: 'right' });
-        totY += 6;
+        doc.rect(totX, totY, totW, 7);
+        doc.text('IVA 19%', totX + 2, totY + 4.8);
+        doc.text('$' + formatMoney(data.iva), totX + totW - 2, totY + 4.8, { align: 'right' });
+        totY += 7;
       }
 
       doc.setFillColor(201, 160, 90);
-      doc.rect(totX, totY, totW, 7, 'F');
+      doc.rect(totX, totY, totW, 8, 'F');
       doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10.5);
       doc.setTextColor(59, 36, 22);
-      doc.text('TOTAL', totX + 2, totY + 5);
-      doc.text('$' + formatMoney(data.total), totX + totW - 2, totY + 5, { align: 'right' });
+      doc.text('TOTAL', totX + 2, totY + 5.5);
+      doc.text('$' + formatMoney(data.total), totX + totW - 2, totY + 5.5, { align: 'right' });
 
-      totY += 9;
+      totY += 10;
       y = Math.max(tableBottom, totY) + 4;
 
-      // Items incluidos en dos columnas.
       var items = data.items || [];
-      if (!items.length) {
-        items = ['Según detalle cotizado'];
-      }
+      if (!items.length) { items = ['Según detalle cotizado']; }
 
       var half = Math.ceil(items.length / 2);
-      var lineH = 3.5;
+      var itemFont = 8;
+      var lineH = 4.3;
 
-      if (y > 205) {
-        lineH = 3.2;
-      }
+      if (y > 215) { itemFont = 7.5; lineH = 3.8; }
 
-      var itemsBoxBodyH = half * lineH + 4;
+      var itemsBodyH = half * lineH + 5;
 
       doc.setFillColor(201, 160, 90);
-      doc.rect(margin, y, contentW, 5, 'F');
+      doc.rect(margin, y, contentW, 6, 'F');
 
       doc.setTextColor(59, 36, 22);
-      doc.setFontSize(8);
       doc.setFont('helvetica', 'bold');
-      doc.text('ITEMS INCLUIDOS EN EL PRECIO', margin + 2, y + 3.5);
+      doc.setFontSize(9);
+      doc.text('ITEMS INCLUIDOS EN EL PRECIO', margin + 2, y + 4.2);
 
-      y += 5;
+      y += 6;
 
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
-      doc.rect(margin, y, contentW, itemsBoxBodyH, 'FD');
+      doc.rect(margin, y, contentW, itemsBodyH, 'FD');
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(6.8);
+      doc.setFontSize(itemFont);
       doc.setTextColor(59, 36, 22);
 
-      var itemY = y + 3.6;
+      var itemY = y + 4.2;
 
       for (var j = 0; j < half; j++) {
         var itemLeft = items[j];
         var itemRight = items[j + half];
 
         if (itemLeft) {
-          if (typeof itemLeft === 'object') {
-            itemLeft = itemLeft.nombre || '';
-          }
-          doc.text('- ' + truncateText(itemLeft, 52), margin + 3, itemY + j * lineH);
+          if (typeof itemLeft === 'object') { itemLeft = itemLeft.nombre || ''; }
+          doc.text('- ' + truncateText(itemLeft, 48), margin + 3, itemY + j * lineH);
         }
 
         if (itemRight) {
-          if (typeof itemRight === 'object') {
-            itemRight = itemRight.nombre || '';
-          }
-          doc.text('- ' + truncateText(itemRight, 52), margin + 100, itemY + j * lineH);
+          if (typeof itemRight === 'object') { itemRight = itemRight.nombre || ''; }
+          doc.text('- ' + truncateText(itemRight, 48), margin + 102, itemY + j * lineH);
         }
       }
 
-      y += itemsBoxBodyH + 3;
+      y += itemsBodyH + 3;
 
-      // Alcance y garantía.
       y = drawPdfInfoBox(
         doc,
         'ALCANCE DEL PROYECTO',
         'Instalación de hormigón estampado según condiciones pactadas. Incluye preparación, hormigonado, estampado, curado y limpieza básica del área de trabajo. No incluye obras civiles no especificadas en esta cotización.',
         y,
-        14
+        16
       );
 
       y = drawPdfInfoBox(
@@ -2665,17 +2545,15 @@
         'GARANTÍA',
         '12 meses por fisuras o fracturas estructurales del hormigón. Se recomienda mantención anual. Focos LED con garantía de 4 meses. Post-venta de 90 días.',
         y,
-        16
+        18
       );
 
-      // Footer PDF sin @digitalmarketing.cl
-      doc.setFontSize(7);
+      doc.setFontSize(8.5);
       doc.setTextColor(92, 58, 33);
       doc.setFont('helvetica', 'normal');
-      doc.text('Pavimentos M&C SPA - Hormigón Estampado - Lampa, Chile', pageW / 2, 292, { align: 'center' });
+      doc.text('Pavimentos M&C SPA - RUT: 77.145.822-K - Hormigón Estampado - Lampa, Chile', pageW / 2, 292, { align: 'center' });
 
-      var safeCliente = String(data.cliente || 'cliente').replace(/[^a-zA-Z0-9]/g, '_');
-      doc.save('Cotizacion_' + safeCliente + '.pdf');
+      doc.save(pdfFilename(data));
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -2684,6 +2562,7 @@
       resetForm();
       renderTarifas();
       renderInventario();
+      renderItemsCatalogo();
       renderProyectos();
       renderPapelera();
       loadLogo();
