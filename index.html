@@ -87,7 +87,7 @@
       border-radius: 10px;
       background: #fffdf8;
       color: #2c231a;
-      font-size: 16px; /* evita zoom automático en iOS */
+      font-size: 16px;
     }
 
     .form-control:focus { outline: 2px solid rgba(201, 160, 90, 0.45); border-color: var(--mostaza); }
@@ -209,6 +209,8 @@
       background: linear-gradient(180deg, var(--cafe-oscuro), #2c1a10);
       color: #fff;
       z-index: 1500;
+      display: flex;
+      flex-direction: column;
     }
 
     .brand { display: flex; align-items: center; gap: 12px; padding: 8px 6px 14px; border-bottom: 1px solid rgba(255,255,255,0.14); margin-bottom: 16px; }
@@ -223,6 +225,10 @@
     .sidebar-contact { margin-top: 18px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.14); font-size: 14px; line-height: 1.7; }
     .sidebar-contact a { color: #ffe8c5; text-decoration: none; }
     .sidebar-contact a:hover { text-decoration: underline; }
+
+    .sidebar-dev { margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.14); font-size: 12px; color: #d9c9ae; text-align: center; line-height: 1.6; }
+    .sidebar-dev a { color: var(--mostaza); font-weight: bold; text-decoration: none; }
+    .sidebar-dev a:hover { text-decoration: underline; }
 
     /* ============ MAIN ============ */
     .main { margin-left: var(--sidebar-w); padding: 20px; min-height: 100vh; }
@@ -282,6 +288,7 @@
     /* ============ BARRAS DE ACCION ============ */
     .action-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
     .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; align-items: center; }
+    .toolbar .filtro-input { flex: 1 1 240px; max-width: 420px; }
 
     .app-footer { margin: 24px 0 8px; padding-top: 12px; border-top: 1px solid #dfd0b5; color: #7b6c5c; font-size: 14px; }
     .app-footer a { color: var(--cafe); font-weight: bold; text-decoration: none; }
@@ -344,6 +351,7 @@
       .toolbar { flex-direction: column; align-items: stretch; }
       .toolbar .btn { width: 100%; min-height: 44px; }
       .toolbar .checkbox-line { justify-content: flex-start; }
+      .toolbar .filtro-input { max-width: none; }
 
       .btn-sm { min-height: 38px; }
 
@@ -414,6 +422,11 @@
       <a href="https://wa.me/56930665920" target="_blank" rel="noopener">+56 9 3066 5920</a><br>
       <a href="mailto:ventas@pavimentosmyc.cl">ventas@pavimentosmyc.cl</a><br>
       Lampa, Chile
+    </div>
+
+    <div class="sidebar-dev">
+      Desarrollado por<br>
+      <a href="https://instagram.com/digitalmarketing.cl" target="_blank" rel="noopener">@digitalmarketing.cl</a>
     </div>
   </aside>
 
@@ -561,6 +574,7 @@
           <div class="card summary-card">
             <div class="card-header">RESUMEN</div>
             <div class="card-body">
+              <div class="summary-row"><span>N° Cotización</span><span id="resNumero">Se asigna al guardar</span></div>
               <div class="summary-row"><span>Cliente</span><span id="resCliente">-</span></div>
               <div class="summary-row"><span>Superficie</span><span id="resSuperficie">0 m²</span></div>
               <div class="summary-row"><span>Precio m²</span><span id="resPrecioM2">$0</span></div>
@@ -588,6 +602,7 @@
         <div class="card-body">
           <div class="toolbar">
             <button class="btn btn-light" onclick="renderProyectos()">Actualizar</button>
+            <input type="text" id="filtroProyectos" class="form-control filtro-input" placeholder="Filtrar por nombre de cliente o N° de cotización" oninput="renderProyectos()">
           </div>
           <div class="table-wrap">
             <table>
@@ -742,7 +757,7 @@
     var logoData = '';
     var editingId = null;
     var currentNumero = '';
-    var cotSeq = 1;
+    var cotSeq = 100000;
 
     var tarifas = [];
     var proyectos = [];
@@ -872,14 +887,14 @@
         papelera = b ? JSON.parse(b) : [];
         inventario = inv ? JSON.parse(inv) : [];
         itemsCatalogo = it ? JSON.parse(it) : itemsDefault.slice();
-        cotSeq = parseInt(sq, 10) || 1;
+        cotSeq = parseInt(sq, 10) || 100000;
       } catch (e) {
         tarifas = buildDefaultTarifas();
         proyectos = [];
         papelera = [];
         inventario = [];
         itemsCatalogo = itemsDefault.slice();
-        cotSeq = 1;
+        cotSeq = 100000;
       }
 
       if (!tarifas || !tarifas.length) { tarifas = buildDefaultTarifas(); }
@@ -887,7 +902,7 @@
       if (!papelera) { papelera = []; }
       if (!inventario) { inventario = []; }
       if (!itemsCatalogo || !itemsCatalogo.length) { itemsCatalogo = itemsDefault.slice(); }
-      if (!cotSeq || cotSeq < 1) { cotSeq = 1; }
+      if (!cotSeq || cotSeq < 100000) { cotSeq = 100000; }
     }
 
     function setDbStatus(connected) {
@@ -938,12 +953,16 @@
           setDbStatus(true);
 
           if (doc.exists && doc.data() && doc.data().seq) {
-            var remoteSeq = parseInt(doc.data().seq, 10) || 1;
+            var remoteSeq = parseInt(doc.data().seq, 10) || 0;
             if (remoteSeq > cotSeq) {
               cotSeq = remoteSeq;
-              saveLocalAll();
             }
+          } else {
+            db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () { });
           }
+
+          if (cotSeq < 100000) { cotSeq = 100000; }
+          saveLocalAll();
 
           return db.collection('config').doc('tarifas').get();
         })
@@ -1103,7 +1122,7 @@
     }
 
     function reserveNumero() {
-      var num = 'C-' + cotSeq;
+      var num = String(cotSeq);
       cotSeq = cotSeq + 1;
       saveLocalAll();
       syncNumeracion();
@@ -1591,6 +1610,7 @@
       document.getElementById('tarifaAplicada').value = q.tarifaRango + ' m²';
       document.getElementById('precioM2').value = '$' + formatMoney(q.precioM2);
 
+      document.getElementById('resNumero').innerText = q.numero || 'Se asigna al guardar';
       document.getElementById('resCliente').innerText = q.cliente || '-';
       document.getElementById('resSuperficie').innerText = q.superficie + ' m²';
       document.getElementById('resPrecioM2').innerText = '$' + formatMoney(q.precioM2);
@@ -1729,7 +1749,7 @@
       var p = proyectos[index];
 
       editingId = String(p.id);
-      currentNumero = p.numero || ('C-' + p.id);
+      currentNumero = p.numero || String(p.id);
 
       document.getElementById('clienteNombre').value = p.cliente || '';
       document.getElementById('clienteTelefono').value = p.telefono || '+56 ';
@@ -1860,26 +1880,43 @@
 
     function renderProyectos() {
       var tbody = document.getElementById('tbodyProyectos');
-      var html = '';
+      var filtroInput = document.getElementById('filtroProyectos');
+      var filtro = filtroInput ? filtroInput.value.trim().toLowerCase() : '';
 
-      if (!proyectos.length) {
-        html = '<tr><td colspan="7" class="center">No hay proyectos guardados</td></tr>';
-      }
-
+      var filtered = [];
       for (var i = 0; i < proyectos.length; i++) {
         var p = proyectos[i];
+        var cliente = String(p.cliente || '').toLowerCase();
+        var numero = String(p.numero || '').toLowerCase();
+        if (!filtro || cliente.indexOf(filtro) !== -1 || numero.indexOf(filtro) !== -1) {
+          filtered.push(p);
+        }
+      }
+
+      var html = '';
+
+      if (!filtered.length) {
+        if (proyectos.length) {
+          html = '<tr><td colspan="7" class="center">No hay resultados para el filtro aplicado</td></tr>';
+        } else {
+          html = '<tr><td colspan="7" class="center">No hay proyectos guardados</td></tr>';
+        }
+      }
+
+      for (var j = 0; j < filtered.length; j++) {
+        var p2 = filtered[j];
 
         html += '<tr>';
-        html += '<td>' + (i + 1) + '</td>';
-        html += '<td><strong>' + escapeHtml(p.numero || '-') + '</strong></td>';
-        html += '<td>' + escapeHtml(p.cliente || '') + '</td>';
-        html += '<td>' + escapeHtml(p.superficieNum || 0) + ' m²</td>';
-        html += '<td>$' + formatMoney(p.totalNum || 0) + '</td>';
-        html += '<td>' + escapeHtml(p.fecha || '') + '</td>';
+        html += '<td>' + (j + 1) + '</td>';
+        html += '<td><strong>' + escapeHtml(p2.numero || '-') + '</strong></td>';
+        html += '<td>' + escapeHtml(p2.cliente || '') + '</td>';
+        html += '<td>' + escapeHtml(p2.superficieNum || 0) + ' m²</td>';
+        html += '<td>$' + formatMoney(p2.totalNum || 0) + '</td>';
+        html += '<td>' + escapeHtml(p2.fecha || '') + '</td>';
         html += '<td>';
-        html += '<button class="btn btn-sm" onclick="editarProyecto(\'' + escapeAttr(p.id) + '\')">Editar</button> ';
-        html += '<button class="btn btn-sm btn-danger" onclick="eliminarProyecto(\'' + escapeAttr(p.id) + '\')">Eliminar</button> ';
-        html += '<button class="btn btn-sm btn-dark" onclick="generarPDFProyecto(\'' + escapeAttr(p.id) + '\')">PDF</button>';
+        html += '<button class="btn btn-sm" onclick="editarProyecto(\'' + escapeAttr(p2.id) + '\')">Editar</button> ';
+        html += '<button class="btn btn-sm btn-danger" onclick="eliminarProyecto(\'' + escapeAttr(p2.id) + '\')">Eliminar</button> ';
+        html += '<button class="btn btn-sm btn-dark" onclick="generarPDFProyecto(\'' + escapeAttr(p2.id) + '\')">PDF</button>';
         html += '</td>';
         html += '</tr>';
       }
@@ -2022,6 +2059,7 @@
     }
 
     function enviarWhatsApp() {
+      ensureNumero();
       var q = getQuoteData();
 
       if (!q.cliente) {
@@ -2035,16 +2073,43 @@
         return;
       }
 
-      var msg = 'Hola ' + q.cliente + ', le enviamos la cotización de Pavimentos M&C - Hormigón Estampado.\n\n';
-      msg += 'Superficie: ' + q.superficie + ' m²\n';
-      msg += 'Precio m²: $' + formatMoney(q.precioM2) + '\n';
-      msg += 'Total cotizado: $' + formatMoney(q.total) + '\n\n';
-      msg += 'Quedamos atentos a sus comentarios.';
+      var msg = 'PAVIMENTOS M&C - HORMIGON ESTAMPADO\n';
+      msg += '--------------------------------\n';
+      msg += 'COTIZACION N° ' + q.numero + '\n';
+      msg += '--------------------------------\n';
+      msg += 'Cliente: ' + q.cliente + '\n';
+      msg += 'Fecha: ' + (q.fecha || '-') + '\n';
+      if (q.vendedor) {
+        msg += 'Vendedor: ' + q.vendedor + '\n';
+      }
+      msg += '\n';
+      msg += 'DETALLE\n';
+      msg += 'Hormigon estampado: ' + q.superficie + ' m2 x $' + formatMoney(q.precioM2) + ' = $' + formatMoney(q.subtotalM2) + '\n';
+      if (q.demTotal > 0) {
+        msg += 'Demolicion: ' + q.demM2 + ' m2 = $' + formatMoney(q.demTotal) + '\n';
+      }
+      if (q.totalExtras > 0) {
+        msg += 'Trabajos extras: $' + formatMoney(q.totalExtras) + '\n';
+      }
+      msg += '\n';
+      msg += 'Subtotal: $' + formatMoney(q.base) + '\n';
+      if (q.aplicarIva) {
+        msg += 'IVA 19%: $' + formatMoney(q.ivaMonto) + '\n';
+      }
+      msg += 'TOTAL: $' + formatMoney(q.total) + '\n';
+      msg += '\n';
+      msg += 'Condiciones: 50% anticipo, 50% al finalizar.\n';
+      msg += 'Validez de oferta: 15 dias.\n';
+      msg += 'Garantia: 12 meses (fisuras/fracturas).\n';
+      msg += '\n';
+      msg += 'Pavimentos M&C SPA - Lampa, Chile\n';
+      msg += '+56 9 3066 5920 | ventas@pavimentosmyc.cl';
 
       window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
     }
 
     function enviarCorreo() {
+      ensureNumero();
       var q = getQuoteData();
 
       if (!q.email) {
@@ -2052,15 +2117,44 @@
         return;
       }
 
-      var subject = 'Cotización Pavimentos M&C - ' + q.cliente;
+      var subject = 'Cotización N° ' + q.numero + ' - Pavimentos M&C - ' + q.cliente;
+
       var body = 'Estimado/a ' + q.cliente + ',\n\n';
-      body += 'Junto con saludar, le enviamos la cotización solicitada.\n\n';
-      body += 'Superficie: ' + q.superficie + ' m²\n';
-      body += 'Precio m²: $' + formatMoney(q.precioM2) + '\n';
-      body += 'Total: $' + formatMoney(q.total) + '\n\n';
+      body += 'Junto con saludarle, le enviamos la cotización solicitada para su proyecto de hormigón estampado.\n\n';
+      body += 'N° COTIZACIÓN: ' + q.numero + '\n';
+      body += 'FECHA: ' + (q.fecha || '-') + '\n';
+      if (q.vendedor) {
+        body += 'VENDEDOR: ' + q.vendedor + '\n';
+      }
+      body += '\n';
+      body += 'DETALLE DE LA COTIZACIÓN\n';
+      body += '- Hormigón estampado: ' + q.superficie + ' m² x $' + formatMoney(q.precioM2) + ' = $' + formatMoney(q.subtotalM2) + '\n';
+      if (q.demTotal > 0) {
+        body += '- Demolición de pavimento existente: ' + q.demM2 + ' m² = $' + formatMoney(q.demTotal) + '\n';
+      }
+      if (q.totalExtras > 0) {
+        body += '- Trabajos extras: $' + formatMoney(q.totalExtras) + '\n';
+      }
+      body += '\n';
+      body += 'Subtotal: $' + formatMoney(q.base) + '\n';
+      if (q.aplicarIva) {
+        body += 'IVA 19%: $' + formatMoney(q.ivaMonto) + '\n';
+      }
+      body += 'TOTAL: $' + formatMoney(q.total) + '\n';
+      body += '\n';
+      body += 'CONDICIONES DE PAGO\n';
+      body += '- Anticipo 50% al confirmar.\n';
+      body += '- Saldo 50% al finalizar la obra.\n';
+      body += '- Validez de la oferta: 15 días.\n';
+      body += '\n';
+      body += 'GARANTÍA\n';
+      body += '12 meses por fisuras o fracturas estructurales del hormigón. Focos LED: 4 meses. Post-venta: 90 días.\n';
+      body += '\n';
+      body += 'Quedamos atentos a sus comentarios.\n\n';
       body += 'Pavimentos M&C SPA - RUT: 77.145.822-K\n';
-      body += 'Hormigón Estampado\n';
-      body += '+56 9 3066 5920 | ventas@pavimentosmyc.cl | Lampa, Chile';
+      body += 'Hormigón Estampado - Lampa, Chile\n';
+      body += 'Tel: +56 9 3066 5920\n';
+      body += 'ventas@pavimentosmyc.cl';
 
       window.location.href = 'mailto:' + encodeURIComponent(q.email) +
         '?subject=' + encodeURIComponent(subject) +
@@ -2232,7 +2326,7 @@
       if (!total) { total = subtotal + iva; }
 
       return {
-        numero: p.numero || ('C-' + p.id),
+        numero: p.numero || String(p.id),
         cliente: p.cliente || '',
         telefono: p.telefono || '',
         email: p.email || '',
@@ -2376,7 +2470,7 @@
       doc.text('Vendedor: ' + (data.vendedor || '-'), rightX, y + 14.5);
       doc.text('Fecha: ' + (data.fecha || '-'), rightX, y + 20.5);
       doc.text('Vigencia: ' + (data.vigencia || '15 días'), rightX, y + 25.5);
-      doc.text('RUT: 77.145.822-K', rightX, y + 30.5);
+      doc.text('Fono: +56 9 3066 5920', rightX, y + 30.5);
 
       y += boxH + 3;
 
