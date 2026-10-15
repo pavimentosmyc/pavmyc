@@ -1,6 +1,4 @@
-<write_file>
-<path>index.html</path>
-<content><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -13,18 +11,7 @@
 :root{--cafe-oscuro:#3b2416;--cafe:#5c3a21;--cafe-medio:#7a4f2e;--cafe-claro:#a67c52;--mostaza:#c9a05a;--mostaza-claro:#e3c28a;--crema:#f5ecd7;--crema-oscuro:#e8dcc4;--blanco:#fff;--gris:#6b6b6b;--gris-claro:#f5f5f5;--gris-borde:#e0e0e0;--rojo:#c0392b;--verde:#27ae60;--azul:#2c5f8a}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',-apple-system,sans-serif}
 body{background:#f0ebe0;color:#2b2b2b;min-height:100vh;display:flex;flex-direction:column}
-#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--cafe-oscuro),var(--cafe) 50%,var(--cafe-medio));display:flex;align-items:center;justify-content:center;z-index:9999}
-.login-box{background:#fff;padding:45px 40px;border-radius:8px;box-shadow:0 25px 80px rgba(0,0,0,.5);width:380px;text-align:center}
-.login-box .logo-login{width:180px;margin-bottom:15px}
-.login-box h2{color:var(--cafe-oscuro);margin-bottom:5px;font-size:22px}
-.login-box p{color:var(--gris);margin-bottom:30px;font-size:13px}
-.login-box input{width:100%;padding:12px 14px;margin-bottom:12px;border:1px solid var(--gris-borde);border-radius:4px;font-size:14px}
-.login-box input:focus{outline:none;border-color:var(--mostaza);box-shadow:0 0 0 3px rgba(201,160,90,.15)}
-.login-box button{width:100%;padding:13px;background:var(--cafe);color:#fff;border:none;border-radius:4px;font-size:15px;cursor:pointer;font-weight:600}
-.login-box button:hover{background:var(--cafe-oscuro)}
-.login-box button:disabled{background:#999;cursor:not-allowed}
-.login-error{color:var(--rojo);font-size:13px;margin-top:12px;min-height:18px}
-#app{display:none;flex:1}
+#app{display:flex;flex:1}
 .app-container{display:flex;min-height:100vh;flex:1}
 .sidebar{width:260px;background:var(--cafe-oscuro);color:#fff;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;display:flex;flex-direction:column;z-index:100}
 .sidebar-header{padding:25px 20px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -36,19 +23,19 @@ body{background:#f0ebe0;color:#2b2b2b;min-height:100vh;display:flex;flex-directi
 .sidebar nav a{display:flex;align-items:center;gap:12px;padding:13px 22px;color:rgba(255,255,255,.75);text-decoration:none;font-size:14px;border-left:3px solid transparent;cursor:pointer}
 .sidebar nav a:hover{background:rgba(255,255,255,.06);color:#fff}
 .sidebar nav a.active{background:rgba(201,160,90,.15);border-left-color:var(--mostaza);color:#fff;font-weight:600}
-.sidebar nav a.logout{color:#ff9999;margin-top:10px}
 .sidebar-footer{padding:18px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:12px}
 .sidebar-footer a{color:var(--mostaza-claro);text-decoration:none;display:block;margin:6px 0}
-.sidebar-footer .user-info{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.6)}
 .main{margin-left:260px;flex:1;padding:30px 35px;min-height:100vh;display:flex;flex-direction:column}
 .page{display:none;flex:1}.page.active{display:flex;flex-direction:column}
-.page-header{margin-bottom:25px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}.page-header h1{color:var(--cafe-oscuro);font-size:28px;font-weight:700}
+.page-header{margin-bottom:25px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.page-header h1{color:var(--cafe-oscuro);font-size:28px;font-weight:700}
 .page-header .subtitle{color:var(--gris);font-size:14px;margin-top:4px}
 .layout-2col{display:grid;grid-template-columns:1fr 340px;gap:25px;align-items:start}
 .card{background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(59,36,22,.06);overflow:hidden;margin-bottom:20px}
 .card-header{background:var(--cafe);color:#fff;padding:14px 20px;font-size:15px;font-weight:600}
 .card-body{padding:22px}
-.summary-card{position:sticky;top:20px}.summary-card .card-header{background:var(--cafe-oscuro)}
+.summary-card{position:sticky;top:20px}
+.summary-card .card-header{background:var(--cafe-oscuro)}
 .summary-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--gris-borde);font-size:14px}
 .summary-row:last-child{border-bottom:none}
 .summary-row .label{color:var(--gris);font-size:13px}
@@ -112,17 +99,6 @@ table input{width:100%;padding:7px 8px;border:1px solid var(--gris-borde);border
 </head>
 <body>
 <div id="syncStatus" class="sync-status"></div>
-<div id="loginScreen">
-<div class="login-box">
-<img class="logo-login" src="logo.png" alt="Pavimentos M&C">
-<h2>PAVIMENTOS M&C</h2>
-<p>Sistema de Cotizaciones</p>
-<input type="text" id="loginUser" placeholder="Usuario" value="admin">
-<input type="password" id="loginPass" placeholder="Contraseña" value="admin123">
-<button onclick="doLogin()" id="loginBtn">Ingresar</button>
-<div class="login-error" id="loginError"></div>
-</div>
-</div>
 <div id="app">
 <div class="app-container">
 <aside class="sidebar">
@@ -137,13 +113,11 @@ table input{width:100%;padding:7px 8px;border:1px solid var(--gris-borde);border
 <a onclick="showPage('papelera',this)">Papelera</a>
 <a onclick="showPage('tarifas',this)">Tarifas</a>
 <a onclick="showPage('inventario',this)">Inventario</a>
-<a class="logout" onclick="doLogout()">Salir</a>
 </nav>
 <div class="sidebar-footer">
 <a href="https://wa.me/56930665920" target="_blank">+56 9 3066 5920</a>
 <a href="mailto:ventas@pavimentosmyc.cl">ventas@pavimentosmyc.cl</a>
 <a>Lampa, Chile</a>
-<div class="user-info" id="userInfo">Usuario: admin</div>
 <div class="dev-link">Desarrollado por<br><a href="https://instagram.com/digitalmarketing.cl" target="_blank">@digitalmarketing.cl</a></div>
 </div>
 </aside>
@@ -173,7 +147,7 @@ table input{width:100%;padding:7px 8px;border:1px solid var(--gris-borde);border
 <div class="form-group"><label>Tarifa aplicada</label><input id="cTarifa" readonly></div>
 <div class="form-group"><label>Precio m2</label><input id="cPrecioM2" readonly></div>
 </div>
-<div class="checkbox-row"><input type="checkbox" id="cIncluyeIva" onchange="calcular()"><label for="cIncluyeIva">Incluir IVA 19% en el precio</label></div>
+<div class="checkbox-row"><input type="checkbox" id="cIncluyeIva" onchange="calcular()"><label for="cIncluyeIva">Aplicar IVA 19% al total</label></div>
 </div></div>
 <div class="card"><div class="card-header">Trabajos Extras</div><div class="card-body">
 <div class="alert alert-warning">Selecciona los trabajos extras que se sumaran al total. Solo los marcados apareceran en el PDF.</div>
@@ -222,7 +196,7 @@ table input{width:100%;padding:7px 8px;border:1px solid var(--gris-borde);border
 <div class="summary-row" style="flex-direction:column;align-items:flex-start"><span class="label">Items Incluidos</span><div class="summary-items" id="rItems">Ninguno</div></div>
 <div class="summary-row" style="flex-direction:column;align-items:flex-start"><span class="label">Trabajos Extras</span><div class="summary-items" id="rExtrasList">Ninguno</div></div>
 <div class="summary-row"><span class="label">Total Extras</span><span class="value summary-extras" id="rExtras">$0</span></div>
-<div class="summary-row"><span class="label">IVA</span><span class="value summary-iva" id="rIva">No incluido</span></div>
+<div class="summary-row"><span class="label">IVA</span><span class="value summary-iva" id="rIva">No aplicado</span></div>
 <div class="summary-row total"><span class="label">TOTAL A COBRAR</span><span class="value" id="rTotal">$0</span></div>
 </div></div>
 </div>
@@ -280,8 +254,6 @@ measurementId: "G-HP777TPS26"
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const USUARIO_VALIDO = 'admin';
-const PASS_VALIDO = 'admin123';
 window.state = {
 proyectos: [],
 papelera: [],
@@ -291,7 +263,6 @@ extras: [],
 itemsSel: [],
 editId: null,
 logoBase64: null,
-currentUser: null,
 demoM2: 0,
 incluirDemo: true
 };
@@ -328,32 +299,6 @@ const INVENTARIO_DEFAULT = [
 {item:"Tapas de camaras",cant:1,unidad:"un",precio:60000}
 ];
 const PRECIO_DEMOLICION = 4000;
-window.doLogin = function() {
-const u = document.getElementById('loginUser').value.trim();
-const p = document.getElementById('loginPass').value;
-const btn = document.getElementById('loginBtn');
-const err = document.getElementById('loginError');
-if (u === USUARIO_VALIDO && p === PASS_VALIDO) {
-window.state.currentUser = u;
-document.getElementById('loginScreen').style.display = 'none';
-document.getElementById('app').style.display = 'flex';
-document.getElementById('userInfo').textContent = 'Usuario: ' + u;
-btn.disabled = false;
-btn.textContent = 'Ingresar';
-err.textContent = '';
-init();
-} else {
-err.textContent = 'Usuario o contraseña incorrectos';
-btn.disabled = false;
-btn.textContent = 'Ingresar';
-}
-};
-window.doLogout = function() {
-window.state.currentUser = null;
-document.getElementById('loginScreen').style.display = 'flex';
-document.getElementById('app').style.display = 'none';
-document.getElementById('loginPass').value = '';
-};
 function cargarLogo(){
 const img=new Image();
 img.crossOrigin='anonymous';
@@ -417,6 +362,7 @@ renderExtrasGrid();
 renderExtrasTable();
 calcular();
 }
+init();
 window.showPage = function(p, el) {
 document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
 document.querySelectorAll('.sidebar nav a').forEach(x => x.classList.remove('active'));
@@ -434,11 +380,12 @@ ITEMS_INCLUIDOS_DEFAULT.forEach((it, i) => {
 const div = document.createElement('div');
 div.className = 'item-check';
 const checked = window.state.itemsSel.includes(it) ? 'checked' : '';
-div.innerHTML = `<input type="checkbox" id="it${i}" ${checked} onchange="toggleItem('${it.replace(/'/g, "\\'")}')"><label for="it${i}">${it}</label>`;
+div.innerHTML = '<input type="checkbox" id="it' + i + '" ' + checked + ' onchange="toggleItem(' + i + ')"><label for="it' + i + '">' + it + '</label>';
 c.appendChild(div);
 });
 }
-window.toggleItem = function(it) {
+window.toggleItem = function(i) {
+const it = ITEMS_INCLUIDOS_DEFAULT[i];
 if (window.state.itemsSel.includes(it)) window.state.itemsSel = window.state.itemsSel.filter(x => x !== it);
 else window.state.itemsSel.push(it);
 calcular();
@@ -460,7 +407,7 @@ window.state.extras.forEach((e, i) => {
 const div = document.createElement('div');
 div.className = 'item-check';
 const checked = e.selected ? 'checked' : '';
-div.innerHTML = `<input type="checkbox" id="ex${i}" ${checked} onchange="toggleExtra(${i})"><label for="ex${i}"><strong>${e.desc || 'Sin descripcion'}</strong><br><small style="color:#999">$${e.precio.toLocaleString('es-CL')} c/u</small></label>`;
+div.innerHTML = '<input type="checkbox" id="ex' + i + '" ' + checked + ' onchange="toggleExtra(' + i + ')"><label for="ex' + i + '"><strong>' + (e.desc || 'Sin descripcion') + '</strong><br><small style="color:#999">$' + e.precio.toLocaleString('es-CL') + ' c/u</small></label>';
 c.appendChild(div);
 });
 }
@@ -474,7 +421,7 @@ const tb = document.getElementById('tbodyExtras');
 tb.innerHTML = '';
 window.state.extras.forEach((e, i) => {
 const tr = document.createElement('tr');
-tr.innerHTML = `<td><input value="${e.desc}" oninput="window.state.extras[${i}].desc=this.value;renderExtrasGrid();calcular()"></td><td><input type="number" value="${e.cant}" min="0" oninput="window.state.extras[${i}].cant=parseFloat(this.value)||0;calcular()"></td><td><input type="number" value="${e.precio}" min="0" oninput="window.state.extras[${i}].precio=parseFloat(this.value)||0;renderExtrasGrid();calcular()"></td><td><button class="btn btn-danger btn-sm" onclick="delExtra(${i})">X</button></td>`;
+tr.innerHTML = '<td><input value="' + e.desc + '" oninput="window.state.extras[' + i + '].desc=this.value;renderExtrasGrid();calcular()"></td><td><input type="number" value="' + e.cant + '" min="0" oninput="window.state.extras[' + i + '].cant=parseFloat(this.value)||0;calcular()"></td><td><input type="number" value="' + e.precio + '" min="0" oninput="window.state.extras[' + i + '].precio=parseFloat(this.value)||0;renderExtrasGrid();calcular()"></td><td><button class="btn btn-danger btn-sm" onclick="delExtra(' + i + ')">X</button></td>';
 tb.appendChild(tr);
 });
 }
@@ -522,11 +469,11 @@ document.getElementById('rPrecioM2').textContent = tarifa > 0 ? '$' + tarifa.toL
 document.getElementById('rSubtotal').textContent = '$' + subtotal.toLocaleString('es-CL');
 document.getElementById('rDemo').textContent = demoM2 > 0 ? '$' + costoDemo.toLocaleString('es-CL') : '$0';
 const itemsDiv = document.getElementById('rItems');
-itemsDiv.innerHTML = window.state.itemsSel.length === 0 ? '<span style="color:#999">Ninguno</span>' : window.state.itemsSel.map(it => `<div class="summary-item">${it}</div>`).join('');
+itemsDiv.innerHTML = window.state.itemsSel.length === 0 ? '<span style="color:#999">Ninguno</span>' : window.state.itemsSel.map(it => '<div class="summary-item">' + it + '</div>').join('');
 const extrasDiv = document.getElementById('rExtrasList');
-extrasDiv.innerHTML = extrasSel.length === 0 ? '<span style="color:#999">Ninguno seleccionado</span>' : extrasSel.map(e => `<div class="summary-item">${e.desc} x${e.cant} = $${(e.cant * e.precio).toLocaleString('es-CL')}</div>`).join('');
+extrasDiv.innerHTML = extrasSel.length === 0 ? '<span style="color:#999">Ninguno seleccionado</span>' : extrasSel.map(e => '<div class="summary-item">' + e.desc + ' x' + e.cant + ' = $' + (e.cant * e.precio).toLocaleString('es-CL') + '</div>').join('');
 document.getElementById('rExtras').textContent = '$' + extras.toLocaleString('es-CL');
-document.getElementById('rIva').textContent = aplicaIva ? 'Sí aplicado (19%) = $' + iva.toLocaleString('es-CL') : 'No aplicado';
+document.getElementById('rIva').textContent = aplicaIva ? 'Si aplicado (19%) = $' + iva.toLocaleString('es-CL') : 'No aplicado';
 document.getElementById('rIva').style.color = aplicaIva ? 'var(--verde)' : 'var(--gris)';
 document.getElementById('rTotal').textContent = '$' + total.toLocaleString('es-CL');
 }
@@ -545,20 +492,20 @@ const btn = document.getElementById('btnGuardar');
 btn.disabled = true;
 btn.textContent = 'Guardando...';
 const proj = {
-nombre, tel,
+nombre: nombre,
+tel: tel,
 email: document.getElementById('cEmail').value,
 direccion: document.getElementById('cDireccion').value,
 vendedor: document.getElementById('cVendedor').value.trim(),
 fecha: document.getElementById('cFecha').value,
-m2,
+m2: m2,
 demoM2: window.state.demoM2,
 incluirDemo: window.state.incluirDemo,
 tarifa: getTarifa(m2),
 aplicaIva: document.getElementById('cIncluyeIva').checked,
 extras: JSON.parse(JSON.stringify(window.state.extras)),
 items: JSON.parse(JSON.stringify(window.state.itemsSel)),
-total,
-createdBy: window.state.currentUser || 'admin',
+total: total,
 updatedAt: new Date().toISOString()
 };
 try {
@@ -642,7 +589,7 @@ return;
 }
 window.state.proyectos.forEach((p, i) => {
 const tr = document.createElement('tr');
-tr.innerHTML = `<td>${i + 1}</td><td><strong>${p.nombre}</strong><br><small style="color:#999">${p.tel}</small></td><td>${p.vendedor || '-'}</td><td>${p.m2} m2</td><td><strong>$${(p.total || 0).toLocaleString('es-CL')}</strong></td><td>${p.fecha || '-'}</td><td class="proj-actions"><button class="btn btn-warning btn-sm" onclick="editarProyecto('${p.id}')">Editar</button><button class="btn btn-primary btn-sm" onclick="cargarYpdf('${p.id}')">PDF</button><button class="btn btn-danger btn-sm" onclick="moverPapelera('${p.id}')">Eliminar</button></td>`;
+tr.innerHTML = '<td>' + (i + 1) + '</td><td><strong>' + p.nombre + '</strong><br><small style="color:#999">' + p.tel + '</small></td><td>' + (p.vendedor || '-') + '</td><td>' + p.m2 + ' m2</td><td><strong>$' + (p.total || 0).toLocaleString('es-CL') + '</strong></td><td>' + (p.fecha || '-') + '</td><td class="proj-actions"><button class="btn btn-warning btn-sm" onclick="editarProyecto(\'' + p.id + '\')">Editar</button><button class="btn btn-primary btn-sm" onclick="cargarYpdf(\'' + p.id + '\')">PDF</button><button class="btn btn-danger btn-sm" onclick="moverPapelera(\'' + p.id + '\')">Eliminar</button></td>';
 tb.appendChild(tr);
 });
 }
@@ -669,7 +616,7 @@ return;
 }
 window.state.papelera.forEach((p, i) => {
 const tr = document.createElement('tr');
-tr.innerHTML = `<td><input type="checkbox" class="chkPap" data-id="${p.id}"></td><td>${i + 1}</td><td>${p.nombre}</td><td>${p.m2} m2</td><td>$${(p.total || 0).toLocaleString('es-CL')}</td><td>${p.fecha || '-'}</td><td class="proj-actions"><button class="btn btn-success btn-sm" onclick="restaurar('${p.id}')">Restaurar</button><button class="btn btn-danger btn-sm" onclick="elimDef('${p.id}')">Eliminar</button></td>`;
+tr.innerHTML = '<td><input type="checkbox" class="chkPap" data-id="' + p.id + '"></td><td>' + (i + 1) + '</td><td>' + p.nombre + '</td><td>' + p.m2 + ' m2</td><td>$' + (p.total || 0).toLocaleString('es-CL') + '</td><td>' + (p.fecha || '-') + '</td><td class="proj-actions"><button class="btn btn-success btn-sm" onclick="restaurar(\'' + p.id + '\')">Restaurar</button><button class="btn btn-danger btn-sm" onclick="elimDef(\'' + p.id + '\')">Eliminar</button></td>';
 tb.appendChild(tr);
 });
 }
@@ -710,7 +657,7 @@ const tb = document.getElementById('tbodyTarifas');
 tb.innerHTML = '';
 window.state.tarifas.forEach((t, i) => {
 const tr = document.createElement('tr');
-tr.innerHTML = `<td><input type="number" value="${t.min}" oninput="window.state.tarifas[${i}].min=parseFloat(this.value)" style="width:80px"> - <input type="number" value="${t.max}" oninput="window.state.tarifas[${i}].max=parseFloat(this.value)" style="width:80px"> m2</td><td><input type="number" value="${t.precio}" oninput="window.state.tarifas[${i}].precio=parseFloat(this.value)"></td>`;
+tr.innerHTML = '<td><input type="number" value="' + t.min + '" oninput="window.state.tarifas[' + i + '].min=parseFloat(this.value)" style="width:80px"> - <input type="number" value="' + t.max + '" oninput="window.state.tarifas[' + i + '].max=parseFloat(this.value)" style="width:80px"> m2</td><td><input type="number" value="' + t.precio + '" oninput="window.state.tarifas[' + i + '].precio=parseFloat(this.value)"></td>';
 tb.appendChild(tr);
 });
 }
@@ -736,7 +683,7 @@ tb.innerHTML = '';
 window.state.inventario.forEach((it, i) => {
 const total = it.cant * it.precio;
 const tr = document.createElement('tr');
-tr.innerHTML = `<td><input value="${it.item}" oninput="window.state.inventario[${i}].item=this.value"></td><td><input type="number" value="${it.cant}" oninput="window.state.inventario[${i}].cant=parseFloat(this.value)||0;renderInventario()"></td><td><input value="${it.unidad}" oninput="window.state.inventario[${i}].unidad=this.value"></td><td><input type="number" value="${it.precio}" oninput="window.state.inventario[${i}].precio=parseFloat(this.value)||0;renderInventario()"></td><td style="font-weight:600">$${total.toLocaleString('es-CL')}</td><td><button class="btn btn-danger btn-sm" onclick="delItemInv(${i})">X</button></td>`;
+tr.innerHTML = '<td><input value="' + it.item + '" oninput="window.state.inventario[' + i + '].item=this.value"></td><td><input type="number" value="' + it.cant + '" oninput="window.state.inventario[' + i + '].cant=parseFloat(this.value)||0;renderInventario()"></td><td><input value="' + it.unidad + '" oninput="window.state.inventario[' + i + '].unidad=this.value"></td><td><input type="number" value="' + it.precio + '" oninput="window.state.inventario[' + i + '].precio=parseFloat(this.value)||0;renderInventario()"></td><td style="font-weight:600">$' + total.toLocaleString('es-CL') + '</td><td><button class="btn btn-danger btn-sm" onclick="delItemInv(' + i + ')">X</button></td>';
 tb.appendChild(tr);
 });
 }
@@ -770,7 +717,7 @@ const cafe = [59, 36, 22];
 const cafeClaro = [166, 124, 82];
 const mostaza = [201, 160, 90];
 const crema = [245, 236, 215];
-doc.setFillColor(...cafeClaro);
+doc.setFillColor(cafeClaro[0], cafeClaro[1], cafeClaro[2]);
 doc.rect(0, 0, W, 35, 'F');
 if (window.state.logoBase64) {
 try { doc.addImage(window.state.logoBase64, 'PNG', 8, 3, 28, 28); } catch(e) {}
@@ -783,22 +730,22 @@ doc.setFontSize(9);
 doc.setFont(undefined, 'normal');
 doc.text('HORMIGON ESTAMPADO', 42, 21);
 doc.setFontSize(7);
-doc.text('ventas@pavimentosmyc.cl | +56 9 3066 5920 | Lampa, Chile', 42, 28);
-doc.setFillColor(...mostaza);
+doc.text('ventas@pavimentosmyc.cl  |  +56 9 3066 5920  |  Lampa, Chile', 42, 28);
+doc.setFillColor(mostaza[0], mostaza[1], mostaza[2]);
 doc.rect(0, 35, W, 9, 'F');
-doc.setTextColor(...cafe);
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
 doc.setFontSize(12);
 doc.setFont(undefined, 'bold');
 doc.text('COTIZACION N° ' + numCot, W / 2, 41.5, {align: 'center'});
 let y = 49;
 const boxH = 32;
-doc.setFillColor(...crema);
+doc.setFillColor(crema[0], crema[1], crema[2]);
 doc.rect(10, y, W - 20, boxH, 'F');
-doc.setDrawColor(...mostaza);
+doc.setDrawColor(mostaza[0], mostaza[1], mostaza[2]);
 doc.setLineWidth(0.5);
 doc.rect(10, y, W - 20, boxH, 'S');
 doc.setFont(undefined, 'bold');
-doc.setTextColor(...cafe);
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
 doc.setFontSize(10);
 doc.text('COTIZADO PARA', 14, y + 6);
 doc.setFont(undefined, 'bold');
@@ -820,7 +767,7 @@ doc.text(dirLines, 17, y + 32);
 }
 if (vendedor) {
 doc.setFont(undefined, 'bold');
-doc.setTextColor(...cafe);
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
 doc.setFontSize(9);
 doc.text('Vendedor:', W - 75, y + 6);
 doc.setFont(undefined, 'normal');
@@ -829,7 +776,7 @@ doc.setFontSize(10);
 doc.text(vendedor, W - 75, y + 12);
 }
 doc.setFont(undefined, 'bold');
-doc.setTextColor(...cafe);
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
 doc.setFontSize(9);
 doc.text('Fecha:', W - 75, y + (vendedor ? 17 : 6));
 doc.setFont(undefined, 'normal');
@@ -885,13 +832,13 @@ margin: {left: 10, right: 10}
 });
 y = doc.lastAutoTable.finalY + 3;
 const itemsH = 32;
-doc.setFillColor(...crema);
+doc.setFillColor(crema[0], crema[1], crema[2]);
 doc.rect(10, y, W - 20, itemsH, 'F');
-doc.setDrawColor(...mostaza);
+doc.setDrawColor(mostaza[0], mostaza[1], mostaza[2]);
 doc.setLineWidth(0.4);
 doc.rect(10, y, W - 20, itemsH, 'S');
 doc.setFont(undefined, 'bold');
-doc.setTextColor(...cafe);
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
 doc.setFontSize(9);
 doc.text('ITEMS INCLUIDOS EN EL PRECIO', 14, y + 5);
 doc.setFont(undefined, 'normal');
@@ -907,13 +854,13 @@ if (itemsCol2[i]) doc.text('- ' + itemsCol2[i], W / 2 + 5, y + 8 + i * step);
 }
 y += itemsH + 3;
 const alcanceH = 22;
-doc.setFillColor(...crema);
+doc.setFillColor(crema[0], crema[1], crema[2]);
 doc.rect(10, y, W - 20, alcanceH, 'F');
-doc.setDrawColor(...mostaza);
+doc.setDrawColor(mostaza[0], mostaza[1], mostaza[2]);
 doc.setLineWidth(0.4);
 doc.rect(10, y, W - 20, alcanceH, 'S');
 doc.setFont(undefined, 'bold');
-doc.setTextColor(...cafe);
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
 doc.setFontSize(9);
 doc.text('ALCANCE DEL PROYECTO', 14, y + 5);
 doc.setFont(undefined, 'normal');
@@ -930,20 +877,20 @@ const aStep = (alcanceH - 6) / alcance.length;
 alcance.forEach((a, i) => { doc.text('- ' + a, 14, y + 8 + i * aStep); });
 y += alcanceH + 3;
 const garantiaH = 18;
-doc.setFillColor(...crema);
+doc.setFillColor(crema[0], crema[1], crema[2]);
 doc.rect(10, y, W - 20, garantiaH, 'F');
-doc.setDrawColor(...mostaza);
+doc.setDrawColor(mostaza[0], mostaza[1], mostaza[2]);
 doc.setLineWidth(0.4);
 doc.rect(10, y, W - 20, garantiaH, 'S');
 doc.setFont(undefined, 'bold');
-doc.setTextColor(...cafe);
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
 doc.setFontSize(9);
 doc.text('GARANTIA', 14, y + 5);
 doc.setFont(undefined, 'normal');
 doc.setTextColor(60, 60, 60);
 doc.setFontSize(7.5);
 doc.text('12 meses desde el dia del hormigon por concepto de fisuras y fracturas.', 14, y + 9);
-doc.text('Mantencion anual recomendada: paño con cera acrilica incolora liquida.', 14, y + 13);
+doc.text('Mantencion anual recomendada: pano con cera acrilica incolora liquida.', 14, y + 13);
 doc.text('Focos LED: garantia de 4 meses. Post-venta: plazo de 90 dias para ejecucion.', 14, y + 16);
 doc.setFontSize(7);
 doc.setTextColor(130, 130, 130);
@@ -954,7 +901,7 @@ window.enviarWhatsApp = function() {
 const nombre = document.getElementById('cNombre').value || 'Cliente';
 const total = document.getElementById('rTotal').textContent;
 const m2 = document.getElementById('cSuperficie').value || 0;
-const msg = `Hola ${nombre}, te enviamos la cotizacion de Pavimentos M&C:\n\nSuperficie: ${m2} m2\nTotal: ${total}\n\nFormas de pago: 50% inicio, 30% hormigonado, 20% entrega.\n\nQuedamos atentos.`;
+const msg = 'Hola ' + nombre + ', te enviamos la cotizacion de Pavimentos M&C:\n\nSuperficie: ' + m2 + ' m2\nTotal: ' + total + '\n\nFormas de pago: 50% inicio, 30% hormigonado, 20% entrega.\n\nQuedamos atentos.';
 window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 };
 window.enviarCorreo = function() {
@@ -963,16 +910,13 @@ if (!email) { alert('Ingresa un email'); return; }
 const nombre = document.getElementById('cNombre').value || 'Cliente';
 const total = document.getElementById('rTotal').textContent;
 const subject = 'Cotizacion Pavimentos M&C - ' + nombre;
-const body = `Estimado/a ${nombre},\n\nAdjuntamos cotizacion por ${total}.\n\nSaludos,\nPavimentos M&C`;
-window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+const body = 'Estimado/a ' + nombre + ',\n\nAdjuntamos cotizacion por ' + total + '.\n\nSaludos,\nPavimentos M&C';
+window.location.href = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
 };
 window.cargarProyectos = async function() {
 await cargarDatos();
 renderProyectos();
 };
-document.getElementById('loginPass').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
 </script>
 </body>
 </html>
-</content>
-</write_file>
