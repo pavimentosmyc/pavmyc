@@ -1,461 +1,1096 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pavimentos M&C - Sistema de Cotizaciones</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- html2pdf para generar el PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.min.js"></script>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #e67e22;
-            --bg-light: #f8f9fa;
-        }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-light); }
-        
-        /* Sidebar */
-        .sidebar {
-            width: 260px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: var(--primary-color);
-            color: white;
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 1000;
-        }
-        .sidebar .logo { font-size: 1.5rem; font-weight: bold; color: var(--secondary-color); margin-bottom: 30px; text-align: center;}
-        .sidebar .nav-link { color: rgba(255,255,255,0.8); padding: 10px 15px; border-radius: 5px; margin-bottom: 5px; transition: 0.3s;}
-        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.1); color: white; }
-        .sidebar .contact-info { font-size: 0.85rem; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px;}
-        
-        /* Main Content */
-        .main-content { margin-left: 260px; padding: 20px; }
-        .section { display: none; }
-        .section.active { display: block; }
-        
-        /* Summary Card */
-        .summary-card {
-            background: white;
-            border-left: 5px solid var(--secondary-color);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .total-final { font-size: 1.5rem; font-weight: bold; color: var(--secondary-color); }
-        
-        /* IVA Checkbox styling */
-        .iva-check {
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            padding: 10px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar { width: 100%; height: auto; position: relative; }
-            .main-content { margin-left: 0; }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Pavimentos M&C</title>
+<link rel="icon" type="image/png" href="logo.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f0ebe0}
+#loginScreen{position:fixed;inset:0;background:#3b2416;display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:#fff;padding:40px;border-radius:8px;width:360px;text-align:center}
+.login-box img{width:160px;margin-bottom:15px}
+.login-box h2{color:#3b2416;margin-bottom:5px}
+.login-box p{color:#666;margin-bottom:25px;font-size:13px}
+.login-box input{width:100%;padding:12px;margin-bottom:10px;border:1px solid #ddd;border-radius:4px;font-size:14px}
+.login-box button{width:100%;padding:12px;background:#5c3a21;color:#fff;border:none;border-radius:4px;font-size:15px;cursor:pointer;font-weight:600}
+.login-box button:hover{background:#3b2416}
+.login-error{color:#c0392b;font-size:13px;margin-top:10px;min-height:18px}
+#app{display:none}
+.app-container{display:flex;min-height:100vh}
+.sidebar{width:250px;background:#3b2416;color:#fff;position:fixed;top:0;left:0;bottom:0;overflow-y:auto}
+.sidebar-header{padding:20px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.1)}
+.sidebar-header .logo-wrap{width:100px;height:100px;margin:0 auto 10px;background:#fff;border-radius:50%;padding:8px}
+.sidebar-header .logo-wrap img{width:100%;height:100%;object-fit:contain}
+.sidebar-header h1{font-size:14px;color:#c9a05a}
+.sidebar-header h2{font-size:10px;color:rgba(255,255,255,0.6);margin-top:3px}
+.sidebar nav{padding:15px 0}
+.sidebar nav a{display:block;padding:12px 20px;color:rgba(255,255,255,0.75);text-decoration:none;font-size:14px;border-left:3px solid transparent;cursor:pointer}
+.sidebar nav a:hover{background:rgba(255,255,255,0.06);color:#fff}
+.sidebar nav a.active{background:rgba(201,160,90,0.15);border-left-color:#c9a05a;color:#fff;font-weight:600}
+.sidebar nav a.logout{color:#ff9999;margin-top:10px}
+.sidebar-footer{padding:15px 20px;border-top:1px solid rgba(255,255,255,0.1);font-size:12px}
+.sidebar-footer a{color:#e3c28a;text-decoration:none;display:block;margin:5px 0}
+.main{margin-left:250px;flex:1;padding:25px}
+.page{display:none}.page.active{display:block}
+.page-header{margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.page-header h1{color:#3b2416;font-size:24px}
+.layout-2col{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+.card{background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.06);overflow:hidden;margin-bottom:15px}
+.card-header{background:#5c3a21;color:#fff;padding:12px 18px;font-size:14px;font-weight:600}
+.card-body{padding:18px}
+.summary-card{position:sticky;top:20px}
+.summary-card .card-header{background:#3b2416}
+.summary-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e0e0e0;font-size:14px}
+.summary-row:last-child{border-bottom:none}
+.summary-row .label{color:#666;font-size:13px}
+.summary-row .value{font-weight:600;color:#3b2416;text-align:right}
+.summary-row.total{background:#f5ecd7;margin:10px -18px -18px;padding:12px 18px;border-top:2px solid #c9a05a}
+.summary-row.total .label{font-weight:700;font-size:14px}
+.summary-row.total .value{font-size:18px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-group{display:flex;flex-direction:column}
+.form-group label{font-size:12px;color:#5c3a21;font-weight:600;margin-bottom:4px}
+.form-group input{padding:9px 10px;border:1px solid #ddd;border-radius:4px;font-size:14px}
+.form-group input:focus{outline:none;border-color:#c9a05a}
+.form-group input[readonly]{background:#f5f5f5;color:#666}
+.checkbox-row{display:flex;align-items:center;gap:8px;margin:10px 0}
+.checkbox-row input{width:16px;height:16px;accent-color:#5c3a21}
+.checkbox-row label{font-size:13px;color:#5c3a21;cursor:pointer}
+.btn{padding:9px 16px;border:none;border-radius:4px;cursor:pointer;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.btn-primary{background:#5c3a21;color:#fff}
+.btn-primary:hover{background:#3b2416}
+.btn-success{background:#27ae60;color:#fff}
+.btn-warning{background:#c9a05a;color:#3b2416}
+.btn-danger{background:#c0392b;color:#fff}
+.btn-secondary{background:#95a5a6;color:#fff}
+.btn-sm{padding:5px 9px;font-size:11px}
+.actions-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+table th{background:#5c3a21;color:#fff;padding:8px 10px;text-align:left;font-size:12px}
+table td{padding:8px 10px;border-bottom:1px solid #e0e0e0;font-size:13px}
+table input{width:100%;padding:5px 6px;border:1px solid #ddd;border-radius:3px;font-size:12px}
+.alert{padding:10px 12px;border-radius:4px;margin-bottom:12px;font-size:12px;border-left:4px solid}
+.alert-info{background:#e8f4f8;color:#1a5276;border-color:#2c5f8a}
+.alert-warning{background:#fef9e7;color:#7d6608;border-color:#c9a05a}
+.items-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.item-check{background:#f5f5f5;padding:8px 10px;border-radius:4px;display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;border:1px solid #ddd}
+.item-check:hover{background:#f5ecd7;border-color:#c9a05a}
+.item-check input{width:14px;height:14px;accent-color:#5c3a21}
+.item-check label{cursor:pointer;flex:1;color:#3b2416}
+.app-footer{margin-top:30px;padding:15px;text-align:center;font-size:11px;color:#999;border-top:1px solid #ddd}
+.app-footer a{color:#5c3a21;text-decoration:none;font-weight:600}
+.demo-box{background:#fef9e7;border:2px solid #c9a05a;border-radius:6px;padding:14px;margin-bottom:12px}
+.demo-box h4{color:#3b2416;font-size:13px;margin-bottom:8px}
+.demo-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.demo-row input{width:100px;padding:8px;border:2px solid #5c3a21;border-radius:4px;font-size:14px;font-weight:600;text-align:center}
+.demo-total{font-size:15px;font-weight:700;color:#3b2416;margin-left:auto}
+@media(max-width:1000px){.layout-2col{grid-template-columns:1fr}}
+@media(max-width:700px){.sidebar{width:100%;position:relative;height:auto}.main{margin-left:0;padding:15px}.app-container{flex-direction:column}.form-row{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="logo">PAVIMENTOS M&C<br><small style="font-size: 0.7rem; color: #ccc;">Sistema de Cotizaciones</small></div>
-        <nav class="nav flex-column">
-            <a class="nav-link active" href="#" onclick="showSection('nueva-cotizacion', this)"><i class="bi bi-file-earmark-plus"></i> Nueva Cotización</a>
-            <a class="nav-link" href="#" onclick="showSection('proyectos', this)"><i class="bi bi-folder"></i> Proyectos</a>
-            <a class="nav-link" href="#" onclick="showSection('papelera', this)"><i class="bi bi-trash"></i> Papelera</a>
-            <a class="nav-link" href="#" onclick="showSection('tarifas', this)"><i class="bi bi-tags"></i> Tarifas</a>
-            <a class="nav-link" href="#" onclick="showSection('inventario', this)"><i class="bi bi-box-seam"></i> Inventario</a>
-            <a class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right"></i> Salir</a>
-        </nav>
-        <div class="contact-info">
-            <p class="mb-1"><i class="bi bi-whatsapp"></i> +56 9 3066 5920</p>
-            <p class="mb-1"><i class="bi bi-envelope"></i> ventas@pavimentosmyc.cl</p>
-            <p class="mb-1"><i class="bi bi-geo-alt"></i> Lampa, Chile</p>
-            <hr style="border-color: rgba(255,255,255,0.2);">
-            <p class="mb-0" style="font-size: 0.75rem;">Usuario: <strong>admin</strong></p>
-            <p class="mb-0 mt-2" style="font-size: 0.7rem; opacity: 0.7;">Desarrollado por<br><a href="https://instagram.com/digitalmarketing.cl" class="text-warning text-decoration-none">@digitalmarketing.cl</a></p>
-        </div>
-    </div>
+<div id="loginScreen">
+<div class="login-box">
+<img src="logo.png" alt="Logo">
+<h2>PAVIMENTOS M&amp;C</h2>
+<p>Sistema de Cotizaciones</p>
+<input type="text" id="loginUser" placeholder="Usuario" value="admin">
+<input type="password" id="loginPass" placeholder="Contrase&ntilde;a" value="admin123">
+<button onclick="doLogin()" id="loginBtn">Ingresar</button>
+<div class="login-error" id="loginError"></div>
+</div>
+</div>
 
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
-        
-        <!-- SECCION: NUEVA COTIZACION -->
-        <div id="nueva-cotizacion" class="section active">
-            <h2 class="mb-4">Nueva Cotización</h2>
-            <div class="row">
-                <!-- Formulario -->
-                <div class="col-lg-8">
-                    <div class="card mb-4">
-                        <div class="card-header bg-white fw-bold">Datos del Cliente</div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Nombre Cliente *</label>
-                                    <input type="text" id="clienteNombre" class="form-control" placeholder="Ej: Juan Pérez">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Teléfono *</label>
-                                    <input type="text" id="clienteTelefono" class="form-control" placeholder="+56 9 ...">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" id="clienteEmail" class="form-control">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Dirección</label>
-                                    <input type="text" id="clienteDireccion" class="form-control">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Fecha</label>
-                                    <input type="date" id="fechaCotizacion" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<div id="app">
+<div class="app-container">
+<aside class="sidebar">
+<div class="sidebar-header">
+<div class="logo-wrap"><img src="logo.png" alt="Logo"></div>
+<h1>PAVIMENTOS M&amp;C</h1>
+<h2>HORMIGON ESTAMPADO</h2>
+</div>
+<nav>
+<a class="active" onclick="showPage('nueva',this)">Nueva Cotizacion</a>
+<a onclick="showPage('proyectos',this)">Proyectos</a>
+<a onclick="showPage('papelera',this)">Papelera</a>
+<a onclick="showPage('tarifas',this)">Tarifas</a>
+<a onclick="showPage('inventario',this)">Inventario</a>
+<a class="logout" onclick="doLogout()">Salir</a>
+</nav>
+<div class="sidebar-footer">
+<a href="https://wa.me/56930665920" target="_blank">+56 9 3066 5920</a>
+<a href="mailto:ventas@pavimentosmyc.cl">ventas@pavimentosmyc.cl</a>
+<a>Lampa, Chile</a>
+</div>
+</aside>
 
-                    <div class="card mb-4">
-                        <div class="card-header bg-white fw-bold">Cálculo por Metro Cuadrado</div>
-                        <div class="card-body">
-                            <p class="text-muted small">Tarifas: 40-50 m2: $34.000 | 60-80 m2: $30.000 | 80-120 m2: $28.500 | 120-400 m2: $28.000 | 400-800 m2: $27.000</p>
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Superficie (m2) * <span class="text-danger small">(Mínimo 40 m2)</span></label>
-                                    <input type="number" id="superficie" class="form-control" min="40" value="40" oninput="calcularTotal()">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Tarifa aplicada</label>
-                                    <input type="text" id="tarifaAplicada" class="form-control" readonly>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Precio m2</label>
-                                    <input type="text" id="precioM2" class="form-control" readonly>
-                                </div>
-                            </div>
-                            
-                            <!-- CAMBIO SOLICITADO: IVA MARCADO POR DEFECTO -->
-                            <div class="iva-check mt-4">
-                                <input type="checkbox" id="incluirIva" class="form-check-input" checked onchange="calcularTotal()">
-                                <label for="incluirIva" class="form-check-label fw-bold">Incluir IVA 19% en el precio</label>
-                            </div>
-                        </div>
-                    </div>
+<main class="main">
+<div class="page active" id="page-nueva">
+<div class="page-header"><h1>Nueva Cotizacion</h1><div id="editInfo" style="color:#666;font-size:13px"></div></div>
+<div class="layout-2col">
+<div class="col-form">
 
-                    <div class="card mb-4">
-                        <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
-                            Trabajos Extras
-                            <button class="btn btn-sm btn-outline-primary" onclick="agregarExtra()"><i class="bi bi-plus"></i> Agregar</button>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-sm" id="tablaExtras">
-                                <thead><tr><th>Descripción</th><th>Cant.</th><th>Precio Unit.</th><th></th></tr></thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
+<div class="card"><div class="card-header">Datos del Cliente</div><div class="card-body">
+<div class="form-row">
+<div class="form-group"><label>Nombre Cliente *</label><input id="cNombre"></div>
+<div class="form-group"><label>Telefono *</label><input id="cTelefono"></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Email</label><input id="cEmail" type="email"></div>
+<div class="form-group"><label>Direccion</label><input id="cDireccion"></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Vendedor</label><input id="cVendedor" placeholder="Nombre del vendedor"></div>
+<div class="form-group"><label>Fecha</label><input id="cFecha" type="date"></div>
+</div>
+</div></div>
 
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button class="btn btn-success" onclick="guardarProyecto()"><i class="bi bi-save"></i> Guardar Proyecto</button>
-                        <button class="btn btn-danger" onclick="generarPDF()"><i class="bi bi-file-pdf"></i> Generar PDF</button>
-                        <button class="btn btn-success" onclick="enviarWhatsApp()"><i class="bi bi-whatsapp"></i> WhatsApp</button>
-                        <button class="btn btn-primary" onclick="enviarCorreo()"><i class="bi bi-envelope"></i> Enviar Correo</button>
-                    </div>
-                </div>
+<div class="card"><div class="card-header">Calculo por Metro Cuadrado</div><div class="card-body">
+<div class="alert alert-info"><b>Tarifas:</b> 40-50 m2: $34.000 | 51-80 m2: $30.000 | 81-120 m2: $28.500 | 121-400 m2: $28.000 | 401-800 m2: $27.000</div>
+<div class="form-row">
+<div class="form-group"><label>Superficie (m2) *</label><input id="cSuperficie" type="number" min="0" step="0.1" oninput="calcular()"><div style="font-size:10px;color:#999;margin-top:2px">Minimo 40 m2</div></div>
+<div class="form-group"><label>Tarifa aplicada</label><input id="cTarifa" readonly></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Precio m2</label><input id="cPrecioM2" readonly></div>
+<div class="form-group"><label>Subtotal</label><input id="cSubtotal" readonly></div>
+</div>
+<div class="checkbox-row"><input type="checkbox" id="cIncluyeIva" onchange="calcular()"><label for="cIncluyeIva">Aplicar IVA 19% al total</label></div>
+</div></div>
 
-                <!-- RESUMEN -->
-                <div class="col-lg-4">
-                    <div class="card summary-card sticky-top" style="top: 20px;" id="resumenCotizacion">
-                        <div class="card-header bg-white fw-bold text-center">RESUMEN</div>
-                        <div class="card-body">
-                            <p class="mb-1"><strong>Cliente:</strong> <span id="resCliente">-</span></p>
-                            <p class="mb-1"><strong>Superficie:</strong> <span id="resSuperficie">0</span> m2</p>
-                            <p class="mb-1"><strong>Precio m2:</strong> $<span id="resPrecioM2">0</span></p>
-                            <hr>
-                            <p class="mb-1"><strong>Subtotal:</strong> $<span id="resSubtotal">0</span></p>
-                            <p class="mb-1"><strong>Items Incluidos:</strong> <span id="resItems">Ninguno</span></p>
-                            <p class="mb-1"><strong>Trabajos Extras:</strong> <span id="resExtras">Ninguno</span></p>
-                            <p class="mb-1"><strong>Total Extras:</strong> $<span id="resTotalExtras">0</span></p>
-                            <hr>
-                            <p class="mb-1" id="resIvaContainer"><strong>IVA:</strong> <span id="resIva">No incluido</span></p>
-                            <hr>
-                            <p class="mb-0 text-center">TOTAL A COBRAR</p>
-                            <p class="total-final text-center mb-0">$<span id="resTotal">0</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="card"><div class="card-header">Trabajos Extras</div><div class="card-body">
+<div class="alert alert-warning">Selecciona los trabajos extras que se sumaran al total. Solo los marcados apareceran en el PDF.</div>
 
-        <!-- SECCION: PROYECTOS -->
-        <div id="proyectos" class="section">
-            <h2 class="mb-4">Proyectos Guardados <button class="btn btn-sm btn-outline-secondary" onclick="cargarProyectos()"><i class="bi bi-arrow-clockwise"></i> Actualizar</button></h2>
-            <div class="card">
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead><tr><th>#</th><th>Cliente</th><th>Superficie</th><th>Total</th><th>Fecha</th><th>Acciones</th></tr></thead>
-                        <tbody id="tablaProyectos"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<div class="demo-box">
+<h4>Demolicion de pavimento existente</h4>
+<div class="demo-row">
+<div class="form-group" style="margin:0">
+<label style="font-size:11px;color:#5c3a21;margin-bottom:3px">Superficie a demoler (m2)</label>
+<input id="cDemoM2" type="number" min="0" step="0.1" placeholder="0" oninput="calcular()">
+</div>
+<div style="font-size:13px;color:#5c3a21;font-weight:600">x $4.000/m2</div>
+<div class="demo-total" id="demoTotal">$0</div>
+</div>
+<div class="checkbox-row" style="margin-top:10px;margin-bottom:0">
+<input type="checkbox" id="cIncluirDemo" checked onchange="calcular()">
+<label for="cIncluirDemo">Incluir demolicion en el PDF</label>
+</div>
+<div style="margin-top:6px;color:#999;font-size:10px">Se sumara automaticamente al total</div>
+</div>
 
-        <!-- SECCION: PAPELERA -->
-        <div id="papelera" class="section">
-            <h2 class="mb-4">Papelera de Reciclaje</h2>
-            <div class="card">
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead><tr><th><input type="checkbox"></th><th>#</th><th>Cliente</th><th>Superficie</th><th>Total</th><th>Fecha</th><th>Acciones</th></tr></thead>
-                        <tbody id="tablaPapelera"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<div style="margin-bottom:10px"><button class="btn btn-primary btn-sm" onclick="addExtra()">+ Agregar Trabajo Extra</button></div>
+<div class="items-grid" id="extrasGrid"></div>
+<div style="margin-top:12px;border-top:1px solid #ddd;padding-top:10px">
+<table><thead><tr><th>Descripcion</th><th style="width:70px">Cant.</th><th style="width:100px">Precio Unit.</th><th style="width:40px"></th></tr></thead><tbody id="tbodyExtras"></tbody></table>
+</div>
+</div></div>
 
-        <!-- SECCION: TARIFAS -->
-        <div id="tarifas" class="section">
-            <h2 class="mb-4">Gestión de Tarifas</h2>
-            <div class="card">
-                <div class="card-body">
-                    <p class="text-muted">Modifica las tarifas por metro cuadrado.</p>
-                    <table class="table" id="tablaTarifas">
-                        <thead><tr><th>Rango (m2)</th><th>Precio por m2</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                    <button class="btn btn-primary" onclick="guardarTarifas()">Guardar Tarifas</button>
-                </div>
-            </div>
-        </div>
+<div class="card"><div class="card-header">Items Incluidos en el Precio</div><div class="card-body">
+<div class="checkbox-row"><input type="checkbox" id="selTodos" onchange="toggleTodosItems()"><label for="selTodos"><b>Seleccionar / Deseleccionar Todo</b></label></div>
+<div class="items-grid" id="itemsList"></div>
+</div></div>
 
-        <!-- SECCION: INVENTARIO -->
-        <div id="inventario" class="section">
-            <h2 class="mb-4">Gestión de Inventario <button class="btn btn-sm btn-outline-primary" onclick="agregarItemInventario()"><i class="bi bi-plus"></i> Agregar Item</button></h2>
-            <div class="card">
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead><tr><th>Item</th><th>Cantidad</th><th>Unidad</th><th>Precio Unit.</th><th>Total</th><th>Acciones</th></tr></thead>
-                        <tbody id="tablaInventario"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<div class="actions-bar">
+<button class="btn btn-success" onclick="guardarProyecto()" id="btnGuardar">Guardar Proyecto</button>
+<button class="btn btn-primary" onclick="generarPDF()">Generar PDF</button>
+<button class="btn btn-warning" onclick="enviarWhatsApp()">WhatsApp</button>
+<button class="btn btn-secondary" onclick="enviarCorreo()">Enviar Correo</button>
+<button class="btn btn-secondary" onclick="cancelarEdicion()" id="btnCancel" style="display:none">Cancelar edicion</button>
+</div>
+</div>
 
-    </div>
+<div class="col-summary">
+<div class="card summary-card"><div class="card-header">RESUMEN</div><div class="card-body">
+<div class="summary-row"><span class="label">Cliente</span><span class="value" id="rCliente">-</span></div>
+<div class="summary-row"><span class="label">Vendedor</span><span class="value" id="rVendedor">-</span></div>
+<div class="summary-row"><span class="label">Superficie</span><span class="value" id="rSuperficie">0 m2</span></div>
+<div class="summary-row"><span class="label">Precio m2</span><span class="value" id="rPrecioM2">$0</span></div>
+<div class="summary-row"><span class="label">Subtotal</span><span class="value" id="rSubtotal">$0</span></div>
+<div class="summary-row"><span class="label">Demolicion</span><span class="value" id="rDemo" style="color:#c9a05a;font-weight:700">$0</span></div>
+<div class="summary-row"><span class="label">Total Extras</span><span class="value" id="rExtras" style="color:#c9a05a;font-weight:700">$0</span></div>
+<div class="summary-row"><span class="label">IVA</span><span class="value" id="rIva" style="color:#27ae60">No aplicado</span></div>
+<div class="summary-row total"><span class="label">TOTAL A COBRAR</span><span class="value" id="rTotal">$0</span></div>
+</div></div>
+</div>
+</div>
+</div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // --- CONFIGURACION INICIAL Y TARIFAS ---
-        let tarifas = [
-            { rango: "40-50", min: 40, max: 50, precio: 34000 },
-            { rango: "60-80", min: 51, max: 80, precio: 30000 },
-            { rango: "80-120", min: 81, max: 120, precio: 28500 },
-            { rango: "120-400", min: 121, max: 400, precio: 28000 },
-            { rango: "400-800", min: 401, max: 800, precio: 27000 }
-        ];
+<div class="page" id="page-proyectos">
+<div class="page-header"><h1>Proyectos Guardados</h1><button class="btn btn-primary btn-sm" onclick="renderProyectos()">Actualizar</button></div>
+<div class="card"><table><thead><tr><th>#</th><th>Cliente</th><th>Vendedor</th><th>Superficie</th><th>Total</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="tbodyProyectos"></tbody></table></div>
+</div>
 
-        // --- NAVEGACION ---
-        function showSection(id, element) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
-            if(element) element.classList.add('active');
-        }
+<div class="page" id="page-papelera">
+<div class="page-header"><h1>Papelera de Reciclaje</h1></div>
+<div class="card">
+<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn btn-secondary btn-sm" onclick="selTodosPapelera(true)">Seleccionar Todo</button>
+<button class="btn btn-success btn-sm" onclick="restaurarSel()">Restaurar</button>
+<button class="btn btn-danger btn-sm" onclick="eliminarDef()">Eliminar Definitivamente</button>
+</div>
+<table><thead><tr><th><input type="checkbox" id="chkAllPap" onchange="selTodosPapelera(this.checked)"></th><th>#</th><th>Cliente</th><th>Superficie</th><th>Total</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="tbodyPapelera"></tbody></table>
+</div>
+</div>
 
-        // --- LOGICA DE COTIZACION Y IVA ---
-        function calcularTotal() {
-            let m2 = parseInt(document.getElementById('superficie').value) || 0;
-            if (m2 < 40) m2 = 40;
-            
-            let precioM2 = 0;
-            let rangoTexto = "Fuera de rango";
-            
-            // Buscar tarifa
-            for (let t of tarifas) {
-                if (m2 >= t.min && m2 <= t.max) {
-                    precioM2 = t.precio;
-                    rangoTexto = t.rango + " m2";
-                    break;
-                }
-            }
-            if(m2 > 800) { precioM2 = 27000; rangoTexto = "+800 m2"; }
+<div class="page" id="page-tarifas">
+<div class="page-header"><h1>Gestion de Tarifas</h1></div>
+<div class="card">
+<div class="alert alert-info">Modifica las tarifas por metro cuadrado.</div>
+<table><thead><tr><th>Rango (m2)</th><th>Precio por m2</th></tr></thead><tbody id="tbodyTarifas"></tbody></table>
+<div style="margin-top:12px"><button class="btn btn-success" onclick="guardarTarifas()">Guardar Tarifas</button></div>
+</div>
+</div>
 
-            document.getElementById('tarifaAplicada').value = rangoTexto;
-            document.getElementById('precioM2').value = precioM2.toLocaleString('es-CL');
-            
-            let subtotal = m2 * precioM2;
-            let totalExtras = calcularTotalExtras();
-            
-            // LEER ESTADO DEL CHECKBOX DE IVA
-            let incluirIva = document.getElementById('incluirIva').checked;
-            let montoIva = 0;
-            let totalFinal = subtotal + totalExtras;
+<div class="page" id="page-inventario">
+<div class="page-header"><h1>Gestion de Inventario</h1></div>
+<div class="card">
+<table><thead><tr><th>Item</th><th style="width:80px">Cant.</th><th style="width:80px">Unidad</th><th style="width:110px">Precio Unit.</th><th style="width:110px">Total</th><th style="width:60px"></th></tr></thead><tbody id="tbodyInventario"></tbody></table>
+<div style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="addItemInv()">+ Agregar Item</button></div>
+</div>
+</div>
 
-            if (incluirIva) {
-                montoIva = totalFinal * 0.19;
-                totalFinal += montoIva;
-            }
+<div class="app-footer">Desarrollado por <a href="https://instagram.com/digitalmarketing.cl" target="_blank">@digitalmarketing.cl</a></div>
+</main>
+</div>
+</div>
 
-            // Actualizar Resumen
-            document.getElementById('resCliente').innerText = document.getElementById('clienteNombre').value || '-';
-            document.getElementById('resSuperficie').innerText = m2;
-            document.getElementById('resPrecioM2').innerText = precioM2.toLocaleString('es-CL');
-            document.getElementById('resSubtotal').innerText = subtotal.toLocaleString('es-CL');
-            document.getElementById('resTotalExtras').innerText = totalExtras.toLocaleString('es-CL');
-            
-            // Actualizar texto IVA dinámicamente
-            if (incluirIva) {
-                document.getElementById('resIva').innerText = `19% ($${montoIva.toLocaleString('es-CL')})`;
-                document.getElementById('resIva').classList.add('text-success');
-            } else {
-                document.getElementById('resIva').innerText = 'No incluido';
-                document.getElementById('resIva').classList.remove('text-success');
-            }
+<script>
+var APP = {
+proyectos: [],
+papelera: [],
+tarifas: [
+{min:40,max:50,precio:34000},
+{min:51,max:80,precio:30000},
+{min:81,max:120,precio:28500},
+{min:121,max:400,precio:28000},
+{min:401,max:800,precio:27000}
+],
+inventario: [
+{item:"Encarpe de terreno",cant:1,unidad:"gl",precio:0},
+{item:"Base estabilizado",cant:1,unidad:"m3",precio:0},
+{item:"Malla acma c92",cant:1,unidad:"m2",precio:0},
+{item:"Hormigon HB25",cant:1,unidad:"m3",precio:0},
+{item:"Cuarzo endurecedor",cant:3,unidad:"kg/m2",precio:0},
+{item:"Talco desmoldante",cant:1,unidad:"gl",precio:0},
+{item:"Sellador acrilico incoloro",cant:1,unidad:"gl",precio:0},
+{item:"Focos led",cant:4,unidad:"un",precio:35000},
+{item:"Tapas de camaras",cant:1,unidad:"un",precio:60000}
+],
+extras: [],
+itemsSel: [],
+editId: null,
+logoBase64: null,
+demoM2: 0,
+incluirDemo: true
+};
 
-            document.getElementById('resTotal').innerText = Math.round(totalFinal).toLocaleString('es-CL');
-        }
+var ITEMS_DEFAULT = [
+"Encarpe de terreno",
+"Nivelacion y compactacion de terreno con base estabilizado",
+"Instalacion de moldajes",
+"Suministro de malla acma c92 para la resistencia",
+"Suministro de vaciado y estampado del hormigon HB25, 10 cm de espesor",
+"Suministro de cuarzo endurecedor 3kg por m2",
+"Suministro de talco desmoldante",
+"Diseno y color a gusto del cliente",
+"Cortes de dilatacion",
+"Limpieza y lavado del pavimento",
+"Aplicacion de sellador acrilico incoloro (abrillantador)",
+"Retiro de escombros (solo superficie trabajada)",
+"Mano de obra",
+"Desgaste de maquinaria",
+"Transporte"
+];
 
-        function calcularTotalExtras() {
-            let total = 0;
-            document.querySelectorAll('#tablaExtras tbody tr').forEach(row => {
-                let cant = parseFloat(row.cells[1].querySelector('input').value) || 0;
-                let precio = parseFloat(row.cells[2].querySelector('input').value) || 0;
-                total += cant * precio;
-            });
-            return total;
-        }
+var EXTRAS_DEFAULT = [
+{id:'focos',desc:"Focos led mas instalacion (minimo 4 focos)",cant:4,precio:35000,selected:false},
+{id:'tapas',desc:"Tapas de camaras",cant:1,precio:60000,selected:false}
+];
 
-        function agregarExtra() {
-            let tbody = document.querySelector('#tablaExtras tbody');
-            let row = document.createElement('tr');
-            row.innerHTML = `
-                <td><input type="text" class="form-control form-control-sm" placeholder="Descripción"></td>
-                <td><input type="number" class="form-control form-control-sm" value="1" oninput="calcularTotal()"></td>
-                <td><input type="number" class="form-control form-control-sm" value="0" oninput="calcularTotal()"></td>
-                <td><button class="btn btn-sm btn-outline-danger" onclick="this.closest('tr').remove(); calcularTotal();"><i class="bi bi-trash"></i></button></td>
-            `;
-            tbody.appendChild(row);
-        }
+var PRECIO_DEMOLICION = 4000;
 
-        // --- GENERAR PDF ---
-        function generarPDF() {
-            let element = document.getElementById('resumenCotizacion');
-            let opt = {
-                margin: 0.5,
-                filename: `Cotizacion_${document.getElementById('clienteNombre').value || 'Cliente'}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
-        }
+function doLogin() {
+var u = document.getElementById('loginUser').value.trim();
+var p = document.getElementById('loginPass').value;
+var err = document.getElementById('loginError');
+if (u === 'admin' && p === 'admin123') {
+document.getElementById('loginScreen').style.display = 'none';
+document.getElementById('app').style.display = 'block';
+err.textContent = '';
+initApp();
+} else {
+err.textContent = 'Usuario o contrasena incorrectos';
+}
+}
 
-        // --- GUARDAR Y CARGAR PROYECTOS (LocalStorage) ---
-        function guardarProyecto() {
-            let proyecto = {
-                id: Date.now(),
-                cliente: document.getElementById('clienteNombre').value,
-                superficie: document.getElementById('superficie').value,
-                total: document.getElementById('resTotal').innerText,
-                fecha: document.getElementById('fechaCotizacion').value || new Date().toLocaleDateString()
-            };
-            let proyectos = JSON.parse(localStorage.getItem('proyectos') || '[]');
-            proyectos.push(proyecto);
-            localStorage.setItem('proyectos', JSON.stringify(proyectos));
-            alert('Proyecto guardado correctamente.');
-            cargarProyectos();
-        }
+function doLogout() {
+document.getElementById('loginScreen').style.display = 'flex';
+document.getElementById('app').style.display = 'none';
+document.getElementById('loginPass').value = '';
+}
 
-        function cargarProyectos() {
-            let proyectos = JSON.parse(localStorage.getItem('proyectos') || '[]');
-            let tbody = document.getElementById('tablaProyectos');
-            tbody.innerHTML = '';
-            proyectos.forEach((p, i) => {
-                tbody.innerHTML += `<tr>
-                    <td>${i+1}</td><td>${p.cliente}</td><td>${p.superficie} m2</td>
-                    <td>$${p.total}</td><td>${p.fecha}</td>
-                    <td><button class="btn btn-sm btn-outline-danger" onclick="eliminarProyecto(${p.id})"><i class="bi bi-trash"></i></button></td>
-                </tr>`;
-            });
-        }
+document.getElementById('loginPass').addEventListener('keypress', function(e) {
+if (e.key === 'Enter') doLogin();
+});
 
-        function eliminarProyecto(id) {
-            let proyectos = JSON.parse(localStorage.getItem('proyectos') || '[]');
-            proyectos = proyectos.filter(p => p.id !== id);
-            localStorage.setItem('proyectos', JSON.stringify(proyectos));
-            cargarProyectos();
-        }
+function initApp() {
+cargarLogo();
+cargarDatosLocales();
+var fechaInput = document.getElementById('cFecha');
+if (fechaInput) fechaInput.valueAsDate = new Date();
+APP.itemsSel = ITEMS_DEFAULT.slice();
+APP.extras = [];
+for (var i = 0; i < EXTRAS_DEFAULT.length; i++) {
+APP.extras.push({id:EXTRAS_DEFAULT[i].id, desc:EXTRAS_DEFAULT[i].desc, cant:EXTRAS_DEFAULT[i].cant, precio:EXTRAS_DEFAULT[i].precio, selected:EXTRAS_DEFAULT[i].selected});
+}
+renderItemsList();
+renderTarifas();
+renderInventario();
+renderExtrasGrid();
+renderExtrasTable();
+calcular();
+console.log('App iniciada correctamente');
+}
 
-        // --- TARIFAS UI ---
-        function cargarTarifasUI() {
-            let tbody = document.querySelector('#tablaTarifas tbody');
-            tbody.innerHTML = '';
-            tarifas.forEach((t, i) => {
-                tbody.innerHTML += `<tr>
-                    <td><input type="text" class="form-control" value="${t.rango}" readonly></td>
-                    <td><input type="number" class="form-control" value="${t.precio}" id="tarifa_precio_${i}"></td>
-                </tr>`;
-            });
-        }
+function cargarLogo() {
+var img = new Image();
+img.onload = function() {
+try {
+var canvas = document.createElement('canvas');
+canvas.width = img.width;
+canvas.height = img.height;
+canvas.getContext('2d').drawImage(img, 0, 0);
+APP.logoBase64 = canvas.toDataURL('image/png');
+} catch(e) {}
+};
+img.src = 'logo.png';
+}
 
-        function guardarTarifas() {
-            tarifas.forEach((t, i) => {
-                t.precio = parseInt(document.getElementById(`tarifa_precio_${i}`).value) || 0;
-            });
-            localStorage.setItem('tarifas', JSON.stringify(tarifas));
-            alert('Tarifas actualizadas.');
-            calcularTotal();
-        }
+function cargarDatosLocales() {
+try {
+var p = localStorage.getItem('pmc_proyectos');
+var pap = localStorage.getItem('pmc_papelera');
+var t = localStorage.getItem('pmc_tarifas');
+var inv = localStorage.getItem('pmc_inventario');
+if (p) APP.proyectos = JSON.parse(p);
+if (pap) APP.papelera = JSON.parse(pap);
+if (t) APP.tarifas = JSON.parse(t);
+if (inv) APP.inventario = JSON.parse(inv);
+} catch(e) {}
+}
 
-        // --- INVENTARIO UI ---
-        function agregarItemInventario() {
-            let tbody = document.getElementById('tablaInventario');
-            let row = document.createElement('tr');
-            row.innerHTML = `
-                <td><input type="text" class="form-control form-control-sm" placeholder="Nombre item"></td>
-                <td><input type="number" class="form-control form-control-sm" value="0"></td>
-                <td><input type="text" class="form-control form-control-sm" value="Unidad"></td>
-                <td><input type="number" class="form-control form-control-sm" value="0"></td>
-                <td>$0</td>
-                <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
-            `;
-            tbody.appendChild(row);
-        }
+function guardarLocal() {
+try {
+localStorage.setItem('pmc_proyectos', JSON.stringify(APP.proyectos));
+localStorage.setItem('pmc_papelera', JSON.stringify(APP.papelera));
+localStorage.setItem('pmc_tarifas', JSON.stringify(APP.tarifas));
+localStorage.setItem('pmc_inventario', JSON.stringify(APP.inventario));
+} catch(e) {}
+}
 
-        // --- INICIALIZACION ---
-        document.addEventListener('DOMContentLoaded', function() {
-            // Poner fecha de hoy
-            document.getElementById('fechaCotizacion').valueAsDate = new Date();
-            
-            // Cargar datos guardados
-            let tarifasGuardadas = localStorage.getItem('tarifas');
-            if (tarifasGuardadas) tarifas = JSON.parse(tarifasGuardadas);
-            
-            cargarTarifasUI();
-            cargarProyectos();
-            
-            // IMPORTANTE: Calcular total al cargar para que el IVA y los montos aparezcan desde el inicio
-            calcularTotal(); 
-            
-            // Listener para actualizar nombre cliente en resumen en tiempo real
-            document.getElementById('clienteNombre').addEventListener('input', calcularTotal);
-        });
+function showPage(p, el) {
+var pages = document.querySelectorAll('.page');
+for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+var links = document.querySelectorAll('.sidebar nav a');
+for (var i = 0; i < links.length; i++) links[i].classList.remove('active');
+document.getElementById('page-' + p).classList.add('active');
+if (el) el.classList.add('active');
+if (p === 'proyectos') renderProyectos();
+if (p === 'papelera') renderPapelera();
+if (p === 'tarifas') renderTarifas();
+if (p === 'inventario') renderInventario();
+}
 
-        function enviarWhatsApp() { alert('Abriendo WhatsApp...'); }
-        function enviarCorreo() { alert('Abriendo Correo...'); }
-    </script>
+function renderItemsList() {
+var c = document.getElementById('itemsList');
+if (!c) return;
+c.innerHTML = '';
+for (var i = 0; i < ITEMS_DEFAULT.length; i++) {
+var it = ITEMS_DEFAULT[i];
+var div = document.createElement('div');
+div.className = 'item-check';
+var checked = APP.itemsSel.indexOf(it) >= 0 ? 'checked' : '';
+div.innerHTML = '<input type="checkbox" id="it' + i + '" ' + checked + ' onchange="toggleItem(' + i + ')"><label for="it' + i + '">' + it + '</label>';
+c.appendChild(div);
+}
+}
+
+function toggleItem(i) {
+var it = ITEMS_DEFAULT[i];
+var idx = APP.itemsSel.indexOf(it);
+if (idx >= 0) APP.itemsSel.splice(idx, 1);
+else APP.itemsSel.push(it);
+calcular();
+}
+
+function toggleTodosItems() {
+var chk = document.getElementById('selTodos').checked;
+APP.itemsSel = chk ? ITEMS_DEFAULT.slice() : [];
+renderItemsList();
+calcular();
+}
+
+function renderExtrasGrid() {
+var c = document.getElementById('extrasGrid');
+if (!c) return;
+c.innerHTML = '';
+if (APP.extras.length === 0) {
+c.innerHTML = '<div style="color:#999;font-size:12px;padding:8px">No hay trabajos extras.</div>';
+return;
+}
+for (var i = 0; i < APP.extras.length; i++) {
+var e = APP.extras[i];
+var div = document.createElement('div');
+div.className = 'item-check';
+var checked = e.selected ? 'checked' : '';
+div.innerHTML = '<input type="checkbox" id="ex' + i + '" ' + checked + ' onchange="toggleExtra(' + i + ')"><label for="ex' + i + '"><b>' + (e.desc || 'Sin descripcion') + '</b><br><small style="color:#999">$' + e.precio.toLocaleString('es-CL') + ' c/u</small></label>';
+c.appendChild(div);
+}
+}
+
+function toggleExtra(i) {
+APP.extras[i].selected = !APP.extras[i].selected;
+renderExtrasGrid();
+calcular();
+}
+
+function renderExtrasTable() {
+var tb = document.getElementById('tbodyExtras');
+if (!tb) return;
+tb.innerHTML = '';
+for (var i = 0; i < APP.extras.length; i++) {
+var e = APP.extras[i];
+var tr = document.createElement('tr');
+tr.innerHTML = '<td><input value="' + e.desc + '" oninput="APP.extras[' + i + '].desc=this.value;renderExtrasGrid();calcular()"></td>' +
+'<td><input type="number" value="' + e.cant + '" min="0" oninput="APP.extras[' + i + '].cant=parseFloat(this.value)||0;calcular()"></td>' +
+'<td><input type="number" value="' + e.precio + '" min="0" oninput="APP.extras[' + i + '].precio=parseFloat(this.value)||0;renderExtrasGrid();calcular()"></td>' +
+'<td><button class="btn btn-danger btn-sm" onclick="delExtra(' + i + ')">X</button></td>';
+tb.appendChild(tr);
+}
+}
+
+function addExtra() {
+APP.extras.push({id: 'extra' + Date.now(), desc: "", cant: 1, precio: 0, selected: true});
+renderExtrasGrid();
+renderExtrasTable();
+calcular();
+}
+
+function delExtra(i) {
+APP.extras.splice(i, 1);
+renderExtrasGrid();
+renderExtrasTable();
+calcular();
+}
+
+function getTarifa(m2) {
+for (var i = 0; i < APP.tarifas.length; i++) {
+var t = APP.tarifas[i];
+if (m2 >= t.min && m2 <= t.max) return t.precio;
+}
+return 0;
+}
+
+function getRangoTexto(m2) {
+for (var i = 0; i < APP.tarifas.length; i++) {
+var t = APP.tarifas[i];
+if (m2 >= t.min && m2 <= t.max) return t.min + '-' + t.max + ' m2';
+}
+return '-';
+}
+
+function calcular() {
+var m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
+var tarifa = getTarifa(m2);
+document.getElementById('cTarifa').value = m2 > 0 ? getRangoTexto(m2) : '';
+document.getElementById('cPrecioM2').value = tarifa > 0 ? '$' + tarifa.toLocaleString('es-CL') : '';
+
+var subtotal = Math.round(m2 * tarifa);
+document.getElementById('cSubtotal').value = '$' + subtotal.toLocaleString('es-CL');
+
+var demoM2 = parseFloat(document.getElementById('cDemoM2').value) || 0;
+APP.demoM2 = demoM2;
+APP.incluirDemo = document.getElementById('cIncluirDemo').checked;
+var costoDemo = Math.round(demoM2 * PRECIO_DEMOLICION);
+document.getElementById('demoTotal').textContent = '$' + costoDemo.toLocaleString('es-CL');
+
+var extrasSel = [];
+for (var i = 0; i < APP.extras.length; i++) {
+if (APP.extras[i].selected) extrasSel.push(APP.extras[i]);
+}
+var extras = 0;
+for (var i = 0; i < extrasSel.length; i++) {
+extras += extrasSel[i].cant * extrasSel[i].precio;
+}
+
+var subExt = subtotal + costoDemo + extras;
+
+var aplicaIva = document.getElementById('cIncluyeIva').checked;
+var iva = aplicaIva ? Math.round(subExt * 0.19) : 0;
+var total = aplicaIva ? Math.round(subExt + iva) : Math.round(subExt);
+
+document.getElementById('rCliente').textContent = document.getElementById('cNombre').value || '-';
+document.getElementById('rVendedor').textContent = document.getElementById('cVendedor').value || '-';
+document.getElementById('rSuperficie').textContent = m2 + ' m2';
+document.getElementById('rPrecioM2').textContent = tarifa > 0 ? '$' + tarifa.toLocaleString('es-CL') : '$0';
+document.getElementById('rSubtotal').textContent = '$' + subtotal.toLocaleString('es-CL');
+document.getElementById('rDemo').textContent = demoM2 > 0 ? '$' + costoDemo.toLocaleString('es-CL') : '$0';
+document.getElementById('rExtras').textContent = '$' + extras.toLocaleString('es-CL');
+document.getElementById('rIva').textContent = aplicaIva ? 'Si aplicado (19%) = $' + iva.toLocaleString('es-CL') : 'No aplicado';
+document.getElementById('rIva').style.color = aplicaIva ? '#27ae60' : '#666';
+document.getElementById('rTotal').textContent = '$' + total.toLocaleString('es-CL');
+}
+
+document.getElementById('cVendedor').addEventListener('input', function() {
+document.getElementById('rVendedor').textContent = this.value || '-';
+});
+
+function guardarProyecto() {
+var nombre = document.getElementById('cNombre').value.trim();
+var tel = document.getElementById('cTelefono').value.trim();
+if (!nombre || !tel) { alert('Nombre y Telefono son obligatorios'); return; }
+var m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
+if (m2 < 40) { alert('La superficie minima es 40 m2'); return; }
+
+var totalText = document.getElementById('rTotal').textContent.replace(/\$|\./g, '').replace(/,/g, '');
+var total = parseFloat(totalText) || 0;
+var btn = document.getElementById('btnGuardar');
+btn.disabled = true;
+btn.textContent = 'Guardando...';
+
+var extrasCopy = [];
+for (var i = 0; i < APP.extras.length; i++) {
+extrasCopy.push({id:APP.extras[i].id, desc:APP.extras[i].desc, cant:APP.extras[i].cant, precio:APP.extras[i].precio, selected:APP.extras[i].selected});
+}
+var itemsCopy = APP.itemsSel.slice();
+
+var proj = {
+id: APP.editId || Date.now(),
+nombre: nombre,
+tel: tel,
+email: document.getElementById('cEmail').value,
+direccion: document.getElementById('cDireccion').value,
+vendedor: document.getElementById('cVendedor').value.trim(),
+fecha: document.getElementById('cFecha').value,
+m2: m2,
+demoM2: APP.demoM2,
+incluirDemo: APP.incluirDemo,
+tarifa: getTarifa(m2),
+aplicaIva: document.getElementById('cIncluyeIva').checked,
+extras: extrasCopy,
+items: itemsCopy,
+total: total,
+updatedAt: new Date().toISOString()
+};
+
+if (APP.editId) {
+var idx = -1;
+for (var i = 0; i < APP.proyectos.length; i++) {
+if (APP.proyectos[i].id === APP.editId) { idx = i; break; }
+}
+if (idx >= 0) APP.proyectos[idx] = proj;
+} else {
+APP.proyectos.push(proj);
+}
+
+guardarLocal();
+alert('Proyecto guardado correctamente');
+APP.editId = null;
+document.getElementById('editInfo').textContent = '';
+document.getElementById('btnCancel').style.display = 'none';
+limpiarForm();
+btn.disabled = false;
+btn.textContent = 'Guardar Proyecto';
+}
+
+function limpiarForm() {
+var ids = ['cNombre', 'cTelefono', 'cEmail', 'cDireccion', 'cVendedor', 'cSuperficie', 'cDemoM2'];
+for (var i = 0; i < ids.length; i++) {
+var el = document.getElementById(ids[i]);
+if (el) el.value = '';
+}
+var fechaInput = document.getElementById('cFecha');
+if (fechaInput) fechaInput.valueAsDate = new Date();
+var ivaCheck = document.getElementById('cIncluyeIva');
+if (ivaCheck) ivaCheck.checked = false;
+var demoCheck = document.getElementById('cIncluirDemo');
+if (demoCheck) demoCheck.checked = true;
+APP.demoM2 = 0;
+APP.incluirDemo = true;
+document.getElementById('demoTotal').textContent = '$0';
+APP.extras = [];
+for (var i = 0; i < EXTRAS_DEFAULT.length; i++) {
+APP.extras.push({id:EXTRAS_DEFAULT[i].id, desc:EXTRAS_DEFAULT[i].desc, cant:EXTRAS_DEFAULT[i].cant, precio:EXTRAS_DEFAULT[i].precio, selected:EXTRAS_DEFAULT[i].selected});
+}
+APP.itemsSel = ITEMS_DEFAULT.slice();
+renderExtrasGrid();
+renderExtrasTable();
+renderItemsList();
+calcular();
+}
+
+function cancelarEdicion() {
+APP.editId = null;
+document.getElementById('editInfo').textContent = '';
+document.getElementById('btnCancel').style.display = 'none';
+limpiarForm();
+}
+
+function editarProyecto(id) {
+var p = null;
+for (var i = 0; i < APP.proyectos.length; i++) {
+if (APP.proyectos[i].id === id) { p = APP.proyectos[i]; break; }
+}
+if (!p) return;
+APP.editId = id;
+document.getElementById('cNombre').value = p.nombre;
+document.getElementById('cTelefono').value = p.tel;
+document.getElementById('cEmail').value = p.email || '';
+document.getElementById('cDireccion').value = p.direccion || '';
+document.getElementById('cVendedor').value = p.vendedor || '';
+document.getElementById('cFecha').value = p.fecha;
+document.getElementById('cSuperficie').value = p.m2;
+document.getElementById('cDemoM2').value = p.demoM2 || 0;
+document.getElementById('cIncluirDemo').checked = p.incluirDemo !== undefined ? p.incluirDemo : true;
+APP.demoM2 = p.demoM2 || 0;
+APP.incluirDemo = p.incluirDemo !== undefined ? p.incluirDemo : true;
+document.getElementById('cIncluyeIva').checked = p.aplicaIva || false;
+APP.extras = JSON.parse(JSON.stringify(p.extras || []));
+APP.itemsSel = JSON.parse(JSON.stringify(p.items || ITEMS_DEFAULT));
+renderExtrasGrid();
+renderExtrasTable();
+renderItemsList();
+calcular();
+document.getElementById('editInfo').textContent = 'Editando proyecto: ' + p.nombre;
+document.getElementById('btnCancel').style.display = 'inline-flex';
+showPage('nueva', document.querySelectorAll('.sidebar nav a')[0]);
+}
+
+function renderProyectos() {
+var tb = document.getElementById('tbodyProyectos');
+if (!tb) return;
+tb.innerHTML = '';
+if (APP.proyectos.length === 0) {
+tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">No hay proyectos guardados</td></tr>';
+return;
+}
+for (var i = 0; i < APP.proyectos.length; i++) {
+var p = APP.proyectos[i];
+var tr = document.createElement('tr');
+tr.innerHTML = '<td>' + (i + 1) + '</td>' +
+'<td><b>' + p.nombre + '</b><br><small style="color:#999">' + p.tel + '</small></td>' +
+'<td>' + (p.vendedor || '-') + '</td>' +
+'<td>' + p.m2 + ' m2</td>' +
+'<td><b>$' + (p.total || 0).toLocaleString('es-CL') + '</b></td>' +
+'<td>' + (p.fecha || '-') + '</td>' +
+'<td><button class="btn btn-warning btn-sm" onclick="editarProyecto(' + p.id + ')">Editar</button> <button class="btn btn-primary btn-sm" onclick="cargarYpdf(' + p.id + ')">PDF</button> <button class="btn btn-danger btn-sm" onclick="moverPapelera(' + p.id + ')">Eliminar</button></td>';
+tb.appendChild(tr);
+}
+}
+
+function moverPapelera(id) {
+var idx = -1;
+for (var i = 0; i < APP.proyectos.length; i++) {
+if (APP.proyectos[i].id === id) { idx = i; break; }
+}
+if (idx >= 0) {
+APP.papelera.push(APP.proyectos[idx]);
+APP.proyectos.splice(idx, 1);
+guardarLocal();
+renderProyectos();
+}
+}
+
+function cargarYpdf(id) {
+editarProyecto(id);
+setTimeout(generarPDF, 300);
+}
+
+function renderPapelera() {
+var tb = document.getElementById('tbodyPapelera');
+if (!tb) return;
+tb.innerHTML = '';
+if (APP.papelera.length === 0) {
+tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">Papelera vacia</td></tr>';
+return;
+}
+for (var i = 0; i < APP.papelera.length; i++) {
+var p = APP.papelera[i];
+var tr = document.createElement('tr');
+tr.innerHTML = '<td><input type="checkbox" class="chkPap" data-id="' + p.id + '"></td>' +
+'<td>' + (i + 1) + '</td>' +
+'<td>' + p.nombre + '</td>' +
+'<td>' + p.m2 + ' m2</td>' +
+'<td>$' + (p.total || 0).toLocaleString('es-CL') + '</td>' +
+'<td>' + (p.fecha || '-') + '</td>' +
+'<td><button class="btn btn-success btn-sm" onclick="restaurar(' + p.id + ')">Restaurar</button> <button class="btn btn-danger btn-sm" onclick="elimDef(' + p.id + ')">Eliminar</button></td>';
+tb.appendChild(tr);
+}
+}
+
+function selTodosPapelera(v) {
+var chks = document.querySelectorAll('.chkPap');
+for (var i = 0; i < chks.length; i++) chks[i].checked = v;
+}
+
+function restaurar(id) {
+var idx = -1;
+for (var i = 0; i < APP.papelera.length; i++) {
+if (APP.papelera[i].id === id) { idx = i; break; }
+}
+if (idx >= 0) {
+APP.proyectos.push(APP.papelera[idx]);
+APP.papelera.splice(idx, 1);
+guardarLocal();
+renderPapelera();
+}
+}
+
+function restaurarSel() {
+var chks = document.querySelectorAll('.chkPap:checked');
+for (var i = 0; i < chks.length; i++) {
+restaurar(parseInt(chks[i].dataset.id));
+}
+}
+
+function elimDef(id) {
+if (!confirm('Eliminar definitivamente?')) return;
+var nuevo = [];
+for (var i = 0; i < APP.papelera.length; i++) {
+if (APP.papelera[i].id !== id) nuevo.push(APP.papelera[i]);
+}
+APP.papelera = nuevo;
+guardarLocal();
+renderPapelera();
+}
+
+function eliminarDef() {
+var chks = document.querySelectorAll('.chkPap:checked');
+var sel = [];
+for (var i = 0; i < chks.length; i++) sel.push(parseInt(chks[i].dataset.id));
+if (sel.length === 0) { alert('Selecciona al menos uno'); return; }
+if (!confirm('Eliminar definitivamente los seleccionados?')) return;
+var nuevo = [];
+for (var i = 0; i < APP.papelera.length; i++) {
+if (sel.indexOf(APP.papelera[i].id) < 0) nuevo.push(APP.papelera[i]);
+}
+APP.papelera = nuevo;
+guardarLocal();
+renderPapelera();
+}
+
+function renderTarifas() {
+var tb = document.getElementById('tbodyTarifas');
+if (!tb) return;
+tb.innerHTML = '';
+for (var i = 0; i < APP.tarifas.length; i++) {
+var t = APP.tarifas[i];
+var tr = document.createElement('tr');
+tr.innerHTML = '<td><input type="number" value="' + t.min + '" oninput="APP.tarifas[' + i + '].min=parseFloat(this.value)" style="width:70px"> - <input type="number" value="' + t.max + '" oninput="APP.tarifas[' + i + '].max=parseFloat(this.value)" style="width:70px"> m2</td>' +
+'<td><input type="number" value="' + t.precio + '" oninput="APP.tarifas[' + i + '].precio=parseFloat(this.value)"></td>';
+tb.appendChild(tr);
+}
+}
+
+function guardarTarifas() {
+guardarLocal();
+alert('Tarifas guardadas correctamente');
+calcular();
+}
+
+function renderInventario() {
+var tb = document.getElementById('tbodyInventario');
+if (!tb) return;
+tb.innerHTML = '';
+for (var i = 0; i < APP.inventario.length; i++) {
+var it = APP.inventario[i];
+var total = it.cant * it.precio;
+var tr = document.createElement('tr');
+tr.innerHTML = '<td><input value="' + it.item + '" oninput="APP.inventario[' + i + '].item=this.value"></td>' +
+'<td><input type="number" value="' + it.cant + '" oninput="APP.inventario[' + i + '].cant=parseFloat(this.value)||0;renderInventario()"></td>' +
+'<td><input value="' + it.unidad + '" oninput="APP.inventario[' + i + '].unidad=this.value"></td>' +
+'<td><input type="number" value="' + it.precio + '" oninput="APP.inventario[' + i + '].precio=parseFloat(this.value)||0;renderInventario()"></td>' +
+'<td style="font-weight:600">$' + total.toLocaleString('es-CL') + '</td>' +
+'<td><button class="btn btn-danger btn-sm" onclick="delItemInv(' + i + ')">X</button></td>';
+tb.appendChild(tr);
+}
+}
+
+function addItemInv() {
+APP.inventario.push({item: "", cant: 1, unidad: "un", precio: 0});
+renderInventario();
+}
+
+function delItemInv(i) {
+APP.inventario.splice(i, 1);
+renderInventario();
+}
+
+function generarPDF() {
+var jsPDF = window.jspdf.jsPDF;
+var doc = new jsPDF('p', 'mm', 'letter');
+var W = doc.internal.pageSize.getWidth();
+var H = doc.internal.pageSize.getHeight();
+
+var nombre = document.getElementById('cNombre').value || 'Cliente';
+var tel = document.getElementById('cTelefono').value || '';
+var email = document.getElementById('cEmail').value || '';
+var direccion = document.getElementById('cDireccion').value || '';
+var vendedor = document.getElementById('cVendedor').value.trim() || '';
+var fecha = document.getElementById('cFecha').value || new Date().toISOString().slice(0, 10);
+var m2 = parseFloat(document.getElementById('cSuperficie').value) || 0;
+var tarifa = getTarifa(m2);
+var subtotal = Math.round(m2 * tarifa);
+var demoM2 = APP.demoM2 || 0;
+var incluirDemo = APP.incluirDemo;
+var costoDemo = Math.round(demoM2 * PRECIO_DEMOLICION);
+var extrasSel = [];
+for (var i = 0; i < APP.extras.length; i++) {
+if (APP.extras[i].selected) extrasSel.push(APP.extras[i]);
+}
+var extras = 0;
+for (var i = 0; i < extrasSel.length; i++) {
+extras += extrasSel[i].cant * extrasSel[i].precio;
+}
+var subExt = subtotal + costoDemo + extras;
+var aplicaIva = document.getElementById('cIncluyeIva').checked;
+var ivaCalc = aplicaIva ? Math.round(subExt * 0.19) : 0;
+var total = aplicaIva ? Math.round(subExt + ivaCalc) : Math.round(subExt);
+var numCot = 'COT-' + String(Date.now()).slice(-6);
+
+var cafe = [59, 36, 22];
+var cafeClaro = [166, 124, 82];
+var mostaza = [201, 160, 90];
+var crema = [245, 236, 215];
+
+doc.setFillColor(cafeClaro[0], cafeClaro[1], cafeClaro[2]);
+doc.rect(0, 0, W, 35, 'F');
+
+if (APP.logoBase64) {
+try { doc.addImage(APP.logoBase64, 'PNG', 8, 3, 28, 28); } catch(e) {}
+}
+
+doc.setTextColor(255, 255, 255);
+doc.setFontSize(16);
+doc.setFont(undefined, 'bold');
+doc.text('PAVIMENTOS M&C', 42, 14);
+doc.setFontSize(9);
+doc.setFont(undefined, 'normal');
+doc.text('HORMIGON ESTAMPADO', 42, 21);
+doc.setFontSize(7);
+doc.text('ventas@pavimentosmyc.cl  |  +56 9 3066 5920  |  Lampa, Chile', 42, 28);
+
+doc.setFillColor(mostaza[0], mostaza[1], mostaza[2]);
+doc.rect(0, 35, W, 9, 'F');
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
+doc.setFontSize(12);
+doc.setFont(undefined, 'bold');
+doc.text('COTIZACION N° ' + numCot, W / 2, 41.5, {align: 'center'});
+
+var y = 49;
+var boxH = 35;
+doc.setFillColor(crema[0], crema[1], crema[2]);
+doc.rect(10, y, W - 20, boxH, 'F');
+doc.setDrawColor(mostaza[0], mostaza[1], mostaza[2]);
+doc.setLineWidth(0.5);
+doc.rect(10, y, W - 20, boxH, 'S');
+
+doc.setFont(undefined, 'bold');
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
+doc.setFontSize(10);
+doc.text('COTIZADO PARA', 14, y + 6);
+
+doc.setFont(undefined, 'bold');
+doc.setTextColor(40, 40, 40);
+doc.setFontSize(12);
+doc.text(nombre, 14, y + 13);
+
+doc.setFont(undefined, 'normal');
+doc.setTextColor(80, 80, 80);
+doc.setFontSize(9);
+doc.text('Tel: ' + tel, 14, y + 20);
+if (email) doc.text('Email: ' + email, 14, y + 25);
+
+if (direccion) {
+doc.setFont(undefined, 'normal');
+doc.setTextColor(60, 60, 60);
+doc.setFontSize(9);
+doc.text('Direccion:', 14, y + 30);
+var dirLines = doc.splitTextToSize(direccion, W/2 - 20);
+doc.text(dirLines, 17, y + 34);
+}
+
+if (vendedor) {
+doc.setFont(undefined, 'bold');
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
+doc.setFontSize(9);
+doc.text('Vendedor:', W - 75, y + 6);
+doc.setFont(undefined, 'normal');
+doc.setTextColor(60, 60, 60);
+doc.setFontSize(10);
+doc.text(vendedor, W - 75, y + 12);
+}
+
+doc.setFont(undefined, 'bold');
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
+doc.setFontSize(9);
+doc.text('Fecha:', W - 75, y + (vendedor ? 17 : 6));
+doc.setFont(undefined, 'normal');
+doc.setTextColor(60, 60, 60);
+doc.setFontSize(10);
+doc.text(fecha, W - 75, y + (vendedor ? 23 : 12));
+doc.setFontSize(8);
+doc.text('Vigencia: 10 dias', W - 75, y + (vendedor ? 28 : 17));
+
+y += boxH + 4;
+
+doc.autoTable({
+startY: y,
+head: [['CONDICIONES DE PAGO']],
+body: [['Anticipo: 50% para iniciar obras | Saldo: 30% hormigonado + 20% contra entrega\nForma de pago: Transferencia, Efectivo, Tarjeta de credito (aplica 19% adicional)']],
+theme: 'grid',
+headStyles: {fillColor: cafe, textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold', halign: 'center'},
+styles: {fontSize: 7, cellPadding: 2},
+columnStyles: {0: {cellWidth: W - 20}},
+margin: {left: 10, right: 10}
+});
+y = doc.lastAutoTable.finalY + 3;
+
+var bodyItems = [];
+bodyItems.push(['Hormigon Estampado', m2 + ' m2', '$' + tarifa.toLocaleString('es-CL') + '/m2', '$' + subtotal.toLocaleString('es-CL')]);
+
+if (demoM2 > 0 && incluirDemo) {
+bodyItems.push(['Demolicion de pavimento existente', demoM2 + ' m2', '$' + PRECIO_DEMOLICION.toLocaleString('es-CL') + '/m2', '$' + costoDemo.toLocaleString('es-CL')]);
+}
+
+for (var i = 0; i < extrasSel.length; i++) {
+var e = extrasSel[i];
+bodyItems.push([e.desc, e.cant, '$' + e.precio.toLocaleString('es-CL'), '$' + (e.cant * e.precio).toLocaleString('es-CL')]);
+}
+
+doc.autoTable({
+startY: y,
+head: [['DESCRIPCION', 'CANT.', 'PRECIO UNIT.', 'IMPORTE']],
+body: bodyItems,
+theme: 'grid',
+headStyles: {fillColor: cafe, textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold', halign: 'center'},
+styles: {fontSize: 8, cellPadding: 2.5},
+columnStyles: {0: {cellWidth: 85}, 1: {cellWidth: 25, halign: 'center'}, 2: {cellWidth: 35, halign: 'right'}, 3: {cellWidth: 35, halign: 'right', fontStyle: 'bold'}},
+margin: {left: 10, right: 10}
+});
+y = doc.lastAutoTable.finalY + 2;
+
+var totalesBody = [['Subtotal', '', '', '$' + subExt.toLocaleString('es-CL')]];
+if (aplicaIva) {
+totalesBody.push(['IVA (19%)', '', '', '$' + ivaCalc.toLocaleString('es-CL')]);
+}
+totalesBody.push(['TOTAL', '', '', '$' + total.toLocaleString('es-CL')]);
+
+doc.autoTable({
+startY: y,
+body: totalesBody,
+theme: 'grid',
+styles: {fontSize: 9, cellPadding: 2.5},
+columnStyles: {0: {cellWidth: 85, fontStyle: 'bold'}, 1: {cellWidth: 25}, 2: {cellWidth: 35}, 3: {cellWidth: 35, halign: 'right', fontStyle: 'bold'}},
+rowStyles: {totalesBody.length - 1: {fillColor: mostaza, textColor: cafe, fontSize: 11}},
+margin: {left: 10, right: 10}
+});
+y = doc.lastAutoTable.finalY + 3;
+
+var itemsH = 35;
+doc.setFillColor(crema[0], crema[1], crema[2]);
+doc.rect(10, y, W - 20, itemsH, 'F');
+doc.setDrawColor(mostaza[0], mostaza[1], mostaza[2]);
+doc.setLineWidth(0.4);
+doc.rect(10, y, W - 20, itemsH, 'S');
+doc.setFont(undefined, 'bold');
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
+doc.setFontSize(9);
+doc.text('ITEMS INCLUIDOS EN EL PRECIO', 14, y + 5);
+doc.setFont(undefined, 'normal');
+doc.setTextColor(60, 60, 60);
+doc.setFontSize(7.5);
+var itemsCol1 = APP.itemsSel.slice(0, Math.ceil(APP.itemsSel.length / 2));
+var itemsCol2 = APP.itemsSel.slice(Math.ceil(APP.itemsSel.length / 2));
+var maxItems = Math.max(itemsCol1.length, itemsCol2.length);
+var step = (itemsH - 7) / maxItems;
+for (var i = 0; i < maxItems; i++) {
+if (itemsCol1[i]) doc.text('- ' + itemsCol1[i], 14, y + 8 + i * step);
+if (itemsCol2[i]) doc.text('- ' + itemsCol2[i], W / 2 + 5, y + 8 + i * step);
+}
+y += itemsH + 3;
+
+var alcanceH = 22;
+doc.setFillColor(crema[0], crema[1], crema[2]);
+doc.rect(10, y, W - 20, alcanceH, 'F');
+doc.setDrawColor(mostaza[0], mostaza[1], mostaza[2]);
+doc.setLineWidth(0.4);
+doc.rect(10, y, W - 20, alcanceH, 'S');
+doc.setFont(undefined, 'bold');
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
+doc.setFontSize(9);
+doc.text('ALCANCE DEL PROYECTO', 14, y + 5);
+doc.setFont(undefined, 'normal');
+doc.setTextColor(60, 60, 60);
+doc.setFontSize(7.5);
+var alcance = [
+'Preparacion, nivelacion y compactacion del terreno con base estabilizado',
+'Estampado con moldes profesionales - Hormigon HB25, 10 cm de espesor',
+'Instalacion de malla ACMA C92 - Cuarzo endurecedor 3kg/m2',
+'Diseno y color a eleccion del cliente - Juntas y cortes de dilatacion',
+'Sello acrilico protector incoloro - Limpieza y entrega final'
+];
+var aStep = (alcanceH - 6) / alcance.length;
+for (var i = 0; i < alcance.length; i++) {
+doc.text('- ' + alcance[i], 14, y + 8 + i * aStep);
+}
+y += alcanceH + 3;
+
+var garantiaH = 18;
+doc.setFillColor(crema[0], crema[1], crema[2]);
+doc.rect(10, y, W - 20, garantiaH, 'F');
+doc.setDrawColor(mostaza[0], mostaza[1], mostaza[2]);
+doc.setLineWidth(0.4);
+doc.rect(10, y, W - 20, garantiaH, 'S');
+doc.setFont(undefined, 'bold');
+doc.setTextColor(cafe[0], cafe[1], cafe[2]);
+doc.setFontSize(9);
+doc.text('GARANTIA', 14, y + 5);
+doc.setFont(undefined, 'normal');
+doc.setTextColor(60, 60, 60);
+doc.setFontSize(7.5);
+doc.text('12 meses desde el dia del hormigon por concepto de fisuras y fracturas.', 14, y + 9);
+doc.text('Mantencion anual recomendada: pano con cera acrilica incolora liquida.', 14, y + 13);
+doc.text('Focos LED: garantia de 4 meses. Post-venta: plazo de 90 dias para ejecucion.', 14, y + 16);
+
+doc.setFontSize(7);
+doc.setTextColor(130, 130, 130);
+doc.text('Pavimentos M&C SPA - Hormigon Estampado - Lampa, Chile', W / 2, H - 6, {align: 'center'});
+
+doc.save('Cotizacion_' + numCot + '_' + nombre.replace(/\s+/g, '_') + '.pdf');
+}
+
+function enviarWhatsApp() {
+var nombre = document.getElementById('cNombre').value || 'Cliente';
+var total = document.getElementById('rTotal').textContent;
+var m2 = document.getElementById('cSuperficie').value || 0;
+var msg = 'Hola ' + nombre + ', te enviamos la cotizacion de Pavimentos M&C:\n\nSuperficie: ' + m2 + ' m2\nTotal: ' + total + '\n\nFormas de pago: 50% inicio, 30% hormigonado, 20% entrega.\n\nQuedamos atentos.';
+window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function enviarCorreo() {
+var email = document.getElementById('cEmail').value;
+if (!email) { alert('Ingresa un email'); return; }
+var nombre = document.getElementById('cNombre').value || 'Cliente';
+var total = document.getElementById('rTotal').textContent;
+var subject = 'Cotizacion Pavimentos M&C - ' + nombre;
+var body = 'Estimado/a ' + nombre + ',\n\nAdjuntamos cotizacion por ' + total + '.\n\nSaludos,\nPavimentos M&C';
+window.location.href = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+}
+</script>
 </body>
 </html>
