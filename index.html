@@ -20,7 +20,6 @@
     }
 
     * { box-sizing: border-box; }
-
     html { -webkit-text-size-adjust: 100%; }
 
     body {
@@ -31,81 +30,44 @@
     }
 
     a { color: inherit; }
-
     button, input, select, textarea { font: inherit; }
-
     .hidden { display: none; }
 
     /* ============ LOGIN ============ */
     .login-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 5000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
+      position: fixed; inset: 0; z-index: 5000;
+      display: flex; align-items: center; justify-content: center; padding: 18px;
       background: linear-gradient(rgba(59, 36, 22, 0.88), rgba(59, 36, 22, 0.88)), #5c3a21;
     }
-
     .login-box {
-      width: 100%;
-      max-width: 380px;
-      background: var(--blanco);
-      border: 1px solid rgba(92, 58, 33, 0.12);
-      border-radius: 18px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
-      padding: 28px;
-      text-align: center;
-      max-height: 92vh;
-      overflow-y: auto;
+      width: 100%; max-width: 380px; background: var(--blanco);
+      border: 1px solid rgba(92, 58, 33, 0.12); border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28); padding: 28px;
+      text-align: center; max-height: 92vh; overflow-y: auto;
     }
-
     .login-logo {
-      width: 82px;
-      height: 82px;
-      object-fit: contain;
-      margin: 0 auto 12px;
-      display: block;
-      background: var(--crema);
-      border-radius: 18px;
-      padding: 8px;
+      width: 82px; height: 82px; object-fit: contain;
+      margin: 0 auto 12px; display: block; background: var(--crema);
+      border-radius: 18px; padding: 8px;
     }
-
     .login-box h1 { margin: 0; color: var(--cafe-oscuro); font-size: 28px; line-height: 1.1; }
     .login-box .subtitle { margin: 6px 0 18px; color: var(--cafe); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; }
 
-    /* ============ FORMULARIOS ============ */
     .field { margin-bottom: 12px; text-align: left; }
     .field label { display: block; margin-bottom: 6px; font-weight: bold; color: var(--cafe); font-size: 14px; }
 
     .form-control {
-      width: 100%;
-      min-height: 42px;
-      padding: 9px 11px;
-      border: 1px solid #cfbfa3;
-      border-radius: 10px;
-      background: #fffdf8;
-      color: #2c231a;
-      font-size: 16px;
+      width: 100%; min-height: 42px; padding: 9px 11px;
+      border: 1px solid #cfbfa3; border-radius: 10px;
+      background: #fffdf8; color: #2c231a; font-size: 16px;
     }
-
     .form-control:focus { outline: 2px solid rgba(201, 160, 90, 0.45); border-color: var(--mostaza); }
 
-    /* ============ BOTONES ============ */
     .btn {
-      border: 1px solid var(--cafe);
-      background: var(--mostaza);
-      color: #2b1d11;
-      font-weight: bold;
-      border-radius: 10px;
-      min-height: 42px;
-      padding: 9px 14px;
-      cursor: pointer;
-      transition: 0.18s ease;
-      touch-action: manipulation;
+      border: 1px solid var(--cafe); background: var(--mostaza); color: #2b1d11;
+      font-weight: bold; border-radius: 10px; min-height: 42px; padding: 9px 14px;
+      cursor: pointer; transition: 0.18s ease; touch-action: manipulation;
     }
-
     .btn:hover { transform: translateY(-1px); filter: brightness(0.98); }
     .btn:active { transform: translateY(0); }
     .btn-primary { background: var(--cafe); color: #fff; }
@@ -115,104 +77,47 @@
     .btn-block { width: 100%; }
     .btn-sm { min-height: 36px; padding: 6px 10px; border-radius: 8px; font-size: 13px; }
 
-    /* ============ INDICADOR DB ============ */
     .db-status {
-      position: fixed;
-      top: 12px;
-      right: 12px;
-      z-index: 6000;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
+      position: fixed; top: 12px; right: 12px; z-index: 6000;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 999px;
       background: rgba(255, 255, 255, 0.94);
       border: 1px solid rgba(59, 36, 22, 0.14);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-      font-size: 13px;
-      font-weight: bold;
-      color: var(--cafe-oscuro);
+      font-size: 13px; font-weight: bold; color: var(--cafe-oscuro);
     }
-
     .db-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--rojo); flex: 0 0 auto; }
     .db-status.online .db-dot { background: var(--verde); }
 
-    /* ============ TOPBAR MOVIL ============ */
     .topbar {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: var(--topbar-h);
-      background: var(--cafe-oscuro);
-      color: #fff;
-      align-items: center;
-      gap: 10px;
-      padding: 0 12px;
-      z-index: 1200;
+      display: none; position: fixed; top: 0; left: 0; right: 0;
+      height: var(--topbar-h); background: var(--cafe-oscuro); color: #fff;
+      align-items: center; gap: 10px; padding: 0 12px; z-index: 1200;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     }
-
     .menu-btn {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #fff;
-      border-radius: 10px;
-      min-height: 42px;
-      min-width: 42px;
-      font-size: 20px;
-      cursor: pointer;
-      flex: 0 0 auto;
+      background: transparent; border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff; border-radius: 10px; min-height: 42px; min-width: 42px;
+      font-size: 20px; cursor: pointer; flex: 0 0 auto;
     }
-
     .topbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-weight: bold;
-      color: var(--mostaza);
-      font-size: 16px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      display: flex; align-items: center; gap: 9px;
+      font-weight: bold; color: var(--mostaza); font-size: 16px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-
     .topbar-brand img {
-      width: 34px;
-      height: 34px;
-      object-fit: contain;
-      background: var(--crema);
-      border-radius: 8px;
-      padding: 3px;
-      flex: 0 0 auto;
+      width: 34px; height: 34px; object-fit: contain;
+      background: var(--crema); border-radius: 8px; padding: 3px; flex: 0 0 auto;
     }
+    .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 1400; display: none; }
 
-    .sidebar-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.45);
-      z-index: 1400;
-      display: none;
-    }
-
-    /* ============ SIDEBAR ============ */
     .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: var(--sidebar-w);
-      height: 100vh;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
       padding: 18px 16px 24px;
       background: linear-gradient(180deg, var(--cafe-oscuro), #2c1a10);
-      color: #fff;
-      z-index: 1500;
-      display: flex;
-      flex-direction: column;
+      color: #fff; z-index: 1500; display: flex; flex-direction: column;
     }
-
     .brand { display: flex; align-items: center; gap: 12px; padding: 8px 6px 14px; border-bottom: 1px solid rgba(255,255,255,0.14); margin-bottom: 16px; }
     .brand img { width: 56px; height: 56px; object-fit: contain; background: var(--crema); border-radius: 14px; padding: 5px; flex: 0 0 auto; }
     .brand .brand-text strong { display: block; font-size: 18px; line-height: 1.05; color: var(--mostaza); }
@@ -230,24 +135,19 @@
     .sidebar-dev a { color: var(--mostaza); font-weight: bold; text-decoration: none; }
     .sidebar-dev a:hover { text-decoration: underline; }
 
-    /* ============ MAIN ============ */
     .main { margin-left: var(--sidebar-w); padding: 20px; min-height: 100vh; }
-
     .page-title { margin: 0 0 18px; color: var(--cafe-oscuro); font-size: clamp(24px, 5vw, 34px); line-height: 1.1; }
     .page-title small { display: inline-block; margin-left: 8px; color: var(--rojo); font-size: 14px; vertical-align: middle; }
 
     .section { display: none; }
     .section.active { display: block; }
 
-    /* ============ CARDS ============ */
     .card { background: var(--blanco); border: 1px solid rgba(92,58,33,0.14); border-radius: 18px; box-shadow: 0 10px 24px rgba(59,36,22,0.06); margin-bottom: 18px; overflow: hidden; }
     .card-header { padding: 15px 18px; background: linear-gradient(90deg, var(--crema), #fff8ec); border-bottom: 1px solid rgba(92,58,33,0.12); color: var(--cafe-oscuro); font-weight: bold; }
     .card-body { padding: 18px; }
 
-    /* ============ GRIDS ============ */
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-
     .muted { color: #7b6c5c; font-size: 14px; }
 
     .summary-card { position: sticky; top: 16px; border-top: 6px solid var(--mostaza); }
@@ -270,22 +170,15 @@
     .item-check label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
     .item-check input { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 2px; }
 
-    /* ============ TABLAS ============ */
     .table-wrap {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      border: 1px solid #eee0c8;
-      border-radius: 12px;
-      background: #fff;
-      max-width: 100%;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      border: 1px solid #eee0c8; border-radius: 12px; background: #fff; max-width: 100%;
     }
-
     table { width: 100%; border-collapse: collapse; min-width: 640px; }
     th, td { padding: 10px; border-bottom: 1px solid #efe3ca; vertical-align: middle; text-align: left; font-size: 14px; }
     th { background: var(--crema); color: var(--cafe-oscuro); white-space: nowrap; }
     .center { text-align: center; }
 
-    /* ============ BARRAS DE ACCION ============ */
     .action-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
     .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; align-items: center; }
     .toolbar .filtro-input { flex: 1 1 240px; max-width: 420px; }
@@ -298,66 +191,41 @@
     .mt { margin-top: 12px; }
     .mb { margin-bottom: 12px; }
 
-    /* ============ RESPONSIVE ============ */
+    .cant-hint { display: block; margin-top: 4px; font-size: 11px; color: #8a7760; font-weight: normal; }
+
     @media (max-width: 1100px) {
       .grid-2 { grid-template-columns: 1fr; }
       .summary-card { position: relative; top: 0; }
       .items-grid { grid-template-columns: repeat(2, 1fr); }
     }
-
     @media (max-width: 900px) {
       .topbar { display: flex; }
-
       .sidebar {
-        width: min(82vw, 300px);
-        transform: translateX(-105%);
-        transition: transform 0.25s ease;
-        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.35);
+        width: min(82vw, 300px); transform: translateX(-105%);
+        transition: transform 0.25s ease; box-shadow: 8px 0 30px rgba(0, 0, 0, 0.35);
       }
-
       .sidebar.open { transform: translateX(0); }
-
       .sidebar-backdrop.show { display: block; }
-
-      .main {
-        margin-left: 0;
-        padding: calc(var(--topbar-h) + 14px) 12px 20px;
-      }
-
+      .main { margin-left: 0; padding: calc(var(--topbar-h) + 14px) 12px 20px; }
       .grid-3 { grid-template-columns: repeat(2, 1fr); }
-
-      .db-status {
-        top: auto;
-        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-        right: 12px;
-        font-size: 12px;
-        padding: 7px 10px;
-      }
+      .db-status { top: auto; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); right: 12px; font-size: 12px; padding: 7px 10px; }
     }
-
     @media (max-width: 640px) {
       .grid-3 { grid-template-columns: 1fr; }
       .items-grid { grid-template-columns: 1fr; }
-
       .card-body { padding: 14px; }
       .card-header { padding: 13px 14px; }
-
       th, td { padding: 8px; font-size: 13px; }
       table { min-width: 560px; }
-
       .action-buttons { flex-direction: column; }
       .action-buttons .btn { width: 100%; min-height: 46px; }
-
       .toolbar { flex-direction: column; align-items: stretch; }
       .toolbar .btn { width: 100%; min-height: 44px; }
       .toolbar .checkbox-line { justify-content: flex-start; }
       .toolbar .filtro-input { max-width: none; }
-
       .btn-sm { min-height: 38px; }
-
       .login-box { padding: 22px 18px; }
     }
-
     @media (max-width: 380px) {
       .topbar-brand span { display: none; }
       .summary-row { font-size: 13px; }
@@ -376,7 +244,6 @@
       <img src="logo.png" alt="Logo Pavimentos M&amp;C" class="login-logo" onerror="this.style.display='none'">
       <h1>PAVIMENTOS M&amp;C</h1>
       <div class="subtitle">Hormigón Estampado</div>
-
       <form onsubmit="return doLogin();">
         <div class="field">
           <label for="loginUser">Usuario</label>
@@ -391,7 +258,6 @@
     </div>
   </div>
 
-  <!-- BARRA SUPERIOR MOVIL -->
   <header class="topbar">
     <button class="menu-btn" onclick="openSidebar()" aria-label="Abrir menú">&#9776;</button>
     <div class="topbar-brand">
@@ -421,8 +287,6 @@
     <div class="sidebar-contact">
       <a href="https://wa.me/56930665920" target="_blank" rel="noopener">+56 9 3066 5920</a><br>
       <a href="mailto:ventas@pavimentosmyc.cl">ventas@pavimentosmyc.cl</a><br>
-      <a href="https://www.pavimentosmyc.cl" target="_blank" rel="noopener">www.pavimentosmyc.cl</a><br>
-      <a href="https://instagram.com/pavimentosmc" target="_blank" rel="noopener">@pavimentosmc</a><br>
       Lampa, Chile
     </div>
 
@@ -434,7 +298,6 @@
 
   <main class="main">
 
-    <!-- NUEVA COTIZACION -->
     <section id="nueva-cotizacion" class="section active">
       <h2 class="page-title">Nueva Cotizacion <small id="editModeLabel" class="hidden">Modo edición</small></h2>
 
@@ -444,33 +307,14 @@
             <div class="card-header">Datos del Cliente</div>
             <div class="card-body">
               <div class="grid-3">
-                <div class="field">
-                  <label for="clienteNombre">Nombre Cliente *</label>
-                  <input type="text" id="clienteNombre" class="form-control" oninput="calcularTotal()">
-                </div>
-                <div class="field">
-                  <label for="clienteTelefono">Telefono *</label>
-                  <input type="tel" id="clienteTelefono" class="form-control" value="+56 " placeholder="+56 9 1234 5678" oninput="calcularTotal()">
-                </div>
-                <div class="field">
-                  <label for="clienteEmail">Email</label>
-                  <input type="email" id="clienteEmail" class="form-control" oninput="calcularTotal()">
-                </div>
+                <div class="field"><label for="clienteNombre">Nombre Cliente *</label><input type="text" id="clienteNombre" class="form-control" oninput="calcularTotal()"></div>
+                <div class="field"><label for="clienteTelefono">Telefono *</label><input type="tel" id="clienteTelefono" class="form-control" value="+56 " placeholder="+56 9 1234 5678" oninput="calcularTotal()"></div>
+                <div class="field"><label for="clienteEmail">Email</label><input type="email" id="clienteEmail" class="form-control" oninput="calcularTotal()"></div>
               </div>
-
               <div class="grid-3">
-                <div class="field">
-                  <label for="clienteDireccion">Direccion</label>
-                  <input type="text" id="clienteDireccion" class="form-control" oninput="calcularTotal()">
-                </div>
-                <div class="field">
-                  <label for="vendedor">Vendedor</label>
-                  <input type="text" id="vendedor" class="form-control" value="" placeholder="Nombre del vendedor" oninput="calcularTotal()">
-                </div>
-                <div class="field">
-                  <label for="fechaCotizacion">Fecha</label>
-                  <input type="date" id="fechaCotizacion" class="form-control" onchange="calcularTotal()">
-                </div>
+                <div class="field"><label for="clienteDireccion">Direccion</label><input type="text" id="clienteDireccion" class="form-control" oninput="calcularTotal()"></div>
+                <div class="field"><label for="vendedor">Vendedor</label><input type="text" id="vendedor" class="form-control" value="" placeholder="Nombre del vendedor" oninput="calcularTotal()"></div>
+                <div class="field"><label for="fechaCotizacion">Fecha</label><input type="date" id="fechaCotizacion" class="form-control" onchange="calcularTotal()"></div>
               </div>
             </div>
           </div>
@@ -481,22 +325,11 @@
               <div class="muted mb">
                 Tarifas: 40-50 m²: $34.000 | 51-80 m²: $30.000 | 81-120 m²: $28.500 | 121-400 m²: $28.000 | 401-800 m²: $27.000
               </div>
-
               <div class="grid-3">
-                <div class="field">
-                  <label for="superficie">Superficie (m²) * <span class="muted">Mínimo 40 m²</span></label>
-                  <input type="number" id="superficie" class="form-control" min="40" step="0.01" value="40" oninput="calcularTotal()">
-                </div>
-                <div class="field">
-                  <label for="tarifaAplicada">Tarifa aplicada</label>
-                  <input type="text" id="tarifaAplicada" class="form-control" readonly>
-                </div>
-                <div class="field">
-                  <label for="precioM2">Precio m²</label>
-                  <input type="text" id="precioM2" class="form-control" readonly>
-                </div>
+                <div class="field"><label for="superficie">Superficie (m²) * <span class="muted">Mínimo 40 m²</span></label><input type="number" id="superficie" class="form-control" min="40" step="0.01" value="40" oninput="calcularTotal()"></div>
+                <div class="field"><label for="tarifaAplicada">Tarifa aplicada</label><input type="text" id="tarifaAplicada" class="form-control" readonly></div>
+                <div class="field"><label for="precioM2">Precio m²</label><input type="text" id="precioM2" class="form-control" readonly></div>
               </div>
-
               <div class="checkbox-line">
                 <input type="checkbox" id="aplicarIva" checked onchange="calcularTotal()">
                 <label for="aplicarIva">Aplicar IVA 19% al total</label>
@@ -510,14 +343,8 @@
               <div class="demo-box">
                 <h4>Demolición de pavimento existente</h4>
                 <div class="grid-3">
-                  <div class="field">
-                    <label for="demolicionM2">m² a demoler</label>
-                    <input type="number" id="demolicionM2" class="form-control" min="0" step="0.01" value="0" oninput="calcularTotal()">
-                  </div>
-                  <div class="field">
-                    <label>Precio fijo</label>
-                    <input type="text" class="form-control" value="$4.000 / m²" readonly>
-                  </div>
+                  <div class="field"><label for="demolicionM2">m² a demoler</label><input type="number" id="demolicionM2" class="form-control" min="0" step="0.01" value="0" oninput="calcularTotal()"></div>
+                  <div class="field"><label>Precio fijo</label><input type="text" class="form-control" value="$4.000 / m²" readonly></div>
                   <div class="field">
                     <label>Incluir en PDF</label>
                     <div class="checkbox-line">
@@ -529,7 +356,7 @@
               </div>
 
               <div class="muted mb">
-                Selecciona los trabajos extras que se sumarán al total. Solo los marcados aparecerán en el PDF.
+                Selecciona los trabajos extras que se sumarán al total. Solo los marcados aparecerán en el PDF. Puedes modificar libremente la <strong>cantidad</strong> y el total se actualizará automáticamente (cantidad × precio unitario).
               </div>
 
               <div class="toolbar">
@@ -540,9 +367,9 @@
                 <table>
                   <thead>
                     <tr>
-                      <th style="width:50px;"></th>
+                      <th style="width:50px;">✓</th>
                       <th>Descripcion</th>
-                      <th style="width:100px;">Cant.</th>
+                      <th style="width:110px;">Cantidad</th>
                       <th style="width:130px;">Precio Unit.</th>
                       <th style="width:70px;"></th>
                     </tr>
@@ -585,7 +412,6 @@
               <div class="summary-row"><span>Trabajos Extras</span><span id="resExtras">Ninguno</span></div>
               <div class="summary-row"><span>Total Extras</span><span id="resTotalExtras">$0</span></div>
               <div class="summary-row"><span>IVA</span><span id="resIva">No incluido</span></div>
-
               <div class="summary-total">
                 <div class="label">TOTAL A COBRAR</div>
                 <div class="value" id="resTotal">$0</div>
@@ -596,7 +422,6 @@
       </div>
     </section>
 
-    <!-- PROYECTOS -->
     <section id="proyectos" class="section">
       <h2 class="page-title">Proyectos Guardados</h2>
       <div class="card">
@@ -608,17 +433,7 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>N° Cot.</th>
-                  <th>Cliente</th>
-                  <th>Superficie</th>
-                  <th>Total</th>
-                  <th>Fecha</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
+              <thead><tr><th>#</th><th>N° Cot.</th><th>Cliente</th><th>Superficie</th><th>Total</th><th>Fecha</th><th>Acciones</th></tr></thead>
               <tbody id="tbodyProyectos"></tbody>
             </table>
           </div>
@@ -626,35 +441,19 @@
       </div>
     </section>
 
-    <!-- PAPELERA -->
     <section id="papelera" class="section">
       <h2 class="page-title">Papelera de Reciclaje</h2>
       <div class="card">
         <div class="card-header">Proyectos eliminados</div>
         <div class="card-body">
           <div class="toolbar">
-            <label class="checkbox-line">
-              <input type="checkbox" id="trashSelectAll" onchange="toggleAllTrash()">
-              Seleccionar Todo
-            </label>
+            <label class="checkbox-line"><input type="checkbox" id="trashSelectAll" onchange="toggleAllTrash()"> Seleccionar Todo</label>
             <button class="btn" onclick="restoreSelected()">Restaurar</button>
             <button class="btn btn-danger" onclick="deleteSelected()">Eliminar Definitivamente</button>
           </div>
-
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th style="width:44px;"></th>
-                  <th>#</th>
-                  <th>N° Cot.</th>
-                  <th>Cliente</th>
-                  <th>Superficie</th>
-                  <th>Total</th>
-                  <th>Fecha</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
+              <thead><tr><th style="width:44px;"></th><th>#</th><th>N° Cot.</th><th>Cliente</th><th>Superficie</th><th>Total</th><th>Fecha</th><th>Acciones</th></tr></thead>
               <tbody id="tbodyPapelera"></tbody>
             </table>
           </div>
@@ -662,52 +461,32 @@
       </div>
     </section>
 
-    <!-- TARIFAS -->
     <section id="tarifas" class="section">
       <h2 class="page-title">Gestion de Tarifas</h2>
       <div class="card">
         <div class="card-header">Tarifas por metro cuadrado</div>
         <div class="card-body">
-          <div class="muted mb">
-            Modifica las tarifas por metro cuadrado. Los cambios se sincronizan con todos los vendedores.
-          </div>
+          <div class="muted mb">Modifica las tarifas por metro cuadrado. Los cambios se sincronizan con todos los vendedores.</div>
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>Rango (m²)</th>
-                  <th>Precio por m²</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Rango (m²)</th><th>Precio por m²</th></tr></thead>
               <tbody id="tbodyTarifas"></tbody>
             </table>
           </div>
-          <div class="toolbar mt">
-            <button class="btn btn-primary" onclick="guardarTarifas()">Guardar Tarifas</button>
-          </div>
+          <div class="toolbar mt"><button class="btn btn-primary" onclick="guardarTarifas()">Guardar Tarifas</button></div>
         </div>
       </div>
     </section>
 
-    <!-- INVENTARIO -->
     <section id="inventario" class="section">
       <h2 class="page-title">Gestion de Inventario</h2>
-
       <div class="card">
         <div class="card-header">Items Incluidos en el Precio (Catálogo)</div>
         <div class="card-body">
-          <div class="muted mb">
-            Edita o agrega los items que aparecen como incluidos en el precio de la cotización.
-          </div>
+          <div class="muted mb">Edita o agrega los items que aparecen como incluidos en el precio de la cotización.</div>
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th style="width:60px;">#</th>
-                  <th>Item</th>
-                  <th style="width:120px;">Acciones</th>
-                </tr>
-              </thead>
+              <thead><tr><th style="width:60px;">#</th><th>Item</th><th style="width:120px;">Acciones</th></tr></thead>
               <tbody id="tbodyItemsCatalogo"></tbody>
             </table>
           </div>
@@ -717,25 +496,13 @@
           </div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-header">Items de inventario</div>
         <div class="card-body">
-          <div class="toolbar">
-            <button class="btn btn-light" onclick="addInventoryItem()">+ Agregar Item</button>
-          </div>
+          <div class="toolbar"><button class="btn btn-light" onclick="addInventoryItem()">+ Agregar Item</button></div>
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Cantidad</th>
-                  <th>Unidad</th>
-                  <th>Precio Unit.</th>
-                  <th>Total</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Item</th><th>Cantidad</th><th>Unidad</th><th>Precio Unit.</th><th>Total</th><th>Acciones</th></tr></thead>
               <tbody id="tbodyInventario"></tbody>
             </table>
           </div>
@@ -769,29 +536,16 @@
     var itemsCatalogo = [];
 
     var itemsDefault = [
-      'Encarpe',
-      'Nivelación',
-      'Moldajes',
-      'Malla ACMA C92',
-      'Hormigón HB25 10 cm',
-      'Cuarzo endurecedor 3 kg/m²',
-      'Talco desmoldante',
-      'Diseño/color',
-      'Cortes de dilatación',
-      'Limpieza',
-      'Sellador acrílico',
-      'Retiro de escombros',
-      'Mano de obra',
-      'Desgaste de maquinaria',
-      'Transporte'
+      'Encarpe', 'Nivelación', 'Moldajes', 'Malla ACMA C92', 'Hormigón HB25 10 cm',
+      'Cuarzo endurecedor 3 kg/m²', 'Talco desmoldante', 'Diseño/color', 'Cortes de dilatación',
+      'Limpieza', 'Sellador acrílico', 'Retiro de escombros', 'Mano de obra',
+      'Desgaste de maquinaria', 'Transporte'
     ];
 
-    /* ============ MENU MOVIL ============ */
     function openSidebar() {
       document.getElementById('appSidebar').classList.add('open');
       document.getElementById('sidebarBackdrop').classList.add('show');
     }
-
     function closeSidebar() {
       document.getElementById('appSidebar').classList.remove('open');
       document.getElementById('sidebarBackdrop').classList.remove('show');
@@ -808,12 +562,8 @@
     }
 
     function parseMoneyValue(value) {
-      if (typeof value === 'number') {
-        return value;
-      }
-      if (value === null || typeof value === 'undefined') {
-        return 0;
-      }
+      if (typeof value === 'number') return value;
+      if (value === null || typeof value === 'undefined') return 0;
       var s = String(value);
       s = s.replace(/[^0-9.,-]/g, '');
       if (s.indexOf(',') !== -1) {
@@ -837,29 +587,14 @@
     }
 
     function escapeHtml(value) {
-      if (value === null || typeof value === 'undefined') {
-        return '';
-      }
-      return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+      if (value === null || typeof value === 'undefined') return '';
+      return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
-
-    function escapeAttr(value) {
-      return escapeHtml(value);
-    }
-
+    function escapeAttr(value) { return escapeHtml(value); }
     function truncateText(value, max) {
-      if (!value) {
-        return '';
-      }
+      if (!value) return '';
       var s = String(value);
-      if (s.length <= max) {
-        return s;
-      }
+      if (s.length <= max) return s;
       return s.substring(0, max - 3) + '...';
     }
 
@@ -871,9 +606,7 @@
         localStorage.setItem('pavmyc_inventario', JSON.stringify(inventario));
         localStorage.setItem('pavmyc_items', JSON.stringify(itemsCatalogo));
         localStorage.setItem('pavmyc_seq', String(cotSeq));
-      } catch (e) {
-        // localStorage puede fallar en contextos privados.
-      }
+      } catch (e) { }
     }
 
     function loadLocalData() {
@@ -893,28 +626,21 @@
         cotSeq = parseInt(sq, 10) || 10000;
       } catch (e) {
         tarifas = buildDefaultTarifas();
-        proyectos = [];
-        papelera = [];
-        inventario = [];
+        proyectos = []; papelera = []; inventario = [];
         itemsCatalogo = itemsDefault.slice();
         cotSeq = 10000;
       }
-
-      if (!tarifas || !tarifas.length) { tarifas = buildDefaultTarifas(); }
-      if (!proyectos) { proyectos = []; }
-      if (!papelera) { papelera = []; }
-      if (!inventario) { inventario = []; }
-      if (!itemsCatalogo || !itemsCatalogo.length) { itemsCatalogo = itemsDefault.slice(); }
-      if (!cotSeq || cotSeq < 10000) { cotSeq = 10000; }
+      if (!tarifas || !tarifas.length) tarifas = buildDefaultTarifas();
+      if (!proyectos) proyectos = [];
+      if (!papelera) papelera = [];
+      if (!inventario) inventario = [];
+      if (!itemsCatalogo || !itemsCatalogo.length) itemsCatalogo = itemsDefault.slice();
+      if (!cotSeq || cotSeq < 10000) cotSeq = 10000;
     }
 
-    /* Migración única: si venías de la numeración anterior de 6 dígitos,
-       se reinicia la secuencia a 5 dígitos (10000) una sola vez. */
     function migrateSeq5() {
       try {
-        if (localStorage.getItem('pavmyc_seq5') === '1') {
-          return;
-        }
+        if (localStorage.getItem('pavmyc_seq5') === '1') return;
         localStorage.setItem('pavmyc_seq5', '1');
         seqForceReset = true;
         cotSeq = 10000;
@@ -929,537 +655,324 @@
       useFirebase = !!connected;
       var box = document.getElementById('dbStatus');
       var txt = document.getElementById('dbText');
-      if (!box || !txt) { return; }
-      if (connected) {
-        box.className = 'db-status online';
-        txt.innerText = 'Conectado';
-      } else {
-        box.className = 'db-status';
-        txt.innerText = 'Modo local';
-      }
+      if (!box || !txt) return;
+      if (connected) { box.className = 'db-status online'; txt.innerText = 'Conectado'; }
+      else { box.className = 'db-status'; txt.innerText = 'Modo local'; }
     }
 
     function initFirebase() {
-      if (typeof firebase === 'undefined') {
-        setDbStatus(false);
-        return;
-      }
-
+      if (typeof firebase === 'undefined') { setDbStatus(false); return; }
       try {
         var firebaseConfig = {
           apiKey: 'AIzaSyClIrBZohr8ESgbX6irbYT9b3gDheglKcck',
-          authDomain: 'pavmyc.firebaseapp.com',
-          projectId: 'pavmyc',
-          storageBucket: 'pavmyc.appspot.com',
-          messagingSenderId: '000000000000',
+          authDomain: 'pavmyc.firebaseapp.com', projectId: 'pavmyc',
+          storageBucket: 'pavmyc.appspot.com', messagingSenderId: '000000000000',
           appId: '1:000000000000:web:0000000000000000000000'
         };
-
         firebase.initializeApp(firebaseConfig);
         db = firebase.firestore();
         loadFromFirebase();
-      } catch (e) {
-        db = null;
-        setDbStatus(false);
-      }
+      } catch (e) { db = null; setDbStatus(false); }
     }
 
     function loadFromFirebase() {
-      if (!db) { return; }
-
-      db.collection('config').doc('numeracion').get()
-        .then(function (doc) {
-          firebaseLoaded = true;
-          setDbStatus(true);
-
-          if (seqForceReset) {
-            cotSeq = 10000;
-            seqForceReset = false;
-            saveLocalAll();
-            db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () { });
-          } else if (doc.exists && doc.data() && doc.data().seq) {
-            var remoteSeq = parseInt(doc.data().seq, 10) || 0;
-            if (remoteSeq > cotSeq) {
-              cotSeq = remoteSeq;
-            }
-          } else {
-            db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () { });
-          }
-
-          if (!cotSeq || cotSeq < 10000) { cotSeq = 10000; }
-          saveLocalAll();
-
-          return db.collection('config').doc('tarifas').get();
-        })
-        .then(function (doc) {
-          if (doc.exists && doc.data() && doc.data().tarifas) {
-            tarifas = doc.data().tarifas;
-            saveLocalAll();
-            renderTarifas();
-            calcularTotal();
-          } else {
-            db.collection('config').doc('tarifas').set({ tarifas: tarifas }).catch(function () { });
-          }
-
-          return db.collection('config').doc('inventario').get();
-        })
-        .then(function (doc) {
-          if (doc.exists && doc.data() && doc.data().items) {
-            inventario = doc.data().items;
-            saveLocalAll();
-            renderInventario();
-          } else {
-            db.collection('config').doc('inventario').set({ items: inventario }).catch(function () { });
-          }
-
-          return db.collection('config').doc('items').get();
-        })
-        .then(function (doc) {
-          if (doc.exists && doc.data() && doc.data().items) {
-            itemsCatalogo = doc.data().items;
-            saveLocalAll();
-            rebuildItemsPreserving();
-            renderItemsCatalogo();
-            calcularTotal();
-          } else {
-            db.collection('config').doc('items').set({ items: itemsCatalogo }).catch(function () { });
-          }
-
-          return db.collection('proyectos').get();
-        })
-        .then(function (snapshot) {
-          var remote = [];
-          snapshot.forEach(function (d) {
-            var data = d.data();
-            data.id = d.id;
-            remote.push(data);
-          });
-
-          if (remote.length) {
-            proyectos = remote;
-            saveLocalAll();
-            renderProyectos();
-          } else if (proyectos.length) {
-            for (var i = 0; i < proyectos.length; i++) {
-              syncSaveProject(proyectos[i]);
-            }
-          }
-
-          return db.collection('papelera').get();
-        })
-        .then(function (snapshot) {
-          var remote = [];
-          snapshot.forEach(function (d) {
-            var data = d.data();
-            data.id = d.id;
-            remote.push(data);
-          });
-
-          if (remote.length) {
-            papelera = remote;
-            saveLocalAll();
-            renderPapelera();
-          } else if (papelera.length) {
-            for (var i = 0; i < papelera.length; i++) {
-              syncSavePapelera(papelera[i]);
-            }
-          }
-        })
-        .catch(function () {
-          setDbStatus(false);
-        });
+      if (!db) return;
+      db.collection('config').doc('numeracion').get().then(function (doc) {
+        firebaseLoaded = true; setDbStatus(true);
+        if (seqForceReset) {
+          cotSeq = 10000; seqForceReset = false; saveLocalAll();
+          db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () { });
+        } else if (doc.exists && doc.data() && doc.data().seq) {
+          var remoteSeq = parseInt(doc.data().seq, 10) || 0;
+          if (remoteSeq > cotSeq) cotSeq = remoteSeq;
+        } else {
+          db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () { });
+        }
+        if (!cotSeq || cotSeq < 10000) cotSeq = 10000;
+        saveLocalAll();
+        return db.collection('config').doc('tarifas').get();
+      }).then(function (doc) {
+        if (doc.exists && doc.data() && doc.data().tarifas) {
+          tarifas = doc.data().tarifas; saveLocalAll(); renderTarifas(); calcularTotal();
+        } else { db.collection('config').doc('tarifas').set({ tarifas: tarifas }).catch(function () { }); }
+        return db.collection('config').doc('inventario').get();
+      }).then(function (doc) {
+        if (doc.exists && doc.data() && doc.data().items) {
+          inventario = doc.data().items; saveLocalAll(); renderInventario();
+        } else { db.collection('config').doc('inventario').set({ items: inventario }).catch(function () { }); }
+        return db.collection('config').doc('items').get();
+      }).then(function (doc) {
+        if (doc.exists && doc.data() && doc.data().items) {
+          itemsCatalogo = doc.data().items; saveLocalAll();
+          rebuildItemsPreserving(); renderItemsCatalogo(); calcularTotal();
+        } else { db.collection('config').doc('items').set({ items: itemsCatalogo }).catch(function () { }); }
+        return db.collection('proyectos').get();
+      }).then(function (snapshot) {
+        var remote = [];
+        snapshot.forEach(function (d) { var data = d.data(); data.id = d.id; remote.push(data); });
+        if (remote.length) { proyectos = remote; saveLocalAll(); renderProyectos(); }
+        else if (proyectos.length) { for (var i = 0; i < proyectos.length; i++) syncSaveProject(proyectos[i]); }
+        return db.collection('papelera').get();
+      }).then(function (snapshot) {
+        var remote = [];
+        snapshot.forEach(function (d) { var data = d.data(); data.id = d.id; remote.push(data); });
+        if (remote.length) { papelera = remote; saveLocalAll(); renderPapelera(); }
+        else if (papelera.length) { for (var i = 0; i < papelera.length; i++) syncSavePapelera(papelera[i]); }
+      }).catch(function () { setDbStatus(false); });
     }
 
     function syncSaveProject(project) {
-      if (!useFirebase || !db) { return; }
+      if (!useFirebase || !db) return;
       try {
         var clean = JSON.parse(JSON.stringify(project));
-        db.collection('proyectos').doc(String(project.id)).set(clean).catch(function () {
-          setDbStatus(false);
-        });
-      } catch (e) {
-        setDbStatus(false);
-      }
+        db.collection('proyectos').doc(String(project.id)).set(clean).catch(function () { setDbStatus(false); });
+      } catch (e) { setDbStatus(false); }
     }
-
     function syncSavePapelera(project) {
-      if (!useFirebase || !db) { return; }
+      if (!useFirebase || !db) return;
       try {
         var clean = JSON.parse(JSON.stringify(project));
-        db.collection('papelera').doc(String(project.id)).set(clean).catch(function () {
-          setDbStatus(false);
-        });
-      } catch (e) {
-        setDbStatus(false);
-      }
+        db.collection('papelera').doc(String(project.id)).set(clean).catch(function () { setDbStatus(false); });
+      } catch (e) { setDbStatus(false); }
     }
-
     function syncDeleteProject(id) {
-      if (!useFirebase || !db) { return; }
-      db.collection('proyectos').doc(String(id)).delete().catch(function () {
-        setDbStatus(false);
-      });
+      if (!useFirebase || !db) return;
+      db.collection('proyectos').doc(String(id)).delete().catch(function () { setDbStatus(false); });
     }
-
     function syncDeletePapelera(id) {
-      if (!useFirebase || !db) { return; }
-      db.collection('papelera').doc(String(id)).delete().catch(function () {
-        setDbStatus(false);
-      });
+      if (!useFirebase || !db) return;
+      db.collection('papelera').doc(String(id)).delete().catch(function () { setDbStatus(false); });
     }
-
-    function syncMoveToPapelera(project) {
-      syncSavePapelera(project);
-      syncDeleteProject(project.id);
-    }
-
-    function syncRestoreProject(project) {
-      syncSaveProject(project);
-      syncDeletePapelera(project.id);
-    }
-
+    function syncMoveToPapelera(project) { syncSavePapelera(project); syncDeleteProject(project.id); }
+    function syncRestoreProject(project) { syncSaveProject(project); syncDeletePapelera(project.id); }
     function syncTarifas() {
-      if (!useFirebase || !db) { return; }
-      db.collection('config').doc('tarifas').set({ tarifas: tarifas }).catch(function () {
-        setDbStatus(false);
-      });
+      if (!useFirebase || !db) return;
+      db.collection('config').doc('tarifas').set({ tarifas: tarifas }).catch(function () { setDbStatus(false); });
     }
-
     function syncInventario() {
-      if (!useFirebase || !db) { return; }
-      db.collection('config').doc('inventario').set({ items: inventario }).catch(function () {
-        setDbStatus(false);
-      });
+      if (!useFirebase || !db) return;
+      db.collection('config').doc('inventario').set({ items: inventario }).catch(function () { setDbStatus(false); });
     }
-
     function syncItemsCatalogo() {
-      if (!useFirebase || !db) { return; }
-      db.collection('config').doc('items').set({ items: itemsCatalogo }).catch(function () {
-        setDbStatus(false);
-      });
+      if (!useFirebase || !db) return;
+      db.collection('config').doc('items').set({ items: itemsCatalogo }).catch(function () { setDbStatus(false); });
     }
-
     function syncNumeracion() {
-      if (!useFirebase || !db) { return; }
-      db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () {
-        setDbStatus(false);
-      });
+      if (!useFirebase || !db) return;
+      db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () { setDbStatus(false); });
     }
 
     function reserveNumero() {
       var num = String(cotSeq);
       cotSeq = cotSeq + 1;
-      saveLocalAll();
-      syncNumeracion();
+      saveLocalAll(); syncNumeracion();
       return num;
     }
-
-    function ensureNumero() {
-      if (!currentNumero) {
-        currentNumero = reserveNumero();
-      }
-      return currentNumero;
-    }
+    function ensureNumero() { if (!currentNumero) currentNumero = reserveNumero(); return currentNumero; }
 
     function findProjectIndex(id) {
-      for (var i = 0; i < proyectos.length; i++) {
-        if (String(proyectos[i].id) === String(id)) { return i; }
-      }
+      for (var i = 0; i < proyectos.length; i++) if (String(proyectos[i].id) === String(id)) return i;
       return -1;
     }
-
     function findPapeleraIndex(id) {
-      for (var i = 0; i < papelera.length; i++) {
-        if (String(papelera[i].id) === String(id)) { return i; }
-      }
+      for (var i = 0; i < papelera.length; i++) if (String(papelera[i].id) === String(id)) return i;
       return -1;
     }
 
     function doLogin() {
       var user = document.getElementById('loginUser').value;
       var pass = document.getElementById('loginPass').value;
-
       if (user === 'admin' && pass === 'admin123') {
-        try {
-          sessionStorage.setItem('pavmyc_logged', '1');
-        } catch (e) { }
+        try { sessionStorage.setItem('pavmyc_logged', '1'); } catch (e) { }
         document.getElementById('loginScreen').style.display = 'none';
       } else {
         alert('Usuario o contraseña incorrectos. Use admin / admin123.');
       }
-
       return false;
     }
 
     function logout() {
-      try {
-        sessionStorage.removeItem('pavmyc_logged');
-      } catch (e) { }
+      try { sessionStorage.removeItem('pavmyc_logged'); } catch (e) { }
       closeSidebar();
       document.getElementById('loginScreen').style.display = 'flex';
     }
 
     function showSection(sectionId, link) {
       var sections = document.getElementsByClassName('section');
-      for (var i = 0; i < sections.length; i++) {
-        sections[i].classList.remove('active');
-      }
-
+      for (var i = 0; i < sections.length; i++) sections[i].classList.remove('active');
       var links = document.getElementsByClassName('nav-link');
-      for (var j = 0; j < links.length; j++) {
-        links[j].classList.remove('active');
-      }
-
+      for (var j = 0; j < links.length; j++) links[j].classList.remove('active');
       var target = document.getElementById(sectionId);
-      if (target) { target.classList.add('active'); }
-
-      if (link) { link.classList.add('active'); }
-
-      closeSidebar();
-      window.scrollTo(0, 0);
-
-      if (sectionId === 'proyectos') { renderProyectos(); }
-      if (sectionId === 'papelera') { renderPapelera(); }
-      if (sectionId === 'tarifas') { renderTarifas(); }
+      if (target) target.classList.add('active');
+      if (link) link.classList.add('active');
+      closeSidebar(); window.scrollTo(0, 0);
+      if (sectionId === 'proyectos') renderProyectos();
+      if (sectionId === 'papelera') renderPapelera();
+      if (sectionId === 'tarifas') renderTarifas();
       if (sectionId === 'inventario') { renderInventario(); renderItemsCatalogo(); }
     }
 
     function buildItems() {
       var container = document.getElementById('itemsContainer');
       container.innerHTML = '';
-
       for (var i = 0; i < itemsCatalogo.length; i++) {
         var wrap = document.createElement('div');
         wrap.className = 'item-check';
-
         var label = document.createElement('label');
-
         var chk = document.createElement('input');
-        chk.type = 'checkbox';
-        chk.className = 'item-incluido';
+        chk.type = 'checkbox'; chk.className = 'item-incluido';
         chk.setAttribute('data-nombre', itemsCatalogo[i]);
-        chk.checked = true;
-        chk.onchange = calcularTotal;
-
+        chk.checked = true; chk.onchange = calcularTotal;
         var txt = document.createElement('span');
         txt.innerText = itemsCatalogo[i];
-
-        label.appendChild(chk);
-        label.appendChild(txt);
-        wrap.appendChild(label);
-        container.appendChild(wrap);
+        label.appendChild(chk); label.appendChild(txt);
+        wrap.appendChild(label); container.appendChild(wrap);
       }
     }
 
     function rebuildItemsPreserving() {
       var checkedNames = getItemsChecked();
-      buildItems();
-      setItemsChecked(checkedNames);
+      buildItems(); setItemsChecked(checkedNames);
     }
 
     function toggleAllItems() {
       var boxes = document.getElementsByClassName('item-incluido');
       var allChecked = true;
-
-      for (var i = 0; i < boxes.length; i++) {
-        if (!boxes[i].checked) { allChecked = false; break; }
-      }
-
-      for (var j = 0; j < boxes.length; j++) {
-        boxes[j].checked = !allChecked;
-      }
-
+      for (var i = 0; i < boxes.length; i++) if (!boxes[i].checked) { allChecked = false; break; }
+      for (var j = 0; j < boxes.length; j++) boxes[j].checked = !allChecked;
       calcularTotal();
     }
 
     function getItemsChecked() {
       var result = [];
       var boxes = document.getElementsByClassName('item-incluido');
-
-      for (var i = 0; i < boxes.length; i++) {
-        if (boxes[i].checked) {
-          result.push(boxes[i].getAttribute('data-nombre'));
-        }
-      }
-
+      for (var i = 0; i < boxes.length; i++) if (boxes[i].checked) result.push(boxes[i].getAttribute('data-nombre'));
       return result;
     }
 
     function setItemsChecked(names) {
       var boxes = document.getElementsByClassName('item-incluido');
       var checkAll = false;
-
-      if (names === null || typeof names === 'undefined') { checkAll = true; }
-
+      if (names === null || typeof names === 'undefined') checkAll = true;
       for (var i = 0; i < boxes.length; i++) {
-        if (checkAll) {
-          boxes[i].checked = true;
-        } else {
-          var itemName = boxes[i].getAttribute('data-nombre');
-          boxes[i].checked = names.indexOf(itemName) !== -1;
-        }
+        if (checkAll) boxes[i].checked = true;
+        else boxes[i].checked = names.indexOf(boxes[i].getAttribute('data-nombre')) !== -1;
       }
     }
 
     function isItemCheckedByName(name) {
       var boxes = document.getElementsByClassName('item-incluido');
-      for (var i = 0; i < boxes.length; i++) {
-        if (boxes[i].getAttribute('data-nombre') === name) {
-          return boxes[i].checked;
-        }
-      }
+      for (var i = 0; i < boxes.length; i++) if (boxes[i].getAttribute('data-nombre') === name) return boxes[i].checked;
       return false;
     }
-
     function setItemCheckedByName(name, checked) {
       var boxes = document.getElementsByClassName('item-incluido');
-      for (var i = 0; i < boxes.length; i++) {
-        if (boxes[i].getAttribute('data-nombre') === name) {
-          boxes[i].checked = !!checked;
-        }
-      }
+      for (var i = 0; i < boxes.length; i++) if (boxes[i].getAttribute('data-nombre') === name) boxes[i].checked = !!checked;
     }
 
     function renderItemsCatalogo() {
       var tbody = document.getElementById('tbodyItemsCatalogo');
       var html = '';
-
-      if (!itemsCatalogo.length) {
-        html = '<tr><td colspan="3" class="center">No hay items en el catálogo</td></tr>';
-      }
-
+      if (!itemsCatalogo.length) html = '<tr><td colspan="3" class="center">No hay items en el catálogo</td></tr>';
       for (var i = 0; i < itemsCatalogo.length; i++) {
-        html += '<tr>';
-        html += '<td>' + (i + 1) + '</td>';
+        html += '<tr><td>' + (i + 1) + '</td>';
         html += '<td><input type="text" class="form-control" value="' + escapeAttr(itemsCatalogo[i]) + '" onchange="updateItemCatalogo(' + i + ', this.value)"></td>';
-        html += '<td><button class="btn btn-sm btn-danger" onclick="removeItemCatalogo(' + i + ')">Eliminar</button></td>';
-        html += '</tr>';
+        html += '<td><button class="btn btn-sm btn-danger" onclick="removeItemCatalogo(' + i + ')">Eliminar</button></td></tr>';
       }
-
       tbody.innerHTML = html;
     }
 
     function updateItemCatalogo(index, value) {
-      if (!itemsCatalogo[index] && itemsCatalogo[index] !== '') { return; }
-
+      if (!itemsCatalogo[index] && itemsCatalogo[index] !== '') return;
       var oldName = itemsCatalogo[index];
       var wasChecked = isItemCheckedByName(oldName);
-
       itemsCatalogo[index] = value;
-
-      saveLocalAll();
-      syncItemsCatalogo();
-      rebuildItemsPreserving();
-      setItemCheckedByName(value, wasChecked);
+      saveLocalAll(); syncItemsCatalogo();
+      rebuildItemsPreserving(); setItemCheckedByName(value, wasChecked);
       calcularTotal();
     }
 
     function addItemCatalogo() {
       var input = document.getElementById('newItemNombre');
       var name = input.value.trim();
-
-      if (!name) {
-        alert('Escribe el nombre del nuevo item.');
-        return;
-      }
-
-      if (itemsCatalogo.indexOf(name) !== -1) {
-        alert('Ese item ya existe en el catálogo.');
-        return;
-      }
-
-      itemsCatalogo.push(name);
-      input.value = '';
-
-      saveLocalAll();
-      syncItemsCatalogo();
-      renderItemsCatalogo();
-      rebuildItemsPreserving();
+      if (!name) { alert('Escribe el nombre del nuevo item.'); return; }
+      if (itemsCatalogo.indexOf(name) !== -1) { alert('Ese item ya existe en el catálogo.'); return; }
+      itemsCatalogo.push(name); input.value = '';
+      saveLocalAll(); syncItemsCatalogo();
+      renderItemsCatalogo(); rebuildItemsPreserving();
       setItemCheckedByName(name, true);
       calcularTotal();
     }
 
     function removeItemCatalogo(index) {
-      if (!confirm('¿Eliminar este item del catálogo de items incluidos?')) { return; }
-
+      if (!confirm('¿Eliminar este item del catálogo de items incluidos?')) return;
       itemsCatalogo.splice(index, 1);
-
-      saveLocalAll();
-      syncItemsCatalogo();
-      renderItemsCatalogo();
-      rebuildItemsPreserving();
+      saveLocalAll(); syncItemsCatalogo();
+      renderItemsCatalogo(); rebuildItemsPreserving();
       calcularTotal();
     }
 
-    function clearExtras() {
-      document.getElementById('extrasBody').innerHTML = '';
-    }
+    function clearExtras() { document.getElementById('extrasBody').innerHTML = ''; }
 
     function addExtraRow(desc, precio, cant, checked, min) {
       var tbody = document.getElementById('extrasBody');
-
       var tr = document.createElement('tr');
       tr.setAttribute('data-min', String(min || 0));
 
       var tdCheck = document.createElement('td');
       var chk = document.createElement('input');
-      chk.type = 'checkbox';
-      chk.className = 'extra-check';
-      chk.checked = !!checked;
-      chk.onchange = calcularTotal;
-      tdCheck.appendChild(chk);
-      tr.appendChild(tdCheck);
+      chk.type = 'checkbox'; chk.className = 'extra-check';
+      chk.checked = !!checked; chk.onchange = calcularTotal;
+      tdCheck.appendChild(chk); tr.appendChild(tdCheck);
 
       var tdDesc = document.createElement('td');
       var descInput = document.createElement('input');
-      descInput.type = 'text';
-      descInput.className = 'form-control extra-desc';
-      descInput.value = desc || '';
-      descInput.placeholder = 'Descripción';
+      descInput.type = 'text'; descInput.className = 'form-control extra-desc';
+      descInput.value = desc || ''; descInput.placeholder = 'Descripción';
       descInput.oninput = calcularTotal;
-      tdDesc.appendChild(descInput);
-      tr.appendChild(tdDesc);
+      tdDesc.appendChild(descInput); tr.appendChild(tdDesc);
 
       var tdCant = document.createElement('td');
       var cantInput = document.createElement('input');
       cantInput.type = 'number';
       cantInput.className = 'form-control small-input extra-cant';
-      cantInput.min = '0';
-      cantInput.step = '0.01';
+      cantInput.min = '1'; cantInput.step = '1';
       cantInput.value = cant;
+      cantInput.oninput = function () {
+        var row = this.closest('tr');
+        enforceExtraMin(row);
+        calcularTotal();
+      };
       cantInput.onchange = function () {
         var row = this.closest('tr');
         enforceExtraMin(row);
         calcularTotal();
       };
-      cantInput.oninput = function () {
-        calcularTotal();
-      };
       tdCant.appendChild(cantInput);
+      var hint = document.createElement('span');
+      hint.className = 'cant-hint';
+      hint.innerText = min > 0 ? ('Mínimo ' + min) : 'Editar cantidad';
+      tdCant.appendChild(hint);
       tr.appendChild(tdCant);
 
       var tdPrecio = document.createElement('td');
       var precioInput = document.createElement('input');
       precioInput.type = 'number';
       precioInput.className = 'form-control small-input extra-precio';
-      precioInput.min = '0';
-      precioInput.step = '1';
+      precioInput.min = '0'; precioInput.step = '1';
       precioInput.value = precio;
       precioInput.oninput = calcularTotal;
-      tdPrecio.appendChild(precioInput);
-      tr.appendChild(tdPrecio);
+      tdPrecio.appendChild(precioInput); tr.appendChild(tdPrecio);
 
       var tdDel = document.createElement('td');
       var delBtn = document.createElement('button');
-      delBtn.className = 'btn btn-sm btn-danger';
-      delBtn.innerText = 'X';
+      delBtn.className = 'btn btn-sm btn-danger'; delBtn.innerText = 'X';
       delBtn.onclick = function () {
         var row = this.closest('tr');
-        if (row && row.parentNode) { row.parentNode.removeChild(row); }
+        if (row && row.parentNode) row.parentNode.removeChild(row);
         calcularTotal();
       };
-      tdDel.appendChild(delBtn);
-      tr.appendChild(tdDel);
+      tdDel.appendChild(delBtn); tr.appendChild(tdDel);
 
       tbody.appendChild(tr);
     }
@@ -1469,39 +982,29 @@
       addExtraRow('Tapas de cámaras', 60000, 1, false, 0);
     }
 
-    function addCustomExtra() {
-      addExtraRow('', 0, 1, true, 0);
-    }
+    function addCustomExtra() { addExtraRow('', 0, 1, true, 0); }
 
     function enforceExtraMin(row) {
-      if (!row) { return; }
-
+      if (!row) return;
       var min = parseInt(row.getAttribute('data-min') || '0', 10);
       var cantInput = row.querySelector('.extra-cant');
-
-      if (!cantInput) { return; }
-
+      if (!cantInput) return;
       var value = parseFloat(cantInput.value) || 0;
-      if (min > 0 && value < min) {
-        cantInput.value = min;
-      }
+      if (min > 0 && value < min) cantInput.value = min;
+      if (value <= 0) cantInput.value = 1;
     }
 
     function getExtrasAll() {
       var rows = document.querySelectorAll('#extrasBody tr');
       var result = [];
-
       for (var i = 0; i < rows.length; i++) {
         var row = rows[i];
         var chk = row.querySelector('.extra-check');
         var desc = row.querySelector('.extra-desc');
         var cant = row.querySelector('.extra-cant');
         var precio = row.querySelector('.extra-precio');
-
-        if (!chk || !desc || !cant || !precio) { continue; }
-
+        if (!chk || !desc || !cant || !precio) continue;
         enforceExtraMin(row);
-
         result.push({
           desc: desc.value.trim(),
           cant: parseFloat(cant.value) || 0,
@@ -1510,23 +1013,15 @@
           min: row.getAttribute('data-min') || '0'
         });
       }
-
       return result;
     }
 
     function loadExtrasFromArray(arr) {
       clearExtras();
-
       if (arr && arr.length) {
         for (var i = 0; i < arr.length; i++) {
           var item = arr[i];
-          addExtraRow(
-            item.desc || '',
-            item.precio || 0,
-            item.cant || 0,
-            !!item.checked,
-            parseInt(item.min || 0, 10)
-          );
+          addExtraRow(item.desc || '', item.precio || 0, item.cant || 0, !!item.checked, parseInt(item.min || 0, 10));
         }
       } else {
         addPredefinedExtras();
@@ -1536,13 +1031,9 @@
     function getTarifa(superficie) {
       for (var i = 0; i < tarifas.length; i++) {
         var t = tarifas[i];
-        if (superficie >= t.min && superficie <= t.max) { return t; }
+        if (superficie >= t.min && superficie <= t.max) return t;
       }
-
-      if (superficie > 800 && tarifas.length) {
-        return tarifas[tarifas.length - 1];
-      }
-
+      if (superficie > 800 && tarifas.length) return tarifas[tarifas.length - 1];
       return { rango: '40-50', precio: 34000 };
     }
 
@@ -1553,9 +1044,8 @@
       var direccion = document.getElementById('clienteDireccion').value.trim();
       var vendedor = document.getElementById('vendedor').value.trim();
       var fecha = document.getElementById('fechaCotizacion').value;
-
       var superficie = parseFloat(document.getElementById('superficie').value) || 0;
-      if (superficie < 40) { superficie = 40; }
+      if (superficie < 40) superficie = 40;
 
       var tarifa = getTarifa(superficie);
       var precioM2 = parseFloat(tarifa.precio) || 0;
@@ -1568,7 +1058,6 @@
 
       for (var i = 0; i < extrasAll.length; i++) {
         var extra = extrasAll[i];
-
         if (extra.checked && extra.desc && extra.cant > 0 && extra.precio >= 0) {
           var importe = extra.cant * extra.precio;
           totalExtras += importe;
@@ -1586,7 +1075,6 @@
       var demM2 = parseFloat(document.getElementById('demolicionM2').value) || 0;
       var demInclude = document.getElementById('demolicionPdf').checked;
       var demTotal = 0;
-
       if (demInclude && demM2 > 0) {
         demTotal = demM2 * 4000;
         extraNames.push('Demolición de pavimento existente');
@@ -1595,98 +1083,63 @@
       var base = subtotalM2 + totalExtras + demTotal;
       var aplicarIva = document.getElementById('aplicarIva').checked;
       var ivaMonto = 0;
-
-      if (aplicarIva) {
-        ivaMonto = Math.round(base * 0.19);
-      }
-
+      if (aplicarIva) ivaMonto = Math.round(base * 0.19);
       var total = base + ivaMonto;
 
       return {
-        numero: currentNumero,
-        cliente: cliente,
-        telefono: telefono,
-        email: email,
-        direccion: direccion,
-        vendedor: vendedor,
-        fecha: fecha,
-        superficie: superficie,
-        tarifaRango: tarifa.rango,
-        precioM2: precioM2,
-        subtotalM2: subtotalM2,
-        extrasAll: extrasAll,
-        extraRows: extraRows,
-        extraNames: extraNames,
-        totalExtras: totalExtras,
-        demM2: demM2,
-        demInclude: demInclude,
-        demTotal: demTotal,
-        base: base,
-        aplicarIva: aplicarIva,
-        ivaMonto: ivaMonto,
-        total: total,
-        itemsChecked: getItemsChecked()
+        numero: currentNumero, cliente: cliente, telefono: telefono,
+        email: email, direccion: direccion, vendedor: vendedor, fecha: fecha,
+        superficie: superficie, tarifaRango: tarifa.rango, precioM2: precioM2,
+        subtotalM2: subtotalM2, extrasAll: extrasAll, extraRows: extraRows,
+        extraNames: extraNames, totalExtras: totalExtras,
+        demM2: demM2, demInclude: demInclude, demTotal: demTotal,
+        base: base, aplicarIva: aplicarIva, ivaMonto: ivaMonto,
+        total: total, itemsChecked: getItemsChecked()
       };
     }
 
     function calcularTotal() {
       var q = getQuoteData();
-
       document.getElementById('tarifaAplicada').value = q.tarifaRango + ' m²';
       document.getElementById('precioM2').value = '$' + formatMoney(q.precioM2);
-
       document.getElementById('resNumero').innerText = q.numero || 'Se asigna al guardar';
       document.getElementById('resCliente').innerText = q.cliente || '-';
       document.getElementById('resSuperficie').innerText = q.superficie + ' m²';
       document.getElementById('resPrecioM2').innerText = '$' + formatMoney(q.precioM2);
       document.getElementById('resSubtotal').innerText = '$' + formatMoney(q.base);
-
       document.getElementById('resItems').innerText = q.itemsChecked.length ? q.itemsChecked.length + ' items' : 'Ninguno';
       document.getElementById('resExtras').innerText = q.extraNames.length ? q.extraNames.join(', ') : 'Ninguno';
       document.getElementById('resTotalExtras').innerText = '$' + formatMoney(q.totalExtras + q.demTotal);
-
-      if (q.aplicarIva) {
-        document.getElementById('resIva').innerText = '19% ($' + formatMoney(q.ivaMonto) + ')';
-      } else {
-        document.getElementById('resIva').innerText = 'No incluido';
-      }
-
+      if (q.aplicarIva) document.getElementById('resIva').innerText = '19% ($' + formatMoney(q.ivaMonto) + ')';
+      else document.getElementById('resIva').innerText = 'No incluido';
       document.getElementById('resTotal').innerText = '$' + formatMoney(q.total);
     }
 
     function resetForm() {
-      editingId = null;
-      currentNumero = '';
-
+      editingId = null; currentNumero = '';
       document.getElementById('clienteNombre').value = '';
       document.getElementById('clienteTelefono').value = '+56 ';
       document.getElementById('clienteEmail').value = '';
       document.getElementById('clienteDireccion').value = '';
       document.getElementById('vendedor').value = '';
-
       var today = new Date();
       var yyyy = today.getFullYear();
       var mm = String(today.getMonth() + 1).padStart(2, '0');
       var dd = String(today.getDate()).padStart(2, '0');
       document.getElementById('fechaCotizacion').value = yyyy + '-' + mm + '-' + dd;
-
       document.getElementById('superficie').value = 40;
       document.getElementById('aplicarIva').checked = true;
       document.getElementById('demolicionM2').value = 0;
       document.getElementById('demolicionPdf').checked = true;
-
       setItemsChecked(null);
-      clearExtras();
-      addPredefinedExtras();
-      updateEditModeUI();
-      calcularTotal();
+      clearExtras(); addPredefinedExtras();
+      updateEditModeUI(); calcularTotal();
     }
 
     function updateEditModeUI() {
       var btnGuardar = document.getElementById('btnGuardar');
       var btnCancel = document.getElementById('btnCancelarEdicion');
       var editLabel = document.getElementById('editModeLabel');
-
       if (editingId) {
         btnGuardar.innerText = 'Actualizar Proyecto';
         btnCancel.classList.remove('hidden');
@@ -1700,82 +1153,34 @@
 
     function guardarProyecto() {
       var q = getQuoteData();
-
-      if (!q.cliente) {
-        alert('El nombre del cliente es obligatorio.');
-        return;
-      }
-
+      if (!q.cliente) { alert('El nombre del cliente es obligatorio.'); return; }
       var digits = q.telefono.replace(/\D/g, '');
-      if (digits.length < 8) {
-        alert('Ingrese un teléfono válido después de +56.');
-        return;
-      }
-
-      if (!editingId) {
-        ensureNumero();
-        q.numero = currentNumero;
-      }
-
+      if (digits.length < 8) { alert('Ingrese un teléfono válido después de +56.'); return; }
+      if (!editingId) { ensureNumero(); q.numero = currentNumero; }
       var id = editingId || String(Date.now());
-
       var project = {
-        id: id,
-        numero: currentNumero,
-        cliente: q.cliente,
-        telefono: q.telefono,
-        email: q.email,
-        direccion: q.direccion,
-        vendedor: q.vendedor,
-        fecha: q.fecha,
-        superficieNum: q.superficie,
-        precioM2Num: q.precioM2,
-        subtotalNum: q.base,
-        iva: q.aplicarIva,
-        ivaMonto: q.ivaMonto,
-        totalNum: q.total,
-        items: q.itemsChecked,
-        extras: q.extrasAll,
-        demolition: {
-          m2: q.demM2,
-          include: q.demInclude,
-          total: q.demTotal
-        },
+        id: id, numero: currentNumero, cliente: q.cliente, telefono: q.telefono,
+        email: q.email, direccion: q.direccion, vendedor: q.vendedor, fecha: q.fecha,
+        superficieNum: q.superficie, precioM2Num: q.precioM2, subtotalNum: q.base,
+        iva: q.aplicarIva, ivaMonto: q.ivaMonto, totalNum: q.total,
+        items: q.itemsChecked, extras: q.extrasAll,
+        demolition: { m2: q.demM2, include: q.demInclude, total: q.demTotal },
         updatedAt: new Date().toISOString()
       };
-
       var index = findProjectIndex(id);
-
-      if (index >= 0) {
-        proyectos[index] = project;
-      } else {
-        proyectos.push(project);
-      }
-
-      editingId = id;
-      currentNumero = project.numero;
-
-      saveLocalAll();
-      syncSaveProject(project);
-      renderProyectos();
-      updateEditModeUI();
-      calcularTotal();
-
+      if (index >= 0) proyectos[index] = project;
+      else proyectos.push(project);
+      editingId = id; currentNumero = project.numero;
+      saveLocalAll(); syncSaveProject(project);
+      renderProyectos(); updateEditModeUI(); calcularTotal();
       alert('Proyecto guardado con N° ' + project.numero);
     }
 
     function editarProyecto(id) {
       var index = findProjectIndex(id);
-      if (index < 0) {
-        alert('Proyecto no encontrado.');
-        return;
-      }
-
+      if (index < 0) { alert('Proyecto no encontrado.'); return; }
       var p = proyectos[index];
-
-      editingId = String(p.id);
-      currentNumero = p.numero || String(p.id);
-
+      editingId = String(p.id); currentNumero = p.numero || String(p.id);
       document.getElementById('clienteNombre').value = p.cliente || '';
       document.getElementById('clienteTelefono').value = p.telefono || '+56 ';
       document.getElementById('clienteEmail').value = p.email || '';
@@ -1784,7 +1189,6 @@
       document.getElementById('fechaCotizacion').value = p.fecha || '';
       document.getElementById('superficie').value = p.superficieNum || 40;
       document.getElementById('aplicarIva').checked = !!p.iva;
-
       if (p.demolition) {
         document.getElementById('demolicionM2').value = p.demolition.m2 || 0;
         document.getElementById('demolicionPdf').checked = p.demolition.include !== false;
@@ -1792,113 +1196,63 @@
         document.getElementById('demolicionM2').value = 0;
         document.getElementById('demolicionPdf').checked = true;
       }
-
       loadExtrasFromArray(p.extras);
       setItemsChecked(p.items);
-      updateEditModeUI();
-      calcularTotal();
-
+      updateEditModeUI(); calcularTotal();
       showSection('nueva-cotizacion', document.getElementById('navNueva'));
     }
 
-    function cancelarEdicion() {
-      resetForm();
-    }
+    function cancelarEdicion() { resetForm(); }
 
     function eliminarProyecto(id) {
-      if (!confirm('¿Mover este proyecto a la papelera?')) { return; }
-
+      if (!confirm('¿Mover este proyecto a la papelera?')) return;
       var index = findProjectIndex(id);
-      if (index < 0) { return; }
-
+      if (index < 0) return;
       var project = proyectos[index];
-      proyectos.splice(index, 1);
-      papelera.push(project);
-
-      saveLocalAll();
-      syncMoveToPapelera(project);
-      renderProyectos();
-      renderPapelera();
+      proyectos.splice(index, 1); papelera.push(project);
+      saveLocalAll(); syncMoveToPapelera(project);
+      renderProyectos(); renderPapelera();
     }
 
     function restoreProject(id, silent) {
       var index = findPapeleraIndex(id);
-      if (index < 0) { return; }
-
+      if (index < 0) return;
       var project = papelera[index];
-      papelera.splice(index, 1);
-      proyectos.push(project);
-
-      saveLocalAll();
-      syncRestoreProject(project);
-
-      if (!silent) {
-        renderProyectos();
-        renderPapelera();
-      }
+      papelera.splice(index, 1); proyectos.push(project);
+      saveLocalAll(); syncRestoreProject(project);
+      if (!silent) { renderProyectos(); renderPapelera(); }
     }
 
     function deleteProjectPermanent(id, silent) {
       var index = findPapeleraIndex(id);
-      if (index < 0) { return; }
-
-      papelera.splice(index, 1);
-      saveLocalAll();
-      syncDeletePapelera(id);
-
-      if (!silent) { renderPapelera(); }
+      if (index < 0) return;
+      papelera.splice(index, 1); saveLocalAll(); syncDeletePapelera(id);
+      if (!silent) renderPapelera();
     }
 
     function toggleAllTrash() {
       var checked = document.getElementById('trashSelectAll').checked;
       var boxes = document.getElementsByClassName('trash-check');
-
-      for (var i = 0; i < boxes.length; i++) {
-        boxes[i].checked = checked;
-      }
+      for (var i = 0; i < boxes.length; i++) boxes[i].checked = checked;
     }
 
     function restoreSelected() {
       var boxes = document.getElementsByClassName('trash-check');
       var ids = [];
-
-      for (var i = 0; i < boxes.length; i++) {
-        if (boxes[i].checked) { ids.push(boxes[i].value); }
-      }
-
-      if (!ids.length) {
-        alert('Selecciona al menos un proyecto de la papelera.');
-        return;
-      }
-
-      for (var j = 0; j < ids.length; j++) {
-        restoreProject(ids[j], true);
-      }
-
+      for (var i = 0; i < boxes.length; i++) if (boxes[i].checked) ids.push(boxes[i].value);
+      if (!ids.length) { alert('Selecciona al menos un proyecto de la papelera.'); return; }
+      for (var j = 0; j < ids.length; j++) restoreProject(ids[j], true);
       document.getElementById('trashSelectAll').checked = false;
-      renderProyectos();
-      renderPapelera();
+      renderProyectos(); renderPapelera();
     }
 
     function deleteSelected() {
       var boxes = document.getElementsByClassName('trash-check');
       var ids = [];
-
-      for (var i = 0; i < boxes.length; i++) {
-        if (boxes[i].checked) { ids.push(boxes[i].value); }
-      }
-
-      if (!ids.length) {
-        alert('Selecciona al menos un proyecto de la papelera.');
-        return;
-      }
-
-      if (!confirm('¿Eliminar definitivamente los proyectos seleccionados?')) { return; }
-
-      for (var j = 0; j < ids.length; j++) {
-        deleteProjectPermanent(ids[j], true);
-      }
-
+      for (var i = 0; i < boxes.length; i++) if (boxes[i].checked) ids.push(boxes[i].value);
+      if (!ids.length) { alert('Selecciona al menos un proyecto de la papelera.'); return; }
+      if (!confirm('¿Eliminar definitivamente los proyectos seleccionados?')) return;
+      for (var j = 0; j < ids.length; j++) deleteProjectPermanent(ids[j], true);
       document.getElementById('trashSelectAll').checked = false;
       renderPapelera();
     }
@@ -1907,74 +1261,49 @@
       var tbody = document.getElementById('tbodyProyectos');
       var filtroInput = document.getElementById('filtroProyectos');
       var filtro = filtroInput ? filtroInput.value.trim().toLowerCase() : '';
-
       var filtered = [];
       for (var i = 0; i < proyectos.length; i++) {
         var p = proyectos[i];
         var cliente = String(p.cliente || '').toLowerCase();
         var numero = String(p.numero || '').toLowerCase();
-        if (!filtro || cliente.indexOf(filtro) !== -1 || numero.indexOf(filtro) !== -1) {
-          filtered.push(p);
-        }
+        if (!filtro || cliente.indexOf(filtro) !== -1 || numero.indexOf(filtro) !== -1) filtered.push(p);
       }
-
       var html = '';
-
       if (!filtered.length) {
-        if (proyectos.length) {
-          html = '<tr><td colspan="7" class="center">No hay resultados para el filtro aplicado</td></tr>';
-        } else {
-          html = '<tr><td colspan="7" class="center">No hay proyectos guardados</td></tr>';
-        }
+        if (proyectos.length) html = '<tr><td colspan="7" class="center">No hay resultados para el filtro aplicado</td></tr>';
+        else html = '<tr><td colspan="7" class="center">No hay proyectos guardados</td></tr>';
       }
-
       for (var j = 0; j < filtered.length; j++) {
         var p2 = filtered[j];
-
-        html += '<tr>';
-        html += '<td>' + (j + 1) + '</td>';
+        html += '<tr><td>' + (j + 1) + '</td>';
         html += '<td><strong>' + escapeHtml(p2.numero || '-') + '</strong></td>';
         html += '<td>' + escapeHtml(p2.cliente || '') + '</td>';
         html += '<td>' + escapeHtml(p2.superficieNum || 0) + ' m²</td>';
         html += '<td>$' + formatMoney(p2.totalNum || 0) + '</td>';
         html += '<td>' + escapeHtml(p2.fecha || '') + '</td>';
-        html += '<td>';
-        html += '<button class="btn btn-sm" onclick="editarProyecto(\'' + escapeAttr(p2.id) + '\')">Editar</button> ';
+        html += '<td><button class="btn btn-sm" onclick="editarProyecto(\'' + escapeAttr(p2.id) + '\')">Editar</button> ';
         html += '<button class="btn btn-sm btn-danger" onclick="eliminarProyecto(\'' + escapeAttr(p2.id) + '\')">Eliminar</button> ';
-        html += '<button class="btn btn-sm btn-dark" onclick="generarPDFProyecto(\'' + escapeAttr(p2.id) + '\')">PDF</button>';
-        html += '</td>';
-        html += '</tr>';
+        html += '<button class="btn btn-sm btn-dark" onclick="generarPDFProyecto(\'' + escapeAttr(p2.id) + '\')">PDF</button></td></tr>';
       }
-
       tbody.innerHTML = html;
     }
 
     function renderPapelera() {
       var tbody = document.getElementById('tbodyPapelera');
       var html = '';
-
-      if (!papelera.length) {
-        html = '<tr><td colspan="8" class="center">La papelera está vacía</td></tr>';
-      }
-
+      if (!papelera.length) html = '<tr><td colspan="8" class="center">La papelera está vacía</td></tr>';
       for (var i = 0; i < papelera.length; i++) {
         var p = papelera[i];
-
-        html += '<tr>';
-        html += '<td><input type="checkbox" class="trash-check" value="' + escapeAttr(p.id) + '"></td>';
+        html += '<tr><td><input type="checkbox" class="trash-check" value="' + escapeAttr(p.id) + '"></td>';
         html += '<td>' + (i + 1) + '</td>';
         html += '<td><strong>' + escapeHtml(p.numero || '-') + '</strong></td>';
         html += '<td>' + escapeHtml(p.cliente || '') + '</td>';
         html += '<td>' + escapeHtml(p.superficieNum || 0) + ' m²</td>';
         html += '<td>$' + formatMoney(p.totalNum || 0) + '</td>';
         html += '<td>' + escapeHtml(p.fecha || '') + '</td>';
-        html += '<td>';
-        html += '<button class="btn btn-sm" onclick="restoreProject(\'' + escapeAttr(p.id) + '\')">Restaurar</button> ';
-        html += '<button class="btn btn-sm btn-danger" onclick="deleteProjectPermanent(\'' + escapeAttr(p.id) + '\')">Eliminar</button>';
-        html += '</td>';
-        html += '</tr>';
+        html += '<td><button class="btn btn-sm" onclick="restoreProject(\'' + escapeAttr(p.id) + '\')">Restaurar</button> ';
+        html += '<button class="btn btn-sm btn-danger" onclick="deleteProjectPermanent(\'' + escapeAttr(p.id) + '\')">Eliminar</button></td></tr>';
       }
-
       tbody.innerHTML = html;
       document.getElementById('trashSelectAll').checked = false;
     }
@@ -1982,121 +1311,70 @@
     function renderTarifas() {
       var tbody = document.getElementById('tbodyTarifas');
       var html = '';
-
       for (var i = 0; i < tarifas.length; i++) {
-        html += '<tr>';
-        html += '<td><input type="text" class="form-control" value="' + escapeAttr(tarifas[i].rango) + '" readonly></td>';
-        html += '<td><input type="number" class="form-control" value="' + escapeAttr(tarifas[i].precio) + '" onchange="updateTarifa(' + i + ', this.value)"></td>';
-        html += '</tr>';
+        html += '<tr><td><input type="text" class="form-control" value="' + escapeAttr(tarifas[i].rango) + '" readonly></td>';
+        html += '<td><input type="number" class="form-control" value="' + escapeAttr(tarifas[i].precio) + '" onchange="updateTarifa(' + i + ', this.value)"></td></tr>';
       }
-
       tbody.innerHTML = html;
     }
-
     function updateTarifa(index, value) {
-      if (!tarifas[index]) { return; }
+      if (!tarifas[index]) return;
       tarifas[index].precio = parseMoneyValue(value);
       calcularTotal();
     }
-
     function guardarTarifas() {
-      saveLocalAll();
-      syncTarifas();
-      calcularTotal();
+      saveLocalAll(); syncTarifas(); calcularTotal();
       alert('Tarifas guardadas.');
     }
 
     function renderInventario() {
       var tbody = document.getElementById('tbodyInventario');
       var html = '';
-
-      if (!inventario.length) {
-        html = '<tr><td colspan="6" class="center">No hay items en inventario</td></tr>';
-      }
-
+      if (!inventario.length) html = '<tr><td colspan="6" class="center">No hay items en inventario</td></tr>';
       for (var i = 0; i < inventario.length; i++) {
         var item = inventario[i] || {};
         var totalItem = (parseMoneyValue(item.cantidad) * parseMoneyValue(item.precio)) || 0;
-
         html += '<tr>';
         html += '<td><input type="text" class="form-control" value="' + escapeAttr(item.nombre || '') + '" onchange="updateInventario(' + i + ', \'nombre\', this.value)"></td>';
         html += '<td><input type="number" class="form-control small-input" value="' + escapeAttr(item.cantidad || 0) + '" onchange="updateInventario(' + i + ', \'cantidad\', this.value)"></td>';
         html += '<td><input type="text" class="form-control small-input" value="' + escapeAttr(item.unidad || '') + '" onchange="updateInventario(' + i + ', \'unidad\', this.value)"></td>';
         html += '<td><input type="number" class="form-control small-input" value="' + escapeAttr(item.precio || 0) + '" onchange="updateInventario(' + i + ', \'precio\', this.value)"></td>';
         html += '<td>$' + formatMoney(totalItem) + '</td>';
-        html += '<td><button class="btn btn-sm btn-danger" onclick="removeInventoryItem(' + i + ')">Eliminar</button></td>';
-        html += '</tr>';
+        html += '<td><button class="btn btn-sm btn-danger" onclick="removeInventoryItem(' + i + ')">Eliminar</button></td></tr>';
       }
-
       tbody.innerHTML = html;
     }
-
     function addInventoryItem() {
-      inventario.push({
-        nombre: '',
-        cantidad: 0,
-        unidad: 'Unidad',
-        precio: 0
-      });
-
-      saveLocalAll();
-      syncInventario();
-      renderInventario();
+      inventario.push({ nombre: '', cantidad: 0, unidad: 'Unidad', precio: 0 });
+      saveLocalAll(); syncInventario(); renderInventario();
     }
-
     function updateInventario(index, field, value) {
-      if (!inventario[index]) { return; }
-
-      if (field === 'cantidad' || field === 'precio') {
-        inventario[index][field] = parseMoneyValue(value);
-      } else {
-        inventario[index][field] = value;
-      }
-
-      saveLocalAll();
-      syncInventario();
-      renderInventario();
+      if (!inventario[index]) return;
+      if (field === 'cantidad' || field === 'precio') inventario[index][field] = parseMoneyValue(value);
+      else inventario[index][field] = value;
+      saveLocalAll(); syncInventario(); renderInventario();
     }
-
     function removeInventoryItem(index) {
-      if (!confirm('¿Eliminar este item del inventario?')) { return; }
-
-      inventario.splice(index, 1);
-      saveLocalAll();
-      syncInventario();
-      renderInventario();
+      if (!confirm('¿Eliminar este item del inventario?')) return;
+      inventario.splice(index, 1); saveLocalAll(); syncInventario(); renderInventario();
     }
 
     function normalizeChilePhone(phone) {
       var digits = String(phone || '').replace(/\D/g, '');
-
-      if (!digits) { return ''; }
-
-      if (digits.indexOf('0') === 0) { digits = digits.substring(1); }
-
-      if (digits.length === 9 && digits.indexOf('9') === 0) { digits = '56' + digits; }
-
-      if (digits.length === 8) { digits = '569' + digits; }
-
-      if (digits.indexOf('56') !== 0 && digits.length >= 9) { digits = '56' + digits; }
-
+      if (!digits) return '';
+      if (digits.indexOf('0') === 0) digits = digits.substring(1);
+      if (digits.length === 9 && digits.indexOf('9') === 0) digits = '56' + digits;
+      if (digits.length === 8) digits = '569' + digits;
+      if (digits.indexOf('56') !== 0 && digits.length >= 9) digits = '56' + digits;
       return digits;
     }
 
     function enviarWhatsApp() {
       ensureNumero();
       var q = getQuoteData();
-
-      if (!q.cliente) {
-        alert('Ingresa el nombre del cliente antes de enviar.');
-        return;
-      }
-
+      if (!q.cliente) { alert('Ingresa el nombre del cliente antes de enviar.'); return; }
       var phone = normalizeChilePhone(q.telefono);
-      if (!phone || phone.length < 8) {
-        alert('Ingresa un teléfono válido después de +56.');
-        return;
-      }
+      if (!phone || phone.length < 8) { alert('Ingresa un teléfono válido después de +56.'); return; }
 
       var msg = 'PAVIMENTOS M&C - CONSTRUCCIONES EN GENERAL\n';
       msg += '--------------------------------\n';
@@ -2104,284 +1382,127 @@
       msg += '--------------------------------\n';
       msg += 'Cliente: ' + q.cliente + '\n';
       msg += 'Fecha: ' + (q.fecha || '-') + '\n';
-      if (q.vendedor) {
-        msg += 'Vendedor: ' + q.vendedor + '\n';
-      }
-      msg += '\n';
-      msg += 'DETALLE\n';
+      if (q.vendedor) msg += 'Vendedor: ' + q.vendedor + '\n';
+      msg += '\nDETALLE\n';
       msg += 'Hormigon estampado: ' + q.superficie + ' m2 x $' + formatMoney(q.precioM2) + ' = $' + formatMoney(q.subtotalM2) + '\n';
-      if (q.demTotal > 0) {
-        msg += 'Demolicion: ' + q.demM2 + ' m2 = $' + formatMoney(q.demTotal) + '\n';
-      }
-      if (q.totalExtras > 0) {
-        msg += 'Trabajos extras: $' + formatMoney(q.totalExtras) + '\n';
-      }
-      msg += '\n';
-      msg += 'Subtotal: $' + formatMoney(q.base) + '\n';
-      if (q.aplicarIva) {
-        msg += 'IVA 19%: $' + formatMoney(q.ivaMonto) + '\n';
-      }
+      if (q.demTotal > 0) msg += 'Demolicion: ' + q.demM2 + ' m2 = $' + formatMoney(q.demTotal) + '\n';
+      if (q.totalExtras > 0) msg += 'Trabajos extras: $' + formatMoney(q.totalExtras) + '\n';
+      msg += '\nSubtotal: $' + formatMoney(q.base) + '\n';
+      if (q.aplicarIva) msg += 'IVA 19%: $' + formatMoney(q.ivaMonto) + '\n';
       msg += 'TOTAL: $' + formatMoney(q.total) + '\n';
-      msg += '\n';
-      msg += 'Condiciones de pago:\n';
-      msg += '- 50% inicio de obras\n';
-      msg += '- 30% hormigonado\n';
-      msg += '- 20% contra entrega\n';
-      msg += '\n';
-      msg += 'Medios de pago:\n';
-      msg += '- Transferencia\n';
-      msg += '- Efectivo\n';
-      msg += '- Tarjeta de credito (recargo extra)\n';
-      msg += '\n';
-      msg += 'Validez de oferta: 15 dias.\n';
-      msg += 'Garantia: 12 meses (fisuras/fracturas).\n';
-      msg += '\n';
-      msg += 'Pavimentos M&C SPA - Lampa, Chile\n';
-      msg += '+56 9 3066 5920 | ventas@pavimentosmyc.cl\n';
-      msg += 'www.pavimentosmyc.cl | IG: @pavimentosmc';
-
+      msg += '\nCondiciones de pago:\n- 50% inicio de obras\n- 30% hormigonado\n- 20% contra entrega\n';
+      msg += '\nMedios de pago:\n- Transferencia\n- Efectivo\n- Tarjeta de credito (recargo extra)\n';
+      msg += '\nValidez de oferta: 15 dias.\nGarantia: 12 meses (fisuras/fracturas).\n';
+      msg += '\nPavimentos M&C SPA - Lampa, Chile\n+56 9 3066 5920 | ventas@pavimentosmyc.cl\nwww.pavimentosmyc.cl | IG: @pavimentosmc';
       window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
     }
 
     function enviarCorreo() {
       ensureNumero();
       var q = getQuoteData();
-
-      if (!q.email) {
-        alert('Ingresa el email del cliente antes de enviar.');
-        return;
-      }
-
+      if (!q.email) { alert('Ingresa el email del cliente antes de enviar.'); return; }
       var subject = 'Cotización N° ' + q.numero + ' - Pavimentos M&C - ' + q.cliente;
-
-      var body = 'Estimado/a ' + q.cliente + ',\n\n';
-      body += 'Junto con saludarle, le enviamos la cotización solicitada para su proyecto de hormigón estampado.\n\n';
+      var body = 'Estimado/a ' + q.cliente + ',\n\nJunto con saludarle, le enviamos la cotización solicitada para su proyecto de hormigón estampado.\n\n';
       body += 'N° COTIZACIÓN: ' + q.numero + '\n';
       body += 'FECHA: ' + (q.fecha || '-') + '\n';
-      if (q.vendedor) {
-        body += 'VENDEDOR: ' + q.vendedor + '\n';
-      }
-      body += '\n';
-      body += 'DETALLE DE LA COTIZACIÓN\n';
+      if (q.vendedor) body += 'VENDEDOR: ' + q.vendedor + '\n';
+      body += '\nDETALLE DE LA COTIZACIÓN\n';
       body += '- Hormigón estampado: ' + q.superficie + ' m² x $' + formatMoney(q.precioM2) + ' = $' + formatMoney(q.subtotalM2) + '\n';
-      if (q.demTotal > 0) {
-        body += '- Demolición de pavimento existente: ' + q.demM2 + ' m² = $' + formatMoney(q.demTotal) + '\n';
-      }
-      if (q.totalExtras > 0) {
-        body += '- Trabajos extras: $' + formatMoney(q.totalExtras) + '\n';
-      }
-      body += '\n';
-      body += 'Subtotal: $' + formatMoney(q.base) + '\n';
-      if (q.aplicarIva) {
-        body += 'IVA 19%: $' + formatMoney(q.ivaMonto) + '\n';
-      }
+      if (q.demTotal > 0) body += '- Demolición de pavimento existente: ' + q.demM2 + ' m² = $' + formatMoney(q.demTotal) + '\n';
+      if (q.totalExtras > 0) body += '- Trabajos extras: $' + formatMoney(q.totalExtras) + '\n';
+      body += '\nSubtotal: $' + formatMoney(q.base) + '\n';
+      if (q.aplicarIva) body += 'IVA 19%: $' + formatMoney(q.ivaMonto) + '\n';
       body += 'TOTAL: $' + formatMoney(q.total) + '\n';
-      body += '\n';
-      body += 'CONDICIONES DE PAGO\n';
-      body += '- 50% inicio de obras.\n';
-      body += '- 30% hormigonado.\n';
-      body += '- 20% contra entrega.\n';
-      body += '- Validez de la oferta: 15 días.\n';
-      body += '\n';
-      body += 'MEDIOS DE PAGO\n';
-      body += '- Transferencia.\n';
-      body += '- Efectivo.\n';
-      body += '- Tarjeta de crédito (recargo extra).\n';
-      body += '\n';
-      body += 'GARANTÍA\n';
-      body += '12 meses por fisuras o fracturas estructurales del hormigón. Focos LED: 4 meses. Post-venta: 90 días.\n';
-      body += '\n';
-      body += 'Quedamos atentos a sus comentarios.\n\n';
-      body += 'Pavimentos M&C SPA - RUT: 77.145.822-K\n';
-      body += 'Construcciones en General - Lampa, Chile\n';
-      body += 'Tel: +56 9 3066 5920\n';
-      body += 'ventas@pavimentosmyc.cl\n';
-      body += 'Web: www.pavimentosmyc.cl\n';
-      body += 'Instagram: @pavimentosmc';
-
-      window.location.href = 'mailto:' + encodeURIComponent(q.email) +
-        '?subject=' + encodeURIComponent(subject) +
-        '&body=' + encodeURIComponent(body);
-    }
-
-    function loadLogo() {
-      getLogoData(function () { });
+      body += '\nCONDICIONES DE PAGO\n- 50% inicio de obras.\n- 30% hormigonado.\n- 20% contra entrega.\n- Validez de la oferta: 15 días.\n';
+      body += '\nMEDIOS DE PAGO\n- Transferencia.\n- Efectivo.\n- Tarjeta de crédito (recargo extra).\n';
+      body += '\nGARANTÍA\n12 meses por fisuras o fracturas estructurales del hormigón. Focos LED: 4 meses. Post-venta: 90 días.\n';
+      body += '\nQuedamos atentos a sus comentarios.\n\nPavimentos M&C SPA - RUT: 77.145.822-K\nConstrucciones en General - Lampa, Chile\nTel: +56 9 3066 5920\nventas@pavimentosmyc.cl\nWeb: www.pavimentosmyc.cl\nInstagram: @pavimentosmc';
+      window.location.href = 'mailto:' + encodeURIComponent(q.email) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     }
 
     function getLogoData(callback) {
-      if (logoData) {
-        callback();
-        return;
-      }
-
+      if (logoData) { callback(); return; }
       var img = new Image();
-
       img.onload = function () {
         try {
           var canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          var ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0);
+          canvas.width = img.width; canvas.height = img.height;
+          var ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0);
           logoData = canvas.toDataURL('image/png');
-        } catch (e) {
-          logoData = '';
-        }
+        } catch (e) { logoData = ''; }
         callback();
       };
-
-      img.onerror = function () {
-        logoData = '';
-        callback();
-      };
-
+      img.onerror = function () { logoData = ''; callback(); };
       img.src = 'logo.png';
     }
+    function loadLogo() { getLogoData(function () { }); }
 
     function generarPDFActual() {
       var q0 = getQuoteData();
-
-      if (!q0.cliente) {
-        alert('Ingresa el nombre del cliente para generar el PDF.');
-        return;
-      }
-
+      if (!q0.cliente) { alert('Ingresa el nombre del cliente para generar el PDF.'); return; }
       ensureNumero();
       var q = getQuoteData();
       var data = buildPdfDataFromQuote(q);
-
-      getLogoData(function () {
-        createPdf(data);
-      });
+      getLogoData(function () { createPdf(data); });
     }
 
     function generarPDFProyecto(id) {
       var index = findProjectIndex(id);
-      if (index < 0) {
-        alert('Proyecto no encontrado.');
-        return;
-      }
-
+      if (index < 0) { alert('Proyecto no encontrado.'); return; }
       var data = buildPdfDataFromProject(proyectos[index]);
-
-      getLogoData(function () {
-        createPdf(data);
-      });
+      getLogoData(function () { createPdf(data); });
     }
 
     function buildPdfDataFromQuote(q) {
       var rows = [];
-
-      rows.push({
-        desc: 'Hormigón estampado',
-        cant: q.superficie,
-        precio: q.precioM2,
-        importe: q.subtotalM2,
-        unidad: 'm²'
-      });
-
-      if (q.demTotal > 0) {
-        rows.push({
-          desc: 'Demolición de pavimento existente',
-          cant: q.demM2,
-          precio: 4000,
-          importe: q.demTotal,
-          unidad: 'm²'
-        });
-      }
-
-      for (var i = 0; i < q.extraRows.length; i++) {
-        rows.push(q.extraRows[i]);
-      }
-
+      rows.push({ desc: 'Hormigón estampado', cant: q.superficie, precio: q.precioM2, importe: q.subtotalM2, unidad: 'm²' });
+      if (q.demTotal > 0) rows.push({ desc: 'Demolición de pavimento existente', cant: q.demM2, precio: 4000, importe: q.demTotal, unidad: 'm²' });
+      for (var i = 0; i < q.extraRows.length; i++) rows.push(q.extraRows[i]);
       return {
-        numero: q.numero,
-        cliente: q.cliente,
-        telefono: q.telefono,
-        email: q.email,
-        direccion: q.direccion,
-        vendedor: q.vendedor,
-        fecha: q.fecha,
-        vigencia: '15 días',
-        rows: rows,
-        subtotal: q.base,
-        iva: q.aplicarIva ? q.ivaMonto : 0,
-        total: q.total,
-        items: q.itemsChecked
+        numero: q.numero, cliente: q.cliente, telefono: q.telefono,
+        email: q.email, direccion: q.direccion, vendedor: q.vendedor,
+        fecha: q.fecha, vigencia: '15 días', rows: rows,
+        subtotal: q.base, iva: q.aplicarIva ? q.ivaMonto : 0,
+        total: q.total, items: q.itemsChecked
       };
     }
 
     function buildPdfDataFromProject(p) {
       var rows = [];
-
       var superficie = parseMoneyValue(p.superficieNum);
       var precioM2 = parseMoneyValue(p.precioM2Num);
-
-      rows.push({
-        desc: 'Hormigón estampado',
-        cant: superficie,
-        precio: precioM2,
-        importe: superficie * precioM2,
-        unidad: 'm²'
-      });
-
+      rows.push({ desc: 'Hormigón estampado', cant: superficie, precio: precioM2, importe: superficie * precioM2, unidad: 'm²' });
       if (p.demolition && parseMoneyValue(p.demolition.total) > 0) {
-        rows.push({
-          desc: 'Demolición de pavimento existente',
-          cant: parseMoneyValue(p.demolition.m2),
-          precio: 4000,
-          importe: parseMoneyValue(p.demolition.total),
-          unidad: 'm²'
-        });
+        rows.push({ desc: 'Demolición de pavimento existente', cant: parseMoneyValue(p.demolition.m2), precio: 4000, importe: parseMoneyValue(p.demolition.total), unidad: 'm²' });
       }
-
       if (p.extras && p.extras.length) {
         for (var i = 0; i < p.extras.length; i++) {
           var extra = p.extras[i];
-
           if (extra.checked && extra.desc && parseMoneyValue(extra.cant) > 0) {
             rows.push({
-              desc: extra.desc,
-              cant: parseMoneyValue(extra.cant),
-              precio: parseMoneyValue(extra.precio),
-              importe: parseMoneyValue(extra.cant) * parseMoneyValue(extra.precio),
-              unidad: extra.unidad || 'un'
+              desc: extra.desc, cant: parseMoneyValue(extra.cant), precio: parseMoneyValue(extra.precio),
+              importe: parseMoneyValue(extra.cant) * parseMoneyValue(extra.precio), unidad: extra.unidad || 'un'
             });
           }
         }
       }
-
       var subtotal = parseMoneyValue(p.subtotalNum);
       if (!subtotal) {
         subtotal = 0;
-        for (var j = 0; j < rows.length; j++) {
-          subtotal += parseMoneyValue(rows[j].importe);
-        }
+        for (var j = 0; j < rows.length; j++) subtotal += parseMoneyValue(rows[j].importe);
       }
-
       var iva = 0;
       if (p.iva) {
         iva = parseMoneyValue(p.ivaMonto);
-        if (!iva) { iva = Math.round(subtotal * 0.19); }
+        if (!iva) iva = Math.round(subtotal * 0.19);
       }
-
       var total = parseMoneyValue(p.totalNum);
-      if (!total) { total = subtotal + iva; }
-
+      if (!total) total = subtotal + iva;
       return {
-        numero: p.numero || String(p.id),
-        cliente: p.cliente || '',
-        telefono: p.telefono || '',
-        email: p.email || '',
-        direccion: p.direccion || '',
-        vendedor: p.vendedor || '',
-        fecha: p.fecha || '',
-        vigencia: '15 días',
-        rows: rows,
-        subtotal: subtotal,
-        iva: iva,
-        total: total,
-        items: p.items || []
+        numero: p.numero || String(p.id), cliente: p.cliente || '', telefono: p.telefono || '',
+        email: p.email || '', direccion: p.direccion || '', vendedor: p.vendedor || '',
+        fecha: p.fecha || '', vigencia: '15 días', rows: rows,
+        subtotal: subtotal, iva: iva, total: total, items: p.items || []
       };
     }
 
@@ -2394,49 +1515,37 @@
     function drawPdfInfoBox(doc, title, text, startY, minHeight) {
       var margin = 8;
       var contentW = 194;
-
-      var fontSize = 8;
-      var line = 4.1;
-
-      if (startY > 236) {
-        fontSize = 7;
-        line = 3.4;
-      }
+      var fontSize = 10;
+      var line = 4.8;
 
       doc.setFontSize(fontSize);
       var lines = doc.splitTextToSize(text, contentW - 6);
       var bodyH = lines.length * line + 5;
-
-      if (bodyH < minHeight - 6) { bodyH = minHeight - 6; }
+      if (bodyH < minHeight - 6) bodyH = minHeight - 6;
 
       doc.setFillColor(166, 124, 82);
-      doc.rect(margin, startY, contentW, 6, 'F');
-
+      doc.rect(margin, startY, contentW, 7, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.text(title, margin + 2, startY + 4.2);
+      doc.setFontSize(11);
+      doc.text(title, margin + 2, startY + 5);
 
-      startY += 6;
-
+      startY += 7;
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
       doc.rect(margin, startY, contentW, bodyH, 'FD');
-
-      doc.setTextColor(59, 36, 22);
+      doc.setTextColor(40, 30, 20);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(fontSize);
-      doc.text(lines, margin + 3, startY + 4.5);
+      doc.text(lines, margin + 3, startY + 5);
 
-      return startY + bodyH + 3;
+      return startY + bodyH + 4;
     }
 
     function createPdf(data) {
       if (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined') {
-        alert('No se pudo cargar jsPDF. Revisa tu conexión a internet.');
-        return;
+        alert('No se pudo cargar jsPDF. Revisa tu conexión a internet.'); return;
       }
-
       var JsPdfClass = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
       var doc = new JsPdfClass('p', 'mm', 'a4');
 
@@ -2444,121 +1553,119 @@
       var margin = 8;
       var contentW = 194;
 
-      // HEADER café claro con logo.
+      // HEADER café claro con logo - TAMAÑOS AUMENTADOS.
       doc.setFillColor(166, 124, 82);
-      doc.rect(0, 0, pageW, 32, 'F');
+      doc.rect(0, 0, pageW, 38, 'F');
 
       if (logoData) {
-        try {
-          doc.addImage(logoData, 'PNG', 10, 6, 28, 20);
-        } catch (e) {
-          logoData = '';
-        }
+        try { doc.addImage(logoData, 'PNG', 10, 7, 32, 24); }
+        catch (e) { logoData = ''; }
       }
 
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(20);
-      doc.text('PAVIMENTOS M&C', 44, 14);
+      doc.setFontSize(24);
+      doc.text('PAVIMENTOS M&C', 48, 16);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(12);
+      doc.text('Construcciones en General', 48, 23);
+
+      doc.setFontSize(10);
+      doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl  |  Lampa, Chile', 48, 31);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.text('RUT: 77.145.822-K', 202, 15, { align: 'right' });
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
-      doc.text('Construcciones en General', 44, 20);
+      doc.text('Pavimentos M&C SPA', 202, 21, { align: 'right' });
 
-      doc.setFontSize(8.5);
-      doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl  |  Lampa, Chile', 44, 25.5);
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9.5);
-      doc.text('RUT: 77.145.822-K', 202, 12, { align: 'right' });
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.text('Pavimentos M&C SPA', 202, 17, { align: 'right' });
-
-      // Franja mostaza con número de cotización.
+      // Franja mostaza con número de cotización - MÁS GRANDE.
       doc.setFillColor(201, 160, 90);
-      doc.rect(0, 32, pageW, 9, 'F');
+      doc.rect(0, 38, pageW, 11, 'F');
       doc.setTextColor(59, 36, 22);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11);
-      doc.text('N° COTIZACIÓN: ' + (data.numero || ''), margin, 38);
+      doc.setFontSize(14);
+      doc.text('N° COTIZACIÓN: ' + (data.numero || ''), margin, 45.5);
 
-      // Box COTIZADO PARA.
-      var y = 44;
-      var boxH = 38;
+      // Box COTIZADO PARA - MÁS GRANDE Y LEGIBLE.
+      var y = 52;
+      var boxH = 42;
 
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(245, 236, 215);
       doc.roundedRect(margin, y, contentW, boxH, 2, 2, 'FD');
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
+      doc.setFontSize(12);
       doc.setTextColor(92, 58, 33);
-      doc.text('COTIZADO PARA', margin + 4, y + 7);
+      doc.text('COTIZADO PARA', margin + 4, y + 8);
 
-      doc.setFontSize(13);
-      doc.text(truncateText(data.cliente || '-', 40), margin + 4, y + 14.5);
+      doc.setFontSize(15);
+      doc.text(truncateText(data.cliente || '-', 38), margin + 4, y + 16);
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9);
-      doc.setTextColor(59, 36, 22);
+      doc.setFontSize(10);
+      doc.setTextColor(40, 30, 20);
 
       var leftX = margin + 4;
       var rightX = margin + 102;
 
-      doc.text('Telefono: ' + (data.telefono || '-'), leftX, y + 20.5);
-      doc.text('Email: ' + truncateText(data.email || '-', 40), leftX, y + 25.5);
+      doc.text('Teléfono: ' + (data.telefono || '-'), leftX, y + 23);
+      doc.text('Email: ' + truncateText(data.email || '-', 38), leftX, y + 29);
 
-      var addrLines = doc.splitTextToSize('Direccion: ' + (data.direccion || '-'), 88);
-      doc.text(addrLines.slice(0, 2), leftX, y + 30.5);
+      var addrLines = doc.splitTextToSize('Dirección: ' + (data.direccion || '-'), 88);
+      doc.text(addrLines.slice(0, 2), leftX, y + 35);
 
-      doc.text('Vendedor: ' + (data.vendedor || '-'), rightX, y + 14.5);
-      doc.text('Fecha: ' + (data.fecha || '-'), rightX, y + 20.5);
-      doc.text('Vigencia: ' + (data.vigencia || '15 días'), rightX, y + 25.5);
-      doc.text('Fono: +56 9 3066 5920', rightX, y + 30.5);
+      doc.text('Vendedor: ' + (data.vendedor || '-'), rightX, y + 16);
+      doc.text('Fecha: ' + (data.fecha || '-'), rightX, y + 23);
+      doc.text('Vigencia: ' + (data.vigencia || '15 días'), rightX, y + 29);
+      doc.text('Fono: +56 9 3066 5920', rightX, y + 35);
 
-      y += boxH + 3;
+      y += boxH + 4;
 
-      // CONDICIONES DE PAGO Y MEDIOS DE PAGO.
+      // CONDICIONES Y MEDIOS DE PAGO - MÁS GRANDE.
       doc.setFillColor(92, 58, 33);
-      doc.rect(margin, y, contentW, 7, 'F');
+      doc.rect(margin, y, contentW, 8, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.text('CONDICIONES DE PAGO Y MEDIOS DE PAGO', margin + 2, y + 4.8);
+      doc.setFontSize(11);
+      doc.text('CONDICIONES DE PAGO Y MEDIOS DE PAGO', margin + 2, y + 5.8);
 
-      y += 7;
+      y += 8;
 
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
-      doc.rect(margin, y, contentW, 19, 'FD');
+      doc.rect(margin, y, contentW, 22, 'FD');
 
-      doc.setTextColor(59, 36, 22);
+      doc.setTextColor(40, 30, 20);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8.5);
-      doc.text('Condiciones de pago:', margin + 2, y + 5);
-      doc.text('Medios de pago:', margin + 102, y + 5);
+      doc.setFontSize(10);
+      doc.text('Condiciones de pago:', margin + 2, y + 6);
+      doc.text('Medios de pago:', margin + 102, y + 6);
 
       doc.setFont('helvetica', 'normal');
-      doc.text('- 50% inicio de obras', margin + 2, y + 9.2);
-      doc.text('- 30% hormigonado', margin + 2, y + 13);
-      doc.text('- 20% contra entrega', margin + 2, y + 16.8);
+      doc.text('- 50% inicio de obras', margin + 2, y + 11);
+      doc.text('- 30% hormigonado', margin + 2, y + 15.5);
+      doc.text('- 20% contra entrega', margin + 2, y + 20);
 
-      doc.text('- Transferencia', margin + 102, y + 9.2);
-      doc.text('- Efectivo', margin + 102, y + 13);
-      doc.text('- Tarjeta de crédito (recargo extra)', margin + 102, y + 16.8);
+      doc.text('- Transferencia', margin + 102, y + 11);
+      doc.text('- Efectivo', margin + 102, y + 15.5);
+      doc.text('- Tarjeta de crédito (recargo extra)', margin + 102, y + 20);
 
-      y += 22;
+      y += 25;
 
-      // Tabla principal con unidades de medida.
+      // TABLA PRINCIPAL - MÁS LEGIBLE.
       var rows = data.rows || [];
-      var fontBody = 9;
-      var rowH = 6.4;
+      var fontBody = 10.5;
+      var headerFont = 11;
+      var rowH = 7.2;
 
-      if (rows.length > 8) { rowH = 5.8; fontBody = 8.5; }
-      if (rows.length > 12) { rowH = 5.2; fontBody = 8; }
-      if (rows.length > 16) { rowH = 4.8; fontBody = 7.5; }
+      if (rows.length > 8) { rowH = 6.4; fontBody = 10; }
+      if (rows.length > 12) { rowH = 5.8; fontBody = 9.5; }
+      if (rows.length > 16) { rowH = 5.2; fontBody = 9; }
 
       var col0 = 92;
       var col1 = 22;
@@ -2566,20 +1673,20 @@
       var col3 = 40;
 
       doc.setFillColor(92, 58, 33);
-      doc.rect(margin, y, contentW, 7, 'F');
+      doc.rect(margin, y, contentW, 8, 'F');
 
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.text('DESCRIPCION', margin + 2, y + 4.8);
-      doc.text('CANT.', margin + col0 + 2, y + 4.8);
-      doc.text('PRECIO UNIT.', margin + col0 + col1 + 2, y + 4.8);
-      doc.text('IMPORTE', margin + col0 + col1 + col2 + 2, y + 4.8);
+      doc.setFontSize(headerFont);
+      doc.text('DESCRIPCIÓN', margin + 2, y + 5.5);
+      doc.text('CANT.', margin + col0 + 2, y + 5.5);
+      doc.text('PRECIO UNIT.', margin + col0 + col1 + 2, y + 5.5);
+      doc.text('IMPORTE', margin + col0 + col1 + col2 + 2, y + 5.5);
 
-      y += 7;
+      y += 8;
 
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(59, 36, 22);
+      doc.setTextColor(40, 30, 20);
       doc.setFontSize(fontBody);
 
       for (var i = 0; i < rows.length; i++) {
@@ -2587,74 +1694,73 @@
         doc.rect(margin, y, contentW, rowH);
 
         var cantText = String(rows[i].cant);
-        if (rows[i].unidad) { cantText = cantText + ' ' + rows[i].unidad; }
+        if (rows[i].unidad) cantText = cantText + ' ' + rows[i].unidad;
 
-        doc.text(truncateText(rows[i].desc || '', 52), margin + 2, y + rowH - 2);
-        doc.text(cantText, margin + col0 + 2, y + rowH - 2);
-        doc.text('$' + formatMoney(rows[i].precio), margin + col0 + col1 + 2, y + rowH - 2);
-        doc.text('$' + formatMoney(rows[i].importe), margin + col0 + col1 + col2 + 2, y + rowH - 2);
+        doc.text(truncateText(rows[i].desc || '', 50), margin + 2, y + rowH - 2.2);
+        doc.text(cantText, margin + col0 + 2, y + rowH - 2.2);
+        doc.text('$' + formatMoney(rows[i].precio), margin + col0 + col1 + 2, y + rowH - 2.2);
+        doc.text('$' + formatMoney(rows[i].importe), margin + col0 + col1 + col2 + 2, y + rowH - 2.2);
 
         y += rowH;
       }
 
       doc.setDrawColor(92, 58, 33);
       doc.line(margin, y, margin + contentW, y);
-
       var tableBottom = y;
 
-      // Totales.
+      // TOTALES - MÁS DESTACADOS.
       var totX = margin + 110;
       var totW = 84;
       var totY = tableBottom + 3;
 
-      doc.setFontSize(9.5);
+      doc.setFontSize(11);
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
 
-      doc.rect(totX, totY, totW, 7);
-      doc.text('Subtotal', totX + 2, totY + 4.8);
-      doc.text('$' + formatMoney(data.subtotal), totX + totW - 2, totY + 4.8, { align: 'right' });
-      totY += 7;
+      doc.rect(totX, totY, totW, 8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(40, 30, 20);
+      doc.text('Subtotal', totX + 2, totY + 5.5);
+      doc.text('$' + formatMoney(data.subtotal), totX + totW - 2, totY + 5.5, { align: 'right' });
+      totY += 8;
 
       if (parseMoneyValue(data.iva) > 0) {
-        doc.rect(totX, totY, totW, 7);
-        doc.text('IVA 19%', totX + 2, totY + 4.8);
-        doc.text('$' + formatMoney(data.iva), totX + totW - 2, totY + 4.8, { align: 'right' });
-        totY += 7;
+        doc.rect(totX, totY, totW, 8);
+        doc.text('IVA 19%', totX + 2, totY + 5.5);
+        doc.text('$' + formatMoney(data.iva), totX + totW - 2, totY + 5.5, { align: 'right' });
+        totY += 8;
       }
 
       doc.setFillColor(201, 160, 90);
-      doc.rect(totX, totY, totW, 8, 'F');
+      doc.rect(totX, totY, totW, 10, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10.5);
+      doc.setFontSize(13);
       doc.setTextColor(59, 36, 22);
-      doc.text('TOTAL', totX + 2, totY + 5.5);
-      doc.text('$' + formatMoney(data.total), totX + totW - 2, totY + 5.5, { align: 'right' });
+      doc.text('TOTAL', totX + 2, totY + 7);
+      doc.text('$' + formatMoney(data.total), totX + totW - 2, totY + 7, { align: 'right' });
 
-      totY += 10;
+      totY += 12;
       y = Math.max(tableBottom, totY) + 4;
 
-      // Items incluidos en dos columnas.
+      // ITEMS INCLUIDOS - MÁS LEGIBLE.
       var items = data.items || [];
-      if (!items.length) { items = ['Según detalle cotizado']; }
+      if (!items.length) items = ['Según detalle cotizado'];
 
       var half = Math.ceil(items.length / 2);
-      var itemFont = 8;
-      var lineH = 4.3;
+      var itemFont = 9.5;
+      var lineH = 4.8;
 
-      if (y > 212) { itemFont = 7.5; lineH = 3.8; }
-
-      var itemsBodyH = half * lineH + 5;
+      var itemsBodyH = half * lineH + 6;
 
       doc.setFillColor(201, 160, 90);
-      doc.rect(margin, y, contentW, 6, 'F');
+      doc.rect(margin, y, contentW, 7, 'F');
 
       doc.setTextColor(59, 36, 22);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.text('ITEMS INCLUIDOS EN EL PRECIO', margin + 2, y + 4.2);
+      doc.setFontSize(11);
+      doc.text('ITEMS INCLUIDOS EN EL PRECIO', margin + 2, y + 5);
 
-      y += 6;
+      y += 7;
 
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
@@ -2662,82 +1768,94 @@
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(itemFont);
-      doc.setTextColor(59, 36, 22);
+      doc.setTextColor(40, 30, 20);
 
-      var itemY = y + 4.2;
+      var itemY = y + 4.8;
 
       for (var j = 0; j < half; j++) {
         var itemLeft = items[j];
         var itemRight = items[j + half];
 
         if (itemLeft) {
-          if (typeof itemLeft === 'object') { itemLeft = itemLeft.nombre || ''; }
+          if (typeof itemLeft === 'object') itemLeft = itemLeft.nombre || '';
           doc.text('- ' + truncateText(itemLeft, 48), margin + 3, itemY + j * lineH);
         }
 
         if (itemRight) {
-          if (typeof itemRight === 'object') { itemRight = itemRight.nombre || ''; }
+          if (typeof itemRight === 'object') itemRight = itemRight.nombre || '';
           doc.text('- ' + truncateText(itemRight, 48), margin + 102, itemY + j * lineH);
         }
       }
 
-      y += itemsBodyH + 3;
+      y += itemsBodyH + 4;
 
-      // Alcance y garantía.
+      // ALCANCE Y GARANTÍA - MÁS LEGIBLE.
       y = drawPdfInfoBox(
-        doc,
-        'ALCANCE DEL PROYECTO',
+        doc, 'ALCANCE DEL PROYECTO',
         'Instalación de hormigón estampado según condiciones pactadas. Incluye preparación, hormigonado, estampado, curado y limpieza básica del área de trabajo. No incluye obras civiles no especificadas en esta cotización.',
-        y,
-        16
+        y, 18
       );
 
       y = drawPdfInfoBox(
-        doc,
-        'GARANTÍA',
+        doc, 'GARANTÍA',
         '12 meses por fisuras o fracturas estructurales del hormigón. Se recomienda mantención anual. Focos LED con garantía de 4 meses. Post-venta de 90 días.',
-        y,
-        18
+        y, 20
       );
 
-      // FOOTER PDF con web e Instagram clickeables.
-      var footerY = 285;
+      // FOOTER PDF - MÁS GRANDE Y LEGIBLE CON SUBRAYADO EN LOS ENLACES.
+      var footerY = 280;
 
       doc.setDrawColor(201, 160, 90);
-      doc.setLineWidth(0.4);
-      doc.line(margin, footerY - 2, pageW - margin, footerY - 2);
+      doc.setLineWidth(0.5);
+      doc.line(margin, footerY - 3, pageW - margin, footerY - 3);
 
-      // Fila 1: Empresa + RUT (texto normal).
-      doc.setFontSize(8.5);
+      // Fila 1: Empresa + RUT.
+      doc.setFontSize(10);
       doc.setTextColor(92, 58, 33);
       doc.setFont('helvetica', 'bold');
-      doc.text('Pavimentos M&C SPA - RUT: 77.145.822-K', pageW / 2, footerY + 2, { align: 'center' });
+      doc.text('Pavimentos M&C SPA  •  RUT: 77.145.822-K', pageW / 2, footerY + 1, { align: 'center' });
 
-      // Fila 2: Descripción + ubicación.
+      // Fila 2: Descripción.
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.text('Construcciones en General - Lampa, Chile', pageW / 2, footerY + 5.5, { align: 'center' });
+      doc.setFontSize(9.5);
+      doc.text('Construcciones en General  •  Lampa, Chile', pageW / 2, footerY + 5.5, { align: 'center' });
 
-      // Fila 3: Teléfono + email (texto normal).
-      doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl', pageW / 2, footerY + 9, { align: 'center' });
+      // Fila 3: Teléfono + email.
+      doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl', pageW / 2, footerY + 10, { align: 'center' });
 
-      // Fila 4: Web clickeable + Instagram clickeable.
+      // Fila 4: Web e Instagram CON SUBRAYADO SIMULADO para mejor legibilidad.
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8.5);
-      doc.setTextColor(42, 82, 130); // azul para indicar enlace
+      doc.setFontSize(10.5);
 
       var webText = 'www.pavimentosmyc.cl';
       var igText = '@pavimentosmc';
 
-      // Calculamos posiciones centradas.
-      var totalWidth = doc.getTextWidth(webText) + 15 + doc.getTextWidth(igText);
+      var webW = doc.getTextWidth(webText);
+      var igW = doc.getTextWidth(igText);
+      var sepW = doc.getTextWidth('   •   ');
+      var totalWidth = webW + sepW + igW;
       var startX = (pageW - totalWidth) / 2;
 
-      doc.text(webText, startX, footerY + 13, { link: 'https://www.pavimentosmyc.cl' });
-      doc.setTextColor(120, 120, 120);
-      doc.text(' | ', startX + doc.getTextWidth(webText), footerY + 13);
+      var linkY = footerY + 14.8;
+
+      // Web.
       doc.setTextColor(42, 82, 130);
-      doc.text(igText, startX + doc.getTextWidth(webText) + 15, footerY + 13, { link: 'https://instagram.com/pavimentosmc' });
+      doc.text(webText, startX, linkY, { link: 'https://www.pavimentosmyc.cl' });
+      // Subrayado.
+      doc.setDrawColor(42, 82, 130);
+      doc.setLineWidth(0.25);
+      doc.line(startX, linkY + 0.5, startX + webW, linkY + 0.5);
+
+      // Separador.
+      doc.setTextColor(120, 120, 120);
+      doc.text('   •   ', startX + webW, linkY);
+
+      // Instagram.
+      doc.setTextColor(42, 82, 130);
+      doc.text(igText, startX + webW + sepW, linkY, { link: 'https://instagram.com/pavimentosmc' });
+      // Subrayado.
+      doc.line(startX + webW + sepW, linkY + 0.5, startX + webW + sepW + igW, linkY + 0.5);
+
       doc.setTextColor(92, 58, 33);
 
       doc.save(pdfFilename(data));
@@ -2755,18 +1873,12 @@
       renderPapelera();
       loadLogo();
       initFirebase();
-
       try {
         if (sessionStorage.getItem('pavmyc_logged') === '1') {
           document.getElementById('loginScreen').style.display = 'none';
         }
       } catch (e) { }
-
-      setTimeout(function () {
-        if (!firebaseLoaded) {
-          setDbStatus(false);
-        }
-      }, 8000);
+      setTimeout(function () { if (!firebaseLoaded) setDbStatus(false); }, 8000);
     });
   </script>
 </body>
