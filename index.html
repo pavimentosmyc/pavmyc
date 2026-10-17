@@ -18,22 +18,17 @@
       --sidebar-w: 270px;
       --topbar-h: 58px;
     }
-
     * { box-sizing: border-box; }
     html { -webkit-text-size-adjust: 100%; }
-
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background: #f8f4ea;
       color: #28221d;
     }
-
     a { color: inherit; }
     button, input, select, textarea { font: inherit; }
     .hidden { display: none; }
-
-    /* ============ LOGIN ============ */
     .login-overlay {
       position: fixed; inset: 0; z-index: 5000;
       display: flex; align-items: center; justify-content: center; padding: 18px;
@@ -52,17 +47,14 @@
     }
     .login-box h1 { margin: 0; color: var(--cafe-oscuro); font-size: 28px; line-height: 1.1; }
     .login-box .subtitle { margin: 6px 0 18px; color: var(--cafe); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; }
-
     .field { margin-bottom: 12px; text-align: left; }
     .field label { display: block; margin-bottom: 6px; font-weight: bold; color: var(--cafe); font-size: 14px; }
-
     .form-control {
       width: 100%; min-height: 42px; padding: 9px 11px;
       border: 1px solid #cfbfa3; border-radius: 10px;
       background: #fffdf8; color: #2c231a; font-size: 16px;
     }
     .form-control:focus { outline: 2px solid rgba(201, 160, 90, 0.45); border-color: var(--mostaza); }
-
     .btn {
       border: 1px solid var(--cafe); background: var(--mostaza); color: #2b1d11;
       font-weight: bold; border-radius: 10px; min-height: 42px; padding: 9px 14px;
@@ -76,7 +68,6 @@
     .btn-light { background: var(--crema); }
     .btn-block { width: 100%; }
     .btn-sm { min-height: 36px; padding: 6px 10px; border-radius: 8px; font-size: 13px; }
-
     .db-status {
       position: fixed; top: 12px; right: 12px; z-index: 6000;
       display: inline-flex; align-items: center; gap: 8px;
@@ -88,7 +79,6 @@
     }
     .db-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--rojo); flex: 0 0 auto; }
     .db-status.online .db-dot { background: var(--verde); }
-
     .topbar {
       display: none; position: fixed; top: 0; left: 0; right: 0;
       height: var(--topbar-h); background: var(--cafe-oscuro); color: #fff;
@@ -110,7 +100,6 @@
       background: var(--crema); border-radius: 8px; padding: 3px; flex: 0 0 auto;
     }
     .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 1400; display: none; }
-
     .sidebar {
       position: fixed; top: 0; left: 0; width: var(--sidebar-w); height: 100vh;
       overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -122,54 +111,41 @@
     .brand img { width: 56px; height: 56px; object-fit: contain; background: var(--crema); border-radius: 14px; padding: 5px; flex: 0 0 auto; }
     .brand .brand-text strong { display: block; font-size: 18px; line-height: 1.05; color: var(--mostaza); }
     .brand .brand-text span { display: block; margin-top: 5px; font-size: 11px; color: #f2e8d8; letter-spacing: 0.4px; }
-
     .nav-link { display: block; width: 100%; text-align: left; padding: 13px 14px; margin-bottom: 8px; border: 0; border-radius: 12px; background: transparent; color: #fff; font-weight: bold; cursor: pointer; font-size: 15px; }
     .nav-link:hover, .nav-link.active { background: rgba(201, 160, 90, 0.22); color: #fff; }
     .nav-link.active { box-shadow: inset 0 0 0 1px rgba(201, 160, 90, 0.35); }
-
     .sidebar-contact { margin-top: 18px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.14); font-size: 14px; line-height: 1.7; }
     .sidebar-contact a { color: #ffe8c5; text-decoration: none; }
     .sidebar-contact a:hover { text-decoration: underline; }
-
     .sidebar-dev { margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.14); font-size: 12px; color: #d9c9ae; text-align: center; line-height: 1.6; }
     .sidebar-dev a { color: var(--mostaza); font-weight: bold; text-decoration: none; }
     .sidebar-dev a:hover { text-decoration: underline; }
-
     .main { margin-left: var(--sidebar-w); padding: 20px; min-height: 100vh; }
     .page-title { margin: 0 0 18px; color: var(--cafe-oscuro); font-size: clamp(24px, 5vw, 34px); line-height: 1.1; }
     .page-title small { display: inline-block; margin-left: 8px; color: var(--rojo); font-size: 14px; vertical-align: middle; }
-
     .section { display: none; }
     .section.active { display: block; }
-
     .card { background: var(--blanco); border: 1px solid rgba(92,58,33,0.14); border-radius: 18px; box-shadow: 0 10px 24px rgba(59,36,22,0.06); margin-bottom: 18px; overflow: hidden; }
     .card-header { padding: 15px 18px; background: linear-gradient(90deg, var(--crema), #fff8ec); border-bottom: 1px solid rgba(92,58,33,0.12); color: var(--cafe-oscuro); font-weight: bold; }
     .card-body { padding: 18px; }
-
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .muted { color: #7b6c5c; font-size: 14px; }
-
     .summary-card { position: sticky; top: 16px; border-top: 6px solid var(--mostaza); }
     .summary-row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px dashed #e2d4bc; font-size: 14px; }
     .summary-row span:first-child { color: #7b6c5c; font-weight: bold; flex: 0 0 auto; }
     .summary-row span:last-child { text-align: right; font-weight: bold; word-break: break-word; }
-
     .summary-total { margin-top: 12px; padding: 14px; border-radius: 14px; background: var(--cafe-oscuro); color: #fff; text-align: center; }
     .summary-total .label { font-size: 12px; letter-spacing: 1px; color: #f0e4cd; text-transform: uppercase; }
     .summary-total .value { margin-top: 6px; font-size: clamp(26px, 7vw, 34px); font-weight: 900; color: var(--mostaza); word-break: break-all; }
-
     .demo-box { border: 2px solid #d9b74c; background: var(--amarillo); border-radius: 14px; padding: 14px; margin-bottom: 16px; }
     .demo-box h4 { margin: 0 0 10px; color: #6d4f12; }
-
     .checkbox-line { display: flex; align-items: center; gap: 8px; margin: 8px 0; color: #473421; font-weight: bold; font-size: 14px; }
     .checkbox-line input { width: 20px; height: 20px; flex: 0 0 auto; }
-
     .items-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .item-check { background: #fffaf0; border: 1px solid #e8d9bc; border-radius: 10px; padding: 10px; font-size: 14px; }
     .item-check label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
     .item-check input { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 2px; }
-
     .table-wrap {
       overflow-x: auto; -webkit-overflow-scrolling: touch;
       border: 1px solid #eee0c8; border-radius: 12px; background: #fff; max-width: 100%;
@@ -178,21 +154,16 @@
     th, td { padding: 10px; border-bottom: 1px solid #efe3ca; vertical-align: middle; text-align: left; font-size: 14px; }
     th { background: var(--crema); color: var(--cafe-oscuro); white-space: nowrap; }
     .center { text-align: center; }
-
     .action-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
     .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; align-items: center; }
     .toolbar .filtro-input { flex: 1 1 240px; max-width: 420px; }
-
     .app-footer { margin: 24px 0 8px; padding-top: 12px; border-top: 1px solid #dfd0b5; color: #7b6c5c; font-size: 14px; }
     .app-footer a { color: var(--cafe); font-weight: bold; text-decoration: none; }
     .app-footer a:hover { text-decoration: underline; }
-
     .small-input { max-width: 110px; }
     .mt { margin-top: 12px; }
     .mb { margin-bottom: 12px; }
-
     .cant-hint { display: block; margin-top: 4px; font-size: 11px; color: #8a7760; font-weight: normal; }
-
     @media (max-width: 1100px) {
       .grid-2 { grid-template-columns: 1fr; }
       .summary-card { position: relative; top: 0; }
@@ -233,31 +204,22 @@
   </style>
 </head>
 <body>
-
   <div class="db-status" id="dbStatus">
     <span class="db-dot"></span>
     <span id="dbText">Modo local</span>
   </div>
-
   <div class="login-overlay" id="loginScreen">
     <div class="login-box">
       <img src="logo.png" alt="Logo Pavimentos M&amp;C" class="login-logo" onerror="this.style.display='none'">
       <h1>PAVIMENTOS M&amp;C</h1>
       <div class="subtitle">Hormigón Estampado</div>
       <form onsubmit="return doLogin();">
-        <div class="field">
-          <label for="loginUser">Usuario</label>
-          <input type="text" id="loginUser" class="form-control" value="admin">
-        </div>
-        <div class="field">
-          <label for="loginPass">Contraseña</label>
-          <input type="password" id="loginPass" class="form-control" value="">
-        </div>
+        <div class="field"><label for="loginUser">Usuario</label><input type="text" id="loginUser" class="form-control" value="admin"></div>
+        <div class="field"><label for="loginPass">Contraseña</label><input type="password" id="loginPass" class="form-control" value=""></div>
         <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
       </form>
     </div>
   </div>
-
   <header class="topbar">
     <button class="menu-btn" onclick="openSidebar()" aria-label="Abrir menú">&#9776;</button>
     <div class="topbar-brand">
@@ -265,9 +227,7 @@
       <span>PAVIMENTOS M&amp;C</span>
     </div>
   </header>
-
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
-
   <aside class="sidebar" id="appSidebar">
     <div class="brand">
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
@@ -276,31 +236,25 @@
         <span>CONSTRUCCIONES EN GENERAL</span>
       </div>
     </div>
-
     <button class="nav-link active" id="navNueva" onclick="showSection('nueva-cotizacion', this); return false;">Nueva Cotizacion</button>
     <button class="nav-link" id="navProyectos" onclick="showSection('proyectos', this); return false;">Proyectos</button>
     <button class="nav-link" id="navPapelera" onclick="showSection('papelera', this); return false;">Papelera</button>
     <button class="nav-link" id="navTarifas" onclick="showSection('tarifas', this); return false;">Tarifas</button>
     <button class="nav-link" id="navInventario" onclick="showSection('inventario', this); return false;">Inventario</button>
     <button class="nav-link" onclick="logout(); return false;">Salir</button>
-
     <div class="sidebar-contact">
       <a href="https://wa.me/56930665920" target="_blank" rel="noopener">+56 9 3066 5920</a><br>
       <a href="mailto:ventas@pavimentosmyc.cl">ventas@pavimentosmyc.cl</a><br>
       Lampa, Chile
     </div>
-
     <div class="sidebar-dev">
       Desarrollado por<br>
       <a href="https://instagram.com/digitalmarketing.cl" target="_blank" rel="noopener">@digitalmarketing.cl</a>
     </div>
   </aside>
-
   <main class="main">
-
     <section id="nueva-cotizacion" class="section active">
       <h2 class="page-title">Nueva Cotizacion <small id="editModeLabel" class="hidden">Modo edición</small></h2>
-
       <div class="grid-2">
         <div>
           <div class="card">
@@ -318,7 +272,6 @@
               </div>
             </div>
           </div>
-
           <div class="card">
             <div class="card-header">Calculo por Metro Cuadrado</div>
             <div class="card-body">
@@ -336,7 +289,6 @@
               </div>
             </div>
           </div>
-
           <div class="card">
             <div class="card-header">Trabajos Extras</div>
             <div class="card-body">
@@ -354,42 +306,25 @@
                   </div>
                 </div>
               </div>
-
               <div class="muted mb">
                 Selecciona los trabajos extras que se sumarán al total. Solo los marcados aparecerán en el PDF. Puedes modificar libremente la <strong>cantidad</strong> y el total se actualizará automáticamente (cantidad × precio unitario).
               </div>
-
-              <div class="toolbar">
-                <button class="btn btn-light" onclick="addCustomExtra()">+ Agregar Trabajo Extra</button>
-              </div>
-
+              <div class="toolbar"><button class="btn btn-light" onclick="addCustomExtra()">+ Agregar Trabajo Extra</button></div>
               <div class="table-wrap">
                 <table>
-                  <thead>
-                    <tr>
-                      <th style="width:50px;">✓</th>
-                      <th>Descripcion</th>
-                      <th style="width:110px;">Cantidad</th>
-                      <th style="width:130px;">Precio Unit.</th>
-                      <th style="width:70px;"></th>
-                    </tr>
-                  </thead>
+                  <thead><tr><th style="width:50px;">✓</th><th>Descripcion</th><th style="width:110px;">Cantidad</th><th style="width:130px;">Precio Unit.</th><th style="width:70px;"></th></tr></thead>
                   <tbody id="extrasBody"></tbody>
                 </table>
               </div>
             </div>
           </div>
-
           <div class="card">
             <div class="card-header">Items Incluidos en el Precio</div>
             <div class="card-body">
-              <div class="toolbar">
-                <button class="btn btn-light" onclick="toggleAllItems()">Seleccionar / Deseleccionar Todo</button>
-              </div>
+              <div class="toolbar"><button class="btn btn-light" onclick="toggleAllItems()">Seleccionar / Deseleccionar Todo</button></div>
               <div class="items-grid" id="itemsContainer"></div>
             </div>
           </div>
-
           <div class="action-buttons">
             <button class="btn btn-primary" id="btnGuardar" onclick="guardarProyecto()">Guardar Proyecto</button>
             <button class="btn btn-dark" onclick="generarPDFActual()">Generar PDF</button>
@@ -398,7 +333,6 @@
             <button class="btn btn-danger hidden" id="btnCancelarEdicion" onclick="cancelarEdicion()">Cancelar edicion</button>
           </div>
         </div>
-
         <div>
           <div class="card summary-card">
             <div class="card-header">RESUMEN</div>
@@ -421,7 +355,6 @@
         </div>
       </div>
     </section>
-
     <section id="proyectos" class="section">
       <h2 class="page-title">Proyectos Guardados</h2>
       <div class="card">
@@ -440,7 +373,6 @@
         </div>
       </div>
     </section>
-
     <section id="papelera" class="section">
       <h2 class="page-title">Papelera de Reciclaje</h2>
       <div class="card">
@@ -460,7 +392,6 @@
         </div>
       </div>
     </section>
-
     <section id="tarifas" class="section">
       <h2 class="page-title">Gestion de Tarifas</h2>
       <div class="card">
@@ -477,7 +408,6 @@
         </div>
       </div>
     </section>
-
     <section id="inventario" class="section">
       <h2 class="page-title">Gestion de Inventario</h2>
       <div class="card">
@@ -509,7 +439,6 @@
         </div>
       </div>
     </section>
-
     <footer class="app-footer">
       Desarrollado por <a href="https://instagram.com/digitalmarketing.cl" target="_blank" rel="noopener">@digitalmarketing.cl</a>
     </footer>
@@ -528,13 +457,11 @@
     var currentNumero = '';
     var cotSeq = 10000;
     var seqForceReset = false;
-
     var tarifas = [];
     var proyectos = [];
     var papelera = [];
     var inventario = [];
     var itemsCatalogo = [];
-
     var itemsDefault = [
       'Encarpe', 'Nivelación', 'Moldajes', 'Malla ACMA C92', 'Hormigón HB25 10 cm',
       'Cuarzo endurecedor 3 kg/m²', 'Talco desmoldante', 'Diseño/color', 'Cortes de dilatación',
@@ -550,7 +477,6 @@
       document.getElementById('appSidebar').classList.remove('open');
       document.getElementById('sidebarBackdrop').classList.remove('show');
     }
-
     function buildDefaultTarifas() {
       var arr = [];
       arr.push({ rango: '40-50', min: 40, max: 50, precio: 34000 });
@@ -560,24 +486,18 @@
       arr.push({ rango: '401-800', min: 401, max: 800, precio: 27000 });
       return arr;
     }
-
     function parseMoneyValue(value) {
       if (typeof value === 'number') return value;
       if (value === null || typeof value === 'undefined') return 0;
       var s = String(value);
       s = s.replace(/[^0-9.,-]/g, '');
-      if (s.indexOf(',') !== -1) {
-        s = s.replace(/\./g, '');
-        s = s.replace(',', '.');
-      } else {
+      if (s.indexOf(',') !== -1) { s = s.replace(/\./g, ''); s = s.replace(',', '.'); }
+      else {
         var parts = s.split('.');
-        if (parts.length > 1 && parts[1].length === 3) {
-          s = s.replace(/\./g, '');
-        }
+        if (parts.length > 1 && parts[1].length === 3) s = s.replace(/\./g, '');
       }
       return parseFloat(s) || 0;
     }
-
     function formatMoney(value) {
       var n = Math.round(parseMoneyValue(value));
       var neg = n < 0;
@@ -585,7 +505,6 @@
       s = s.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
       return (neg ? '-' : '') + s;
     }
-
     function escapeHtml(value) {
       if (value === null || typeof value === 'undefined') return '';
       return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -597,7 +516,6 @@
       if (s.length <= max) return s;
       return s.substring(0, max - 3) + '...';
     }
-
     function saveLocalAll() {
       try {
         localStorage.setItem('pavmyc_tarifas', JSON.stringify(tarifas));
@@ -608,7 +526,6 @@
         localStorage.setItem('pavmyc_seq', String(cotSeq));
       } catch (e) { }
     }
-
     function loadLocalData() {
       try {
         var t = localStorage.getItem('pavmyc_tarifas');
@@ -617,7 +534,6 @@
         var inv = localStorage.getItem('pavmyc_inventario');
         var it = localStorage.getItem('pavmyc_items');
         var sq = localStorage.getItem('pavmyc_seq');
-
         tarifas = t ? JSON.parse(t) : buildDefaultTarifas();
         proyectos = p ? JSON.parse(p) : [];
         papelera = b ? JSON.parse(b) : [];
@@ -625,10 +541,8 @@
         itemsCatalogo = it ? JSON.parse(it) : itemsDefault.slice();
         cotSeq = parseInt(sq, 10) || 10000;
       } catch (e) {
-        tarifas = buildDefaultTarifas();
-        proyectos = []; papelera = []; inventario = [];
-        itemsCatalogo = itemsDefault.slice();
-        cotSeq = 10000;
+        tarifas = buildDefaultTarifas(); proyectos = []; papelera = []; inventario = [];
+        itemsCatalogo = itemsDefault.slice(); cotSeq = 10000;
       }
       if (!tarifas || !tarifas.length) tarifas = buildDefaultTarifas();
       if (!proyectos) proyectos = [];
@@ -637,20 +551,13 @@
       if (!itemsCatalogo || !itemsCatalogo.length) itemsCatalogo = itemsDefault.slice();
       if (!cotSeq || cotSeq < 10000) cotSeq = 10000;
     }
-
     function migrateSeq5() {
       try {
         if (localStorage.getItem('pavmyc_seq5') === '1') return;
         localStorage.setItem('pavmyc_seq5', '1');
-        seqForceReset = true;
-        cotSeq = 10000;
-        saveLocalAll();
-      } catch (e) {
-        seqForceReset = true;
-        cotSeq = 10000;
-      }
+        seqForceReset = true; cotSeq = 10000; saveLocalAll();
+      } catch (e) { seqForceReset = true; cotSeq = 10000; }
     }
-
     function setDbStatus(connected) {
       useFirebase = !!connected;
       var box = document.getElementById('dbStatus');
@@ -659,7 +566,6 @@
       if (connected) { box.className = 'db-status online'; txt.innerText = 'Conectado'; }
       else { box.className = 'db-status'; txt.innerText = 'Modo local'; }
     }
-
     function initFirebase() {
       if (typeof firebase === 'undefined') { setDbStatus(false); return; }
       try {
@@ -674,7 +580,6 @@
         loadFromFirebase();
       } catch (e) { db = null; setDbStatus(false); }
     }
-
     function loadFromFirebase() {
       if (!db) return;
       db.collection('config').doc('numeracion').get().then(function (doc) {
@@ -720,7 +625,6 @@
         else if (papelera.length) { for (var i = 0; i < papelera.length; i++) syncSavePapelera(papelera[i]); }
       }).catch(function () { setDbStatus(false); });
     }
-
     function syncSaveProject(project) {
       if (!useFirebase || !db) return;
       try {
@@ -761,7 +665,6 @@
       if (!useFirebase || !db) return;
       db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () { setDbStatus(false); });
     }
-
     function reserveNumero() {
       var num = String(cotSeq);
       cotSeq = cotSeq + 1;
@@ -769,7 +672,6 @@
       return num;
     }
     function ensureNumero() { if (!currentNumero) currentNumero = reserveNumero(); return currentNumero; }
-
     function findProjectIndex(id) {
       for (var i = 0; i < proyectos.length; i++) if (String(proyectos[i].id) === String(id)) return i;
       return -1;
@@ -778,25 +680,20 @@
       for (var i = 0; i < papelera.length; i++) if (String(papelera[i].id) === String(id)) return i;
       return -1;
     }
-
     function doLogin() {
       var user = document.getElementById('loginUser').value;
       var pass = document.getElementById('loginPass').value;
       if (user === 'admin' && pass === 'admin123') {
         try { sessionStorage.setItem('pavmyc_logged', '1'); } catch (e) { }
         document.getElementById('loginScreen').style.display = 'none';
-      } else {
-        alert('Usuario o contraseña incorrectos. Use admin / admin123.');
-      }
+      } else { alert('Usuario o contraseña incorrectos. Use admin / admin123.'); }
       return false;
     }
-
     function logout() {
       try { sessionStorage.removeItem('pavmyc_logged'); } catch (e) { }
       closeSidebar();
       document.getElementById('loginScreen').style.display = 'flex';
     }
-
     function showSection(sectionId, link) {
       var sections = document.getElementsByClassName('section');
       for (var i = 0; i < sections.length; i++) sections[i].classList.remove('active');
@@ -811,7 +708,6 @@
       if (sectionId === 'tarifas') renderTarifas();
       if (sectionId === 'inventario') { renderInventario(); renderItemsCatalogo(); }
     }
-
     function buildItems() {
       var container = document.getElementById('itemsContainer');
       container.innerHTML = '';
@@ -829,12 +725,10 @@
         wrap.appendChild(label); container.appendChild(wrap);
       }
     }
-
     function rebuildItemsPreserving() {
       var checkedNames = getItemsChecked();
       buildItems(); setItemsChecked(checkedNames);
     }
-
     function toggleAllItems() {
       var boxes = document.getElementsByClassName('item-incluido');
       var allChecked = true;
@@ -842,14 +736,12 @@
       for (var j = 0; j < boxes.length; j++) boxes[j].checked = !allChecked;
       calcularTotal();
     }
-
     function getItemsChecked() {
       var result = [];
       var boxes = document.getElementsByClassName('item-incluido');
       for (var i = 0; i < boxes.length; i++) if (boxes[i].checked) result.push(boxes[i].getAttribute('data-nombre'));
       return result;
     }
-
     function setItemsChecked(names) {
       var boxes = document.getElementsByClassName('item-incluido');
       var checkAll = false;
@@ -859,7 +751,6 @@
         else boxes[i].checked = names.indexOf(boxes[i].getAttribute('data-nombre')) !== -1;
       }
     }
-
     function isItemCheckedByName(name) {
       var boxes = document.getElementsByClassName('item-incluido');
       for (var i = 0; i < boxes.length; i++) if (boxes[i].getAttribute('data-nombre') === name) return boxes[i].checked;
@@ -869,7 +760,6 @@
       var boxes = document.getElementsByClassName('item-incluido');
       for (var i = 0; i < boxes.length; i++) if (boxes[i].getAttribute('data-nombre') === name) boxes[i].checked = !!checked;
     }
-
     function renderItemsCatalogo() {
       var tbody = document.getElementById('tbodyItemsCatalogo');
       var html = '';
@@ -881,7 +771,6 @@
       }
       tbody.innerHTML = html;
     }
-
     function updateItemCatalogo(index, value) {
       if (!itemsCatalogo[index] && itemsCatalogo[index] !== '') return;
       var oldName = itemsCatalogo[index];
@@ -891,7 +780,6 @@
       rebuildItemsPreserving(); setItemCheckedByName(value, wasChecked);
       calcularTotal();
     }
-
     function addItemCatalogo() {
       var input = document.getElementById('newItemNombre');
       var name = input.value.trim();
@@ -903,7 +791,6 @@
       setItemCheckedByName(name, true);
       calcularTotal();
     }
-
     function removeItemCatalogo(index) {
       if (!confirm('¿Eliminar este item del catálogo de items incluidos?')) return;
       itemsCatalogo.splice(index, 1);
@@ -911,59 +798,45 @@
       renderItemsCatalogo(); rebuildItemsPreserving();
       calcularTotal();
     }
-
     function clearExtras() { document.getElementById('extrasBody').innerHTML = ''; }
-
     function addExtraRow(desc, precio, cant, checked, min) {
       var tbody = document.getElementById('extrasBody');
       var tr = document.createElement('tr');
       tr.setAttribute('data-min', String(min || 0));
-
       var tdCheck = document.createElement('td');
       var chk = document.createElement('input');
       chk.type = 'checkbox'; chk.className = 'extra-check';
       chk.checked = !!checked; chk.onchange = calcularTotal;
       tdCheck.appendChild(chk); tr.appendChild(tdCheck);
-
       var tdDesc = document.createElement('td');
       var descInput = document.createElement('input');
       descInput.type = 'text'; descInput.className = 'form-control extra-desc';
       descInput.value = desc || ''; descInput.placeholder = 'Descripción';
       descInput.oninput = calcularTotal;
       tdDesc.appendChild(descInput); tr.appendChild(tdDesc);
-
       var tdCant = document.createElement('td');
       var cantInput = document.createElement('input');
-      cantInput.type = 'number';
-      cantInput.className = 'form-control small-input extra-cant';
-      cantInput.min = '1'; cantInput.step = '1';
-      cantInput.value = cant;
+      cantInput.type = 'number'; cantInput.className = 'form-control small-input extra-cant';
+      cantInput.min = '1'; cantInput.step = '1'; cantInput.value = cant;
       cantInput.oninput = function () {
         var row = this.closest('tr');
-        enforceExtraMin(row);
-        calcularTotal();
+        enforceExtraMin(row); calcularTotal();
       };
       cantInput.onchange = function () {
         var row = this.closest('tr');
-        enforceExtraMin(row);
-        calcularTotal();
+        enforceExtraMin(row); calcularTotal();
       };
       tdCant.appendChild(cantInput);
       var hint = document.createElement('span');
       hint.className = 'cant-hint';
       hint.innerText = min > 0 ? ('Mínimo ' + min) : 'Editar cantidad';
-      tdCant.appendChild(hint);
-      tr.appendChild(tdCant);
-
+      tdCant.appendChild(hint); tr.appendChild(tdCant);
       var tdPrecio = document.createElement('td');
       var precioInput = document.createElement('input');
-      precioInput.type = 'number';
-      precioInput.className = 'form-control small-input extra-precio';
-      precioInput.min = '0'; precioInput.step = '1';
-      precioInput.value = precio;
+      precioInput.type = 'number'; precioInput.className = 'form-control small-input extra-precio';
+      precioInput.min = '0'; precioInput.step = '1'; precioInput.value = precio;
       precioInput.oninput = calcularTotal;
       tdPrecio.appendChild(precioInput); tr.appendChild(tdPrecio);
-
       var tdDel = document.createElement('td');
       var delBtn = document.createElement('button');
       delBtn.className = 'btn btn-sm btn-danger'; delBtn.innerText = 'X';
@@ -973,17 +846,13 @@
         calcularTotal();
       };
       tdDel.appendChild(delBtn); tr.appendChild(tdDel);
-
       tbody.appendChild(tr);
     }
-
     function addPredefinedExtras() {
       addExtraRow('Focos LED', 35000, 4, false, 4);
       addExtraRow('Tapas de cámaras', 60000, 1, false, 0);
     }
-
     function addCustomExtra() { addExtraRow('', 0, 1, true, 0); }
-
     function enforceExtraMin(row) {
       if (!row) return;
       var min = parseInt(row.getAttribute('data-min') || '0', 10);
@@ -993,7 +862,6 @@
       if (min > 0 && value < min) cantInput.value = min;
       if (value <= 0) cantInput.value = 1;
     }
-
     function getExtrasAll() {
       var rows = document.querySelectorAll('#extrasBody tr');
       var result = [];
@@ -1015,7 +883,6 @@
       }
       return result;
     }
-
     function loadExtrasFromArray(arr) {
       clearExtras();
       if (arr && arr.length) {
@@ -1023,11 +890,8 @@
           var item = arr[i];
           addExtraRow(item.desc || '', item.precio || 0, item.cant || 0, !!item.checked, parseInt(item.min || 0, 10));
         }
-      } else {
-        addPredefinedExtras();
-      }
+      } else { addPredefinedExtras(); }
     }
-
     function getTarifa(superficie) {
       for (var i = 0; i < tarifas.length; i++) {
         var t = tarifas[i];
@@ -1036,7 +900,6 @@
       if (superficie > 800 && tarifas.length) return tarifas[tarifas.length - 1];
       return { rango: '40-50', precio: 34000 };
     }
-
     function getQuoteData() {
       var cliente = document.getElementById('clienteNombre').value.trim();
       var telefono = document.getElementById('clienteTelefono').value.trim();
@@ -1046,32 +909,22 @@
       var fecha = document.getElementById('fechaCotizacion').value;
       var superficie = parseFloat(document.getElementById('superficie').value) || 0;
       if (superficie < 40) superficie = 40;
-
       var tarifa = getTarifa(superficie);
       var precioM2 = parseFloat(tarifa.precio) || 0;
       var subtotalM2 = superficie * precioM2;
-
       var extrasAll = getExtrasAll();
       var extraRows = [];
       var extraNames = [];
       var totalExtras = 0;
-
       for (var i = 0; i < extrasAll.length; i++) {
         var extra = extrasAll[i];
         if (extra.checked && extra.desc && extra.cant > 0 && extra.precio >= 0) {
           var importe = extra.cant * extra.precio;
           totalExtras += importe;
           extraNames.push(extra.desc);
-          extraRows.push({
-            desc: extra.desc,
-            cant: extra.cant,
-            precio: extra.precio,
-            importe: importe,
-            unidad: 'un'
-          });
+          extraRows.push({ desc: extra.desc, cant: extra.cant, precio: extra.precio, importe: importe, unidad: 'un' });
         }
       }
-
       var demM2 = parseFloat(document.getElementById('demolicionM2').value) || 0;
       var demInclude = document.getElementById('demolicionPdf').checked;
       var demTotal = 0;
@@ -1079,13 +932,11 @@
         demTotal = demM2 * 4000;
         extraNames.push('Demolición de pavimento existente');
       }
-
       var base = subtotalM2 + totalExtras + demTotal;
       var aplicarIva = document.getElementById('aplicarIva').checked;
       var ivaMonto = 0;
       if (aplicarIva) ivaMonto = Math.round(base * 0.19);
       var total = base + ivaMonto;
-
       return {
         numero: currentNumero, cliente: cliente, telefono: telefono,
         email: email, direccion: direccion, vendedor: vendedor, fecha: fecha,
@@ -1097,7 +948,6 @@
         total: total, itemsChecked: getItemsChecked()
       };
     }
-
     function calcularTotal() {
       var q = getQuoteData();
       document.getElementById('tarifaAplicada').value = q.tarifaRango + ' m²';
@@ -1114,7 +964,6 @@
       else document.getElementById('resIva').innerText = 'No incluido';
       document.getElementById('resTotal').innerText = '$' + formatMoney(q.total);
     }
-
     function resetForm() {
       editingId = null; currentNumero = '';
       document.getElementById('clienteNombre').value = '';
@@ -1135,7 +984,6 @@
       clearExtras(); addPredefinedExtras();
       updateEditModeUI(); calcularTotal();
     }
-
     function updateEditModeUI() {
       var btnGuardar = document.getElementById('btnGuardar');
       var btnCancel = document.getElementById('btnCancelarEdicion');
@@ -1150,7 +998,6 @@
         editLabel.classList.add('hidden');
       }
     }
-
     function guardarProyecto() {
       var q = getQuoteData();
       if (!q.cliente) { alert('El nombre del cliente es obligatorio.'); return; }
@@ -1175,7 +1022,6 @@
       renderProyectos(); updateEditModeUI(); calcularTotal();
       alert('Proyecto guardado con N° ' + project.numero);
     }
-
     function editarProyecto(id) {
       var index = findProjectIndex(id);
       if (index < 0) { alert('Proyecto no encontrado.'); return; }
@@ -1201,9 +1047,7 @@
       updateEditModeUI(); calcularTotal();
       showSection('nueva-cotizacion', document.getElementById('navNueva'));
     }
-
     function cancelarEdicion() { resetForm(); }
-
     function eliminarProyecto(id) {
       if (!confirm('¿Mover este proyecto a la papelera?')) return;
       var index = findProjectIndex(id);
@@ -1213,7 +1057,6 @@
       saveLocalAll(); syncMoveToPapelera(project);
       renderProyectos(); renderPapelera();
     }
-
     function restoreProject(id, silent) {
       var index = findPapeleraIndex(id);
       if (index < 0) return;
@@ -1222,20 +1065,17 @@
       saveLocalAll(); syncRestoreProject(project);
       if (!silent) { renderProyectos(); renderPapelera(); }
     }
-
     function deleteProjectPermanent(id, silent) {
       var index = findPapeleraIndex(id);
       if (index < 0) return;
       papelera.splice(index, 1); saveLocalAll(); syncDeletePapelera(id);
       if (!silent) renderPapelera();
     }
-
     function toggleAllTrash() {
       var checked = document.getElementById('trashSelectAll').checked;
       var boxes = document.getElementsByClassName('trash-check');
       for (var i = 0; i < boxes.length; i++) boxes[i].checked = checked;
     }
-
     function restoreSelected() {
       var boxes = document.getElementsByClassName('trash-check');
       var ids = [];
@@ -1245,7 +1085,6 @@
       document.getElementById('trashSelectAll').checked = false;
       renderProyectos(); renderPapelera();
     }
-
     function deleteSelected() {
       var boxes = document.getElementsByClassName('trash-check');
       var ids = [];
@@ -1256,7 +1095,6 @@
       document.getElementById('trashSelectAll').checked = false;
       renderPapelera();
     }
-
     function renderProyectos() {
       var tbody = document.getElementById('tbodyProyectos');
       var filtroInput = document.getElementById('filtroProyectos');
@@ -1287,7 +1125,6 @@
       }
       tbody.innerHTML = html;
     }
-
     function renderPapelera() {
       var tbody = document.getElementById('tbodyPapelera');
       var html = '';
@@ -1307,7 +1144,6 @@
       tbody.innerHTML = html;
       document.getElementById('trashSelectAll').checked = false;
     }
-
     function renderTarifas() {
       var tbody = document.getElementById('tbodyTarifas');
       var html = '';
@@ -1326,7 +1162,6 @@
       saveLocalAll(); syncTarifas(); calcularTotal();
       alert('Tarifas guardadas.');
     }
-
     function renderInventario() {
       var tbody = document.getElementById('tbodyInventario');
       var html = '';
@@ -1358,7 +1193,6 @@
       if (!confirm('¿Eliminar este item del inventario?')) return;
       inventario.splice(index, 1); saveLocalAll(); syncInventario(); renderInventario();
     }
-
     function normalizeChilePhone(phone) {
       var digits = String(phone || '').replace(/\D/g, '');
       if (!digits) return '';
@@ -1368,14 +1202,12 @@
       if (digits.indexOf('56') !== 0 && digits.length >= 9) digits = '56' + digits;
       return digits;
     }
-
     function enviarWhatsApp() {
       ensureNumero();
       var q = getQuoteData();
       if (!q.cliente) { alert('Ingresa el nombre del cliente antes de enviar.'); return; }
       var phone = normalizeChilePhone(q.telefono);
       if (!phone || phone.length < 8) { alert('Ingresa un teléfono válido después de +56.'); return; }
-
       var msg = 'PAVIMENTOS M&C - CONSTRUCCIONES EN GENERAL\n';
       msg += '--------------------------------\n';
       msg += 'COTIZACION N° ' + q.numero + '\n';
@@ -1396,7 +1228,6 @@
       msg += '\nPavimentos M&C SPA - Lampa, Chile\n+56 9 3066 5920 | ventas@pavimentosmyc.cl\nwww.pavimentosmyc.cl | IG: @pavimentosmc';
       window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
     }
-
     function enviarCorreo() {
       ensureNumero();
       var q = getQuoteData();
@@ -1419,7 +1250,6 @@
       body += '\nQuedamos atentos a sus comentarios.\n\nPavimentos M&C SPA - RUT: 77.145.822-K\nConstrucciones en General - Lampa, Chile\nTel: +56 9 3066 5920\nventas@pavimentosmyc.cl\nWeb: www.pavimentosmyc.cl\nInstagram: @pavimentosmc';
       window.location.href = 'mailto:' + encodeURIComponent(q.email) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     }
-
     function getLogoData(callback) {
       if (logoData) { callback(); return; }
       var img = new Image();
@@ -1436,7 +1266,6 @@
       img.src = 'logo.png';
     }
     function loadLogo() { getLogoData(function () { }); }
-
     function generarPDFActual() {
       var q0 = getQuoteData();
       if (!q0.cliente) { alert('Ingresa el nombre del cliente para generar el PDF.'); return; }
@@ -1445,14 +1274,12 @@
       var data = buildPdfDataFromQuote(q);
       getLogoData(function () { createPdf(data); });
     }
-
     function generarPDFProyecto(id) {
       var index = findProjectIndex(id);
       if (index < 0) { alert('Proyecto no encontrado.'); return; }
       var data = buildPdfDataFromProject(proyectos[index]);
       getLogoData(function () { createPdf(data); });
     }
-
     function buildPdfDataFromQuote(q) {
       var rows = [];
       rows.push({ desc: 'Hormigón estampado', cant: q.superficie, precio: q.precioM2, importe: q.subtotalM2, unidad: 'm²' });
@@ -1466,7 +1293,6 @@
         total: q.total, items: q.itemsChecked
       };
     }
-
     function buildPdfDataFromProject(p) {
       var rows = [];
       var superficie = parseMoneyValue(p.superficieNum);
@@ -1505,41 +1331,46 @@
         subtotal: subtotal, iva: iva, total: total, items: p.items || []
       };
     }
-
     function pdfFilename(data) {
       var safeNum = String(data.numero || 'cotizacion').replace(/[^a-zA-Z0-9_-]/g, '-');
       var safeCliente = String(data.cliente || 'cliente').replace(/[^a-zA-Z0-9_-]/g, '_');
       return safeNum + '_' + safeCliente + '.pdf';
     }
 
-    function drawPdfInfoBox(doc, title, text, startY, minHeight) {
+    // ============================================================
+    // FUNCIÓN PDF COMPLETAMENTE REDISEÑADA PARA EVITAR SOBRESCRITURA
+    // ============================================================
+    function drawPdfInfoBox(doc, title, text, startY, maxHeight, fontSize) {
       var margin = 8;
       var contentW = 194;
-      var fontSize = 10;
-      var line = 4.8;
+      var headerH = 6.5;
+      fontSize = fontSize || 9;
+      var line = fontSize * 1.35;
 
       doc.setFontSize(fontSize);
       var lines = doc.splitTextToSize(text, contentW - 6);
-      var bodyH = lines.length * line + 5;
-      if (bodyH < minHeight - 6) bodyH = minHeight - 6;
+      var bodyH = lines.length * line + 4;
+      var availableBody = maxHeight - headerH;
+      if (bodyH > availableBody) bodyH = availableBody;
+      if (bodyH < 10) bodyH = 10;
 
       doc.setFillColor(166, 124, 82);
-      doc.rect(margin, startY, contentW, 7, 'F');
+      doc.rect(margin, startY, contentW, headerH, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11);
-      doc.text(title, margin + 2, startY + 5);
+      doc.setFontSize(fontSize + 1);
+      doc.text(title, margin + 2, startY + headerH - 2.2);
 
-      startY += 7;
+      startY += headerH;
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
       doc.rect(margin, startY, contentW, bodyH, 'FD');
       doc.setTextColor(40, 30, 20);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(fontSize);
-      doc.text(lines, margin + 3, startY + 5);
+      doc.text(lines, margin + 3, startY + 4.5);
 
-      return startY + bodyH + 4;
+      return startY + bodyH + 3;
     }
 
     function createPdf(data) {
@@ -1550,122 +1381,143 @@
       var doc = new JsPdfClass('p', 'mm', 'a4');
 
       var pageW = 210;
+      var pageH = 297;
       var margin = 8;
       var contentW = 194;
+      var footerY = 278;
+      var y = 0;
 
-      // HEADER café claro con logo - TAMAÑOS AUMENTADOS.
+      // ============================
+      // HEADER - CORREO Y INSTAGRAM AQUÍ
+      // ============================
       doc.setFillColor(166, 124, 82);
-      doc.rect(0, 0, pageW, 38, 'F');
+      doc.rect(0, 0, pageW, 40, 'F');
 
       if (logoData) {
-        try { doc.addImage(logoData, 'PNG', 10, 7, 32, 24); }
+        try { doc.addImage(logoData, 'PNG', 10, 8, 30, 24); }
         catch (e) { logoData = ''; }
       }
 
+      // Columna izquierda
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(24);
-      doc.text('PAVIMENTOS M&C', 48, 16);
+      doc.setFontSize(20);
+      doc.text('PAVIMENTOS M&C', 46, 14);
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(12);
-      doc.text('Construcciones en General', 48, 23);
-
       doc.setFontSize(10);
-      doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl  |  Lampa, Chile', 48, 31);
+      doc.text('Construcciones en General', 46, 21);
 
+      doc.setFontSize(8.5);
+      doc.text('ventas@pavimentosmyc.cl', 46, 27.5, { link: 'mailto:ventas@pavimentosmyc.cl' });
+      doc.text('Instagram: @pavimentosmc', 46, 33.5, { link: 'https://instagram.com/pavimentosmc' });
+
+      // Columna derecha
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11);
-      doc.text('RUT: 77.145.822-K', 202, 15, { align: 'right' });
+      doc.setFontSize(9.5);
+      doc.text('RUT: 77.145.822-K', 202, 14, { align: 'right' });
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10);
+      doc.setFontSize(8.5);
       doc.text('Pavimentos M&C SPA', 202, 21, { align: 'right' });
+      doc.text('Tel: +56 9 3066 5920', 202, 27.5, { align: 'right' });
+      doc.text('Lampa, Chile', 202, 33.5, { align: 'right' });
 
-      // Franja mostaza con número de cotización - MÁS GRANDE.
+      y = 40;
+
+      // ============================
+      // FRANJA MOSTAZA - N° COTIZACIÓN
+      // ============================
       doc.setFillColor(201, 160, 90);
-      doc.rect(0, 38, pageW, 11, 'F');
+      doc.rect(0, y, pageW, 10, 'F');
       doc.setTextColor(59, 36, 22);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14);
-      doc.text('N° COTIZACIÓN: ' + (data.numero || ''), margin, 45.5);
+      doc.setFontSize(13);
+      doc.text('N° COTIZACIÓN: ' + (data.numero || ''), margin, y + 7);
+      y += 10;
 
-      // Box COTIZADO PARA - MÁS GRANDE Y LEGIBLE.
-      var y = 52;
-      var boxH = 42;
-
+      // ============================
+      // BOX COTIZADO PARA
+      // ============================
+      y += 3;
+      var boxH = 40;
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(245, 236, 215);
       doc.roundedRect(margin, y, contentW, boxH, 2, 2, 'FD');
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
+      doc.setFontSize(11);
       doc.setTextColor(92, 58, 33);
-      doc.text('COTIZADO PARA', margin + 4, y + 8);
+      doc.text('COTIZADO PARA', margin + 4, y + 7);
 
-      doc.setFontSize(15);
-      doc.text(truncateText(data.cliente || '-', 38), margin + 4, y + 16);
+      // Nombre cliente - truncate seguro para columna izquierda
+      doc.setFontSize(13);
+      doc.text(truncateText(data.cliente || '-', 30), margin + 4, y + 14);
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10);
+      doc.setFontSize(9);
       doc.setTextColor(40, 30, 20);
 
       var leftX = margin + 4;
-      var rightX = margin + 102;
+      var rightX = margin + 100;
 
-      doc.text('Teléfono: ' + (data.telefono || '-'), leftX, y + 23);
-      doc.text('Email: ' + truncateText(data.email || '-', 38), leftX, y + 29);
+      doc.text('Teléfono: ' + truncateText(data.telefono || '-', 38), leftX, y + 21);
+      doc.text('Email: ' + truncateText(data.email || '-', 38), leftX, y + 27);
 
-      var addrLines = doc.splitTextToSize('Dirección: ' + (data.direccion || '-'), 88);
-      doc.text(addrLines.slice(0, 2), leftX, y + 35);
+      var addrLines = doc.splitTextToSize('Dirección: ' + (data.direccion || '-'), 85);
+      doc.text(addrLines.slice(0, 2), leftX, y + 33);
 
-      doc.text('Vendedor: ' + (data.vendedor || '-'), rightX, y + 16);
-      doc.text('Fecha: ' + (data.fecha || '-'), rightX, y + 23);
-      doc.text('Vigencia: ' + (data.vigencia || '15 días'), rightX, y + 29);
-      doc.text('Fono: +56 9 3066 5920', rightX, y + 35);
+      doc.text('Vendedor: ' + truncateText(data.vendedor || '-', 38), rightX, y + 14);
+      doc.text('Fecha: ' + truncateText(data.fecha || '-', 30), rightX, y + 21);
+      doc.text('Vigencia: ' + truncateText(data.vigencia || '15 días', 25), rightX, y + 27);
+      doc.text('Fono: +56 9 3066 5920', rightX, y + 33);
 
-      y += boxH + 4;
+      y += boxH;
 
-      // CONDICIONES Y MEDIOS DE PAGO - MÁS GRANDE.
+      // ============================
+      // CONDICIONES Y MEDIOS DE PAGO
+      // ============================
+      y += 3;
       doc.setFillColor(92, 58, 33);
-      doc.rect(margin, y, contentW, 8, 'F');
+      doc.rect(margin, y, contentW, 7, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11);
-      doc.text('CONDICIONES DE PAGO Y MEDIOS DE PAGO', margin + 2, y + 5.8);
-
-      y += 8;
+      doc.setFontSize(10);
+      doc.text('CONDICIONES DE PAGO Y MEDIOS DE PAGO', margin + 2, y + 5);
+      y += 7;
 
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
-      doc.rect(margin, y, contentW, 22, 'FD');
+      doc.rect(margin, y, contentW, 20, 'FD');
 
       doc.setTextColor(40, 30, 20);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.text('Condiciones de pago:', margin + 2, y + 6);
-      doc.text('Medios de pago:', margin + 102, y + 6);
+      doc.setFontSize(9);
+      doc.text('Condiciones de pago:', margin + 2, y + 5.5);
+      doc.text('Medios de pago:', margin + 100, y + 5.5);
 
       doc.setFont('helvetica', 'normal');
-      doc.text('- 50% inicio de obras', margin + 2, y + 11);
-      doc.text('- 30% hormigonado', margin + 2, y + 15.5);
-      doc.text('- 20% contra entrega', margin + 2, y + 20);
+      doc.text('- 50% inicio de obras', margin + 2, y + 10.5);
+      doc.text('- 30% hormigonado', margin + 2, y + 15);
+      doc.text('- 20% contra entrega', margin + 2, y + 19.5);
 
-      doc.text('- Transferencia', margin + 102, y + 11);
-      doc.text('- Efectivo', margin + 102, y + 15.5);
-      doc.text('- Tarjeta de crédito (recargo extra)', margin + 102, y + 20);
+      doc.text('- Transferencia', margin + 100, y + 10.5);
+      doc.text('- Efectivo', margin + 100, y + 15);
+      doc.text('- Tarjeta de crédito (recargo extra)', margin + 100, y + 19.5);
 
-      y += 25;
+      y += 20;
 
-      // TABLA PRINCIPAL - MÁS LEGIBLE.
+      // ============================
+      // TABLA PRINCIPAL
+      // ============================
+      y += 3;
       var rows = data.rows || [];
-      var fontBody = 10.5;
-      var headerFont = 11;
-      var rowH = 7.2;
-
-      if (rows.length > 8) { rowH = 6.4; fontBody = 10; }
-      if (rows.length > 12) { rowH = 5.8; fontBody = 9.5; }
-      if (rows.length > 16) { rowH = 5.2; fontBody = 9; }
+      var spaceForTable = footerY - y - 140;
+      if (spaceForTable < 25) spaceForTable = 25;
+      var rowH = Math.min(7, spaceForTable / Math.max(rows.length, 1));
+      if (rowH < 3.5) rowH = 3.5;
+      var fontBody = rowH > 6 ? 10 : (rowH > 5 ? 9 : 8.5);
+      var headerFont = fontBody + 1;
 
       var col0 = 92;
       var col1 = 22;
@@ -1673,17 +1525,15 @@
       var col3 = 40;
 
       doc.setFillColor(92, 58, 33);
-      doc.rect(margin, y, contentW, 8, 'F');
-
+      doc.rect(margin, y, contentW, 7, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(headerFont);
-      doc.text('DESCRIPCIÓN', margin + 2, y + 5.5);
-      doc.text('CANT.', margin + col0 + 2, y + 5.5);
-      doc.text('PRECIO UNIT.', margin + col0 + col1 + 2, y + 5.5);
-      doc.text('IMPORTE', margin + col0 + col1 + col2 + 2, y + 5.5);
-
-      y += 8;
+      doc.text('DESCRIPCIÓN', margin + 2, y + 5);
+      doc.text('CANT.', margin + col0 + 2, y + 5);
+      doc.text('PRECIO UNIT.', margin + col0 + col1 + 2, y + 5);
+      doc.text('IMPORTE', margin + col0 + col1 + col2 + 2, y + 5);
+      y += 7;
 
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(40, 30, 20);
@@ -1696,71 +1546,75 @@
         var cantText = String(rows[i].cant);
         if (rows[i].unidad) cantText = cantText + ' ' + rows[i].unidad;
 
-        doc.text(truncateText(rows[i].desc || '', 50), margin + 2, y + rowH - 2.2);
-        doc.text(cantText, margin + col0 + 2, y + rowH - 2.2);
-        doc.text('$' + formatMoney(rows[i].precio), margin + col0 + col1 + 2, y + rowH - 2.2);
-        doc.text('$' + formatMoney(rows[i].importe), margin + col0 + col1 + col2 + 2, y + rowH - 2.2);
+        doc.text(truncateText(rows[i].desc || '', 44), margin + 2, y + rowH - 2);
+        doc.text(cantText, margin + col0 + 2, y + rowH - 2);
+        doc.text('$' + formatMoney(rows[i].precio), margin + col0 + col1 + 2, y + rowH - 2);
+        doc.text('$' + formatMoney(rows[i].importe), margin + col0 + col1 + col2 + 2, y + rowH - 2);
 
         y += rowH;
       }
 
       doc.setDrawColor(92, 58, 33);
       doc.line(margin, y, margin + contentW, y);
-      var tableBottom = y;
 
-      // TOTALES - MÁS DESTACADOS.
+      // ============================
+      // TOTALES
+      // ============================
+      y += 3;
       var totX = margin + 110;
       var totW = 84;
-      var totY = tableBottom + 3;
 
-      doc.setFontSize(11);
+      doc.setFontSize(10);
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
 
-      doc.rect(totX, totY, totW, 8);
+      doc.rect(totX, y, totW, 7);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(40, 30, 20);
-      doc.text('Subtotal', totX + 2, totY + 5.5);
-      doc.text('$' + formatMoney(data.subtotal), totX + totW - 2, totY + 5.5, { align: 'right' });
-      totY += 8;
+      doc.text('Subtotal', totX + 2, y + 4.8);
+      doc.text('$' + formatMoney(data.subtotal), totX + totW - 2, y + 4.8, { align: 'right' });
+      y += 7;
 
       if (parseMoneyValue(data.iva) > 0) {
-        doc.rect(totX, totY, totW, 8);
-        doc.text('IVA 19%', totX + 2, totY + 5.5);
-        doc.text('$' + formatMoney(data.iva), totX + totW - 2, totY + 5.5, { align: 'right' });
-        totY += 8;
+        doc.rect(totX, y, totW, 7);
+        doc.text('IVA 19%', totX + 2, y + 4.8);
+        doc.text('$' + formatMoney(data.iva), totX + totW - 2, y + 4.8, { align: 'right' });
+        y += 7;
       }
 
       doc.setFillColor(201, 160, 90);
-      doc.rect(totX, totY, totW, 10, 'F');
+      doc.rect(totX, y, totW, 9, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(13);
+      doc.setFontSize(12);
       doc.setTextColor(59, 36, 22);
-      doc.text('TOTAL', totX + 2, totY + 7);
-      doc.text('$' + formatMoney(data.total), totX + totW - 2, totY + 7, { align: 'right' });
+      doc.text('TOTAL', totX + 2, y + 6.2);
+      doc.text('$' + formatMoney(data.total), totX + totW - 2, y + 6.2, { align: 'right' });
+      y += 9;
 
-      totY += 12;
-      y = Math.max(tableBottom, totY) + 4;
-
-      // ITEMS INCLUIDOS - MÁS LEGIBLE.
+      // ============================
+      // ITEMS INCLUIDOS
+      // ============================
+      y += 3;
       var items = data.items || [];
       if (!items.length) items = ['Según detalle cotizado'];
 
       var half = Math.ceil(items.length / 2);
-      var itemFont = 9.5;
-      var lineH = 4.8;
+      var spaceForItems = footerY - y - 60;
+      if (spaceForItems < 20) spaceForItems = 20;
 
-      var itemsBodyH = half * lineH + 6;
+      var itemHeaderH = 6;
+      var itemLineH = Math.min(4.5, (spaceForItems - itemHeaderH - 4) / half);
+      if (itemLineH < 3) itemLineH = 3;
+      var itemFont = itemLineH > 4 ? 8.5 : 7.5;
+      var itemsBodyH = half * itemLineH + 4;
 
       doc.setFillColor(201, 160, 90);
-      doc.rect(margin, y, contentW, 7, 'F');
-
+      doc.rect(margin, y, contentW, itemHeaderH, 'F');
       doc.setTextColor(59, 36, 22);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11);
-      doc.text('ITEMS INCLUIDOS EN EL PRECIO', margin + 2, y + 5);
-
-      y += 7;
+      doc.setFontSize(10);
+      doc.text('ITEMS INCLUIDOS EN EL PRECIO', margin + 2, y + 4.5);
+      y += itemHeaderH;
 
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
@@ -1770,93 +1624,54 @@
       doc.setFontSize(itemFont);
       doc.setTextColor(40, 30, 20);
 
-      var itemY = y + 4.8;
-
+      var itemY = y + 4;
       for (var j = 0; j < half; j++) {
         var itemLeft = items[j];
         var itemRight = items[j + half];
 
         if (itemLeft) {
           if (typeof itemLeft === 'object') itemLeft = itemLeft.nombre || '';
-          doc.text('- ' + truncateText(itemLeft, 48), margin + 3, itemY + j * lineH);
+          doc.text('- ' + truncateText(itemLeft, 46), margin + 3, itemY + j * itemLineH);
         }
-
         if (itemRight) {
           if (typeof itemRight === 'object') itemRight = itemRight.nombre || '';
-          doc.text('- ' + truncateText(itemRight, 48), margin + 102, itemY + j * lineH);
+          doc.text('- ' + truncateText(itemRight, 46), margin + 100, itemY + j * itemLineH);
         }
       }
+      y += itemsBodyH;
 
-      y += itemsBodyH + 4;
+      // ============================
+      // ALCANCE Y GARANTÍA
+      // ============================
+      y += 3;
+      var spaceForBoxes = footerY - y - 2;
+      var eachBoxH = Math.min(24, (spaceForBoxes - 3) / 2);
+      if (eachBoxH < 14) eachBoxH = 14;
+      var boxFont = eachBoxH > 20 ? 8.5 : 7.5;
 
-      // ALCANCE Y GARANTÍA - MÁS LEGIBLE.
-      y = drawPdfInfoBox(
-        doc, 'ALCANCE DEL PROYECTO',
+      y = drawPdfInfoBox(doc, 'ALCANCE DEL PROYECTO',
         'Instalación de hormigón estampado según condiciones pactadas. Incluye preparación, hormigonado, estampado, curado y limpieza básica del área de trabajo. No incluye obras civiles no especificadas en esta cotización.',
-        y, 18
-      );
+        y, eachBoxH, boxFont);
 
-      y = drawPdfInfoBox(
-        doc, 'GARANTÍA',
+      y = drawPdfInfoBox(doc, 'GARANTÍA',
         '12 meses por fisuras o fracturas estructurales del hormigón. Se recomienda mantención anual. Focos LED con garantía de 4 meses. Post-venta de 90 días.',
-        y, 20
-      );
+        y, eachBoxH, boxFont);
 
-      // FOOTER PDF - MÁS GRANDE Y LEGIBLE CON SUBRAYADO EN LOS ENLACES.
-      var footerY = 280;
-
+      // ============================
+      // FOOTER - COMPACTO Y FIJO
+      // ============================
       doc.setDrawColor(201, 160, 90);
       doc.setLineWidth(0.5);
-      doc.line(margin, footerY - 3, pageW - margin, footerY - 3);
+      doc.line(margin, footerY - 2, pageW - margin, footerY - 2);
 
-      // Fila 1: Empresa + RUT.
-      doc.setFontSize(10);
+      doc.setFontSize(9);
       doc.setTextColor(92, 58, 33);
       doc.setFont('helvetica', 'bold');
-      doc.text('Pavimentos M&C SPA  •  RUT: 77.145.822-K', pageW / 2, footerY + 1, { align: 'center' });
+      doc.text('Pavimentos M&C SPA  •  RUT: 77.145.822-K  •  Lampa, Chile', pageW / 2, footerY + 2, { align: 'center' });
 
-      // Fila 2: Descripción.
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9.5);
-      doc.text('Construcciones en General  •  Lampa, Chile', pageW / 2, footerY + 5.5, { align: 'center' });
-
-      // Fila 3: Teléfono + email.
-      doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl', pageW / 2, footerY + 10, { align: 'center' });
-
-      // Fila 4: Web e Instagram CON SUBRAYADO SIMULADO para mejor legibilidad.
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10.5);
-
-      var webText = 'www.pavimentosmyc.cl';
-      var igText = '@pavimentosmc';
-
-      var webW = doc.getTextWidth(webText);
-      var igW = doc.getTextWidth(igText);
-      var sepW = doc.getTextWidth('   •   ');
-      var totalWidth = webW + sepW + igW;
-      var startX = (pageW - totalWidth) / 2;
-
-      var linkY = footerY + 14.8;
-
-      // Web.
-      doc.setTextColor(42, 82, 130);
-      doc.text(webText, startX, linkY, { link: 'https://www.pavimentosmyc.cl' });
-      // Subrayado.
-      doc.setDrawColor(42, 82, 130);
-      doc.setLineWidth(0.25);
-      doc.line(startX, linkY + 0.5, startX + webW, linkY + 0.5);
-
-      // Separador.
-      doc.setTextColor(120, 120, 120);
-      doc.text('   •   ', startX + webW, linkY);
-
-      // Instagram.
-      doc.setTextColor(42, 82, 130);
-      doc.text(igText, startX + webW + sepW, linkY, { link: 'https://instagram.com/pavimentosmc' });
-      // Subrayado.
-      doc.line(startX + webW + sepW, linkY + 0.5, startX + webW + sepW + igW, linkY + 0.5);
-
-      doc.setTextColor(92, 58, 33);
+      doc.setFontSize(8.5);
+      doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl  |  www.pavimentosmyc.cl', pageW / 2, footerY + 7, { align: 'center' });
 
       doc.save(pdfFilename(data));
     }
