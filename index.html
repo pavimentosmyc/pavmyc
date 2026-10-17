@@ -757,7 +757,8 @@
     var logoData = '';
     var editingId = null;
     var currentNumero = '';
-    var cotSeq = 100000;
+    var cotSeq = 10000;
+    var seqForceReset = false;
 
     var tarifas = [];
     var proyectos = [];
@@ -887,14 +888,14 @@
         papelera = b ? JSON.parse(b) : [];
         inventario = inv ? JSON.parse(inv) : [];
         itemsCatalogo = it ? JSON.parse(it) : itemsDefault.slice();
-        cotSeq = parseInt(sq, 10) || 100000;
+        cotSeq = parseInt(sq, 10) || 10000;
       } catch (e) {
         tarifas = buildDefaultTarifas();
         proyectos = [];
         papelera = [];
         inventario = [];
         itemsCatalogo = itemsDefault.slice();
-        cotSeq = 100000;
+        cotSeq = 10000;
       }
 
       if (!tarifas || !tarifas.length) { tarifas = buildDefaultTarifas(); }
@@ -902,7 +903,25 @@
       if (!papelera) { papelera = []; }
       if (!inventario) { inventario = []; }
       if (!itemsCatalogo || !itemsCatalogo.length) { itemsCatalogo = itemsDefault.slice(); }
-      if (!cotSeq || cotSeq < 100000) { cotSeq = 100000; }
+      if (!cotSeq || cotSeq < 10000) { cotSeq = 10000; }
+    }
+
+    /* Migración única: si venías de la numeración anterior de 6 dígitos,
+       se reinicia la secuencia a 5 dígitos (10000) una sola vez,
+       en local y en Firebase, sin tocar los proyectos ya guardados. */
+    function migrateSeq5() {
+      try {
+        if (localStorage.getItem('pavmyc_seq5') === '1') {
+          return;
+        }
+        localStorage.setItem('pavmyc_seq5', '1');
+        seqForceReset = true;
+        cotSeq = 10000;
+        saveLocalAll();
+      } catch (e) {
+        seqForceReset = true;
+        cotSeq = 10000;
+      }
     }
 
     function setDbStatus(connected) {
@@ -952,7 +971,12 @@
           firebaseLoaded = true;
           setDbStatus(true);
 
-          if (doc.exists && doc.data() && doc.data().seq) {
+          if (seqForceReset) {
+            cotSeq = 10000;
+            seqForceReset = false;
+            saveLocalAll();
+            db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () { });
+          } else if (doc.exists && doc.data() && doc.data().seq) {
             var remoteSeq = parseInt(doc.data().seq, 10) || 0;
             if (remoteSeq > cotSeq) {
               cotSeq = remoteSeq;
@@ -961,7 +985,7 @@
             db.collection('config').doc('numeracion').set({ seq: cotSeq }).catch(function () { });
           }
 
-          if (cotSeq < 100000) { cotSeq = 100000; }
+          if (!cotSeq || cotSeq < 10000) { cotSeq = 10000; }
           saveLocalAll();
 
           return db.collection('config').doc('tarifas').get();
@@ -2073,7 +2097,7 @@
         return;
       }
 
-      var msg = 'PAVIMENTOS M&C - HORMIGON ESTAMPADO\n';
+      var msg = 'PAVIMENTOS M&C - CONSTRUCCIONES EN GENERAL\n';
       msg += '--------------------------------\n';
       msg += 'COTIZACION N° ' + q.numero + '\n';
       msg += '--------------------------------\n';
@@ -2098,7 +2122,16 @@
       }
       msg += 'TOTAL: $' + formatMoney(q.total) + '\n';
       msg += '\n';
-      msg += 'Condiciones: 50% anticipo, 50% al finalizar.\n';
+      msg += 'Condiciones de pago:\n';
+      msg += '- 50% inicio de obras\n';
+      msg += '- 30% hormigonado\n';
+      msg += '- 20% contra entrega\n';
+      msg += '\n';
+      msg += 'Medios de pago:\n';
+      msg += '- Transferencia\n';
+      msg += '- Efectivo\n';
+      msg += '- Tarjeta de credito (recargo extra)\n';
+      msg += '\n';
       msg += 'Validez de oferta: 15 dias.\n';
       msg += 'Garantia: 12 meses (fisuras/fracturas).\n';
       msg += '\n';
@@ -2143,16 +2176,22 @@
       body += 'TOTAL: $' + formatMoney(q.total) + '\n';
       body += '\n';
       body += 'CONDICIONES DE PAGO\n';
-      body += '- Anticipo 50% al confirmar.\n';
-      body += '- Saldo 50% al finalizar la obra.\n';
+      body += '- 50% inicio de obras.\n';
+      body += '- 30% hormigonado.\n';
+      body += '- 20% contra entrega.\n';
       body += '- Validez de la oferta: 15 días.\n';
+      body += '\n';
+      body += 'MEDIOS DE PAGO\n';
+      body += '- Transferencia.\n';
+      body += '- Efectivo.\n';
+      body += '- Tarjeta de crédito (recargo extra).\n';
       body += '\n';
       body += 'GARANTÍA\n';
       body += '12 meses por fisuras o fracturas estructurales del hormigón. Focos LED: 4 meses. Post-venta: 90 días.\n';
       body += '\n';
       body += 'Quedamos atentos a sus comentarios.\n\n';
       body += 'Pavimentos M&C SPA - RUT: 77.145.822-K\n';
-      body += 'Hormigón Estampado - Lampa, Chile\n';
+      body += 'Construcciones en General - Lampa, Chile\n';
       body += 'Tel: +56 9 3066 5920\n';
       body += 'ventas@pavimentosmyc.cl';
 
@@ -2355,7 +2394,7 @@
       var fontSize = 8;
       var line = 4.1;
 
-      if (startY > 240) {
+      if (startY > 236) {
         fontSize = 7;
         line = 3.4;
       }
@@ -2401,6 +2440,7 @@
       var margin = 8;
       var contentW = 194;
 
+      // HEADER café claro con logo.
       doc.setFillColor(166, 124, 82);
       doc.rect(0, 0, pageW, 32, 'F');
 
@@ -2419,7 +2459,7 @@
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
-      doc.text('Hormigón Estampado', 44, 20);
+      doc.text('Construcciones en General', 44, 20);
 
       doc.setFontSize(8.5);
       doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl  |  Lampa, Chile', 44, 25.5);
@@ -2432,6 +2472,7 @@
       doc.setFontSize(8.5);
       doc.text('Pavimentos M&C SPA', 202, 17, { align: 'right' });
 
+      // Franja mostaza con número de cotización.
       doc.setFillColor(201, 160, 90);
       doc.rect(0, 32, pageW, 9, 'F');
       doc.setTextColor(59, 36, 22);
@@ -2439,6 +2480,7 @@
       doc.setFontSize(11);
       doc.text('N° COTIZACIÓN: ' + (data.numero || ''), margin, 38);
 
+      // Box COTIZADO PARA.
       var y = 44;
       var boxH = 38;
 
@@ -2474,29 +2516,38 @@
 
       y += boxH + 3;
 
+      // CONDICIONES DE PAGO Y MEDIOS DE PAGO.
       doc.setFillColor(92, 58, 33);
       doc.rect(margin, y, contentW, 7, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(9);
-      doc.text('CONDICIONES DE PAGO', margin + 2, y + 4.8);
+      doc.text('CONDICIONES DE PAGO Y MEDIOS DE PAGO', margin + 2, y + 4.8);
 
       y += 7;
 
       doc.setDrawColor(92, 58, 33);
       doc.setFillColor(255, 255, 255);
-      doc.rect(margin, y, contentW, 13, 'FD');
+      doc.rect(margin, y, contentW, 19, 'FD');
 
       doc.setTextColor(59, 36, 22);
-      doc.setFont('helvetica', 'normal');
+      doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
-      doc.text('Anticipo 50% al confirmar.', margin + 2, y + 5);
-      doc.text('Saldo 50% al finalizar obra.', margin + 2, y + 10);
-      doc.text('Validez de oferta: 15 días.', margin + 102, y + 5);
-      doc.text('Forma de pago: transferencia / efectivo.', margin + 102, y + 10);
+      doc.text('Condiciones de pago:', margin + 2, y + 5);
+      doc.text('Medios de pago:', margin + 102, y + 5);
 
-      y += 16;
+      doc.setFont('helvetica', 'normal');
+      doc.text('- 50% inicio de obras', margin + 2, y + 9.2);
+      doc.text('- 30% hormigonado', margin + 2, y + 13);
+      doc.text('- 20% contra entrega', margin + 2, y + 16.8);
 
+      doc.text('- Transferencia', margin + 102, y + 9.2);
+      doc.text('- Efectivo', margin + 102, y + 13);
+      doc.text('- Tarjeta de crédito (recargo extra)', margin + 102, y + 16.8);
+
+      y += 22;
+
+      // Tabla principal con unidades de medida.
       var rows = data.rows || [];
       var fontBody = 9;
       var rowH = 6.4;
@@ -2547,6 +2598,7 @@
 
       var tableBottom = y;
 
+      // Totales.
       var totX = margin + 110;
       var totW = 84;
       var totY = tableBottom + 3;
@@ -2578,6 +2630,7 @@
       totY += 10;
       y = Math.max(tableBottom, totY) + 4;
 
+      // Items incluidos en dos columnas.
       var items = data.items || [];
       if (!items.length) { items = ['Según detalle cotizado']; }
 
@@ -2585,7 +2638,7 @@
       var itemFont = 8;
       var lineH = 4.3;
 
-      if (y > 215) { itemFont = 7.5; lineH = 3.8; }
+      if (y > 212) { itemFont = 7.5; lineH = 3.8; }
 
       var itemsBodyH = half * lineH + 5;
 
@@ -2626,6 +2679,7 @@
 
       y += itemsBodyH + 3;
 
+      // Alcance y garantía.
       y = drawPdfInfoBox(
         doc,
         'ALCANCE DEL PROYECTO',
@@ -2642,16 +2696,18 @@
         18
       );
 
+      // Footer PDF sin crédito del desarrollador.
       doc.setFontSize(8.5);
       doc.setTextColor(92, 58, 33);
       doc.setFont('helvetica', 'normal');
-      doc.text('Pavimentos M&C SPA - RUT: 77.145.822-K - Hormigón Estampado - Lampa, Chile', pageW / 2, 292, { align: 'center' });
+      doc.text('Pavimentos M&C SPA - RUT: 77.145.822-K - Construcciones en General - Lampa, Chile', pageW / 2, 292, { align: 'center' });
 
       doc.save(pdfFilename(data));
     }
 
     document.addEventListener('DOMContentLoaded', function () {
       loadLocalData();
+      migrateSeq5();
       buildItems();
       resetForm();
       renderTarifas();
