@@ -407,7 +407,7 @@
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
       <div class="brand-text">
         <strong>PAVIMENTOS M&amp;C</strong>
-        <span>HORMIGON ESTAMPADO</span>
+        <span>CONSTRUCCIONES EN GENERAL</span>
       </div>
     </div>
 
@@ -421,6 +421,8 @@
     <div class="sidebar-contact">
       <a href="https://wa.me/56930665920" target="_blank" rel="noopener">+56 9 3066 5920</a><br>
       <a href="mailto:ventas@pavimentosmyc.cl">ventas@pavimentosmyc.cl</a><br>
+      <a href="https://www.pavimentosmyc.cl" target="_blank" rel="noopener">www.pavimentosmyc.cl</a><br>
+      <a href="https://instagram.com/pavimentosmc" target="_blank" rel="noopener">@pavimentosmc</a><br>
       Lampa, Chile
     </div>
 
@@ -907,8 +909,7 @@
     }
 
     /* Migración única: si venías de la numeración anterior de 6 dígitos,
-       se reinicia la secuencia a 5 dígitos (10000) una sola vez,
-       en local y en Firebase, sin tocar los proyectos ya guardados. */
+       se reinicia la secuencia a 5 dígitos (10000) una sola vez. */
     function migrateSeq5() {
       try {
         if (localStorage.getItem('pavmyc_seq5') === '1') {
@@ -2136,7 +2137,8 @@
       msg += 'Garantia: 12 meses (fisuras/fracturas).\n';
       msg += '\n';
       msg += 'Pavimentos M&C SPA - Lampa, Chile\n';
-      msg += '+56 9 3066 5920 | ventas@pavimentosmyc.cl';
+      msg += '+56 9 3066 5920 | ventas@pavimentosmyc.cl\n';
+      msg += 'www.pavimentosmyc.cl | IG: @pavimentosmc';
 
       window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg), '_blank');
     }
@@ -2193,7 +2195,9 @@
       body += 'Pavimentos M&C SPA - RUT: 77.145.822-K\n';
       body += 'Construcciones en General - Lampa, Chile\n';
       body += 'Tel: +56 9 3066 5920\n';
-      body += 'ventas@pavimentosmyc.cl';
+      body += 'ventas@pavimentosmyc.cl\n';
+      body += 'Web: www.pavimentosmyc.cl\n';
+      body += 'Instagram: @pavimentosmc';
 
       window.location.href = 'mailto:' + encodeURIComponent(q.email) +
         '?subject=' + encodeURIComponent(subject) +
@@ -2696,11 +2700,45 @@
         18
       );
 
-      // Footer PDF sin crédito del desarrollador.
+      // FOOTER PDF con web e Instagram clickeables.
+      var footerY = 285;
+
+      doc.setDrawColor(201, 160, 90);
+      doc.setLineWidth(0.4);
+      doc.line(margin, footerY - 2, pageW - margin, footerY - 2);
+
+      // Fila 1: Empresa + RUT (texto normal).
       doc.setFontSize(8.5);
       doc.setTextColor(92, 58, 33);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Pavimentos M&C SPA - RUT: 77.145.822-K', pageW / 2, footerY + 2, { align: 'center' });
+
+      // Fila 2: Descripción + ubicación.
       doc.setFont('helvetica', 'normal');
-      doc.text('Pavimentos M&C SPA - RUT: 77.145.822-K - Construcciones en General - Lampa, Chile', pageW / 2, 292, { align: 'center' });
+      doc.setFontSize(8);
+      doc.text('Construcciones en General - Lampa, Chile', pageW / 2, footerY + 5.5, { align: 'center' });
+
+      // Fila 3: Teléfono + email (texto normal).
+      doc.text('Tel: +56 9 3066 5920  |  ventas@pavimentosmyc.cl', pageW / 2, footerY + 9, { align: 'center' });
+
+      // Fila 4: Web clickeable + Instagram clickeable.
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(42, 82, 130); // azul para indicar enlace
+
+      var webText = 'www.pavimentosmyc.cl';
+      var igText = '@pavimentosmc';
+
+      // Calculamos posiciones centradas.
+      var totalWidth = doc.getTextWidth(webText) + 15 + doc.getTextWidth(igText);
+      var startX = (pageW - totalWidth) / 2;
+
+      doc.text(webText, startX, footerY + 13, { link: 'https://www.pavimentosmyc.cl' });
+      doc.setTextColor(120, 120, 120);
+      doc.text(' | ', startX + doc.getTextWidth(webText), footerY + 13);
+      doc.setTextColor(42, 82, 130);
+      doc.text(igText, startX + doc.getTextWidth(webText) + 15, footerY + 13, { link: 'https://instagram.com/pavimentosmc' });
+      doc.setTextColor(92, 58, 33);
 
       doc.save(pdfFilename(data));
     }
